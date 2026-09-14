@@ -272,12 +272,26 @@ def call(params: dict[str, Any], retries: int = 5) -> dict[str, Any]:
                 response.raise_for_status()
             response.raise_for_status()
             return response.json()
+        except requests.exceptions.HTTPError as exc:
+            # requests builds the HTTPError message from the full request URL,
+            # and the key is a query parameter -- so letting this propagate
+            # prints the secret into whatever catches it. redact() existed for
+            # this and claimed to cover every path, but nothing was applying it
+            # here: an HTTP 500 from the count endpoint put the live key into a
+            # terminal transcript.
+            #
+            # `from None` rather than `from exc`, deliberately. Chaining would
+            # attach the original exception, and Python prints the chained
+            # message above the new one -- so the redaction would be defeated
+            # by the traceback that reports it.
+            raise RuntimeError(redact(str(exc))) from None
         except requests.exceptions.ConnectionError as exc:
             if attempt < retries - 1:
                 time.sleep(delay)
                 delay = min(delay * 2, 60.0)
                 continue
-            raise RuntimeError(f"Connection failed after {retries} attempts: {exc}") from exc
+            raise RuntimeError(redact(
+                f"Connection failed after {retries} attempts: {exc}")) from None
 
     raise RuntimeError("call() exhausted all retries")
 
@@ -297,7 +311,12 @@ def redact(text: str) -> str:
     requests puts the full request URL into HTTPError messages, and the key is
     a query parameter, so an unhandled error prints the secret into the log --
     which is how a key ends up committed, pasted into a bug report, or sitting
-    in a CI transcript. Every path that surfaces an exception goes through here.
+    in a CI transcript.
+
+    This used to claim that every path surfacing an exception went through
+    here. It did not: call() let requests' own HTTPError propagate untouched,
+    so an HTTP 500 printed the live key. Both raise paths in call() now redact,
+    and neither chains the original exception -- see the comment there.
     """
     if API_KEY and text:
         text = text.replace(API_KEY, "***REDACTED***")
