@@ -1,29 +1,32 @@
 # Render blueprint. Commit this, then in Render: New > Blueprint > pick the repo.
 #
-# Two services: the web app, and a Postgres instance for accounts. The signal
-# table itself is baked into the image as a parquet file rather than loaded into
-# Postgres -- it is a read-only 17 MB snapshot replaced wholesale by the
-# pipeline, so a database would add operational cost and no benefit. Postgres
-# exists only for user accounts, which are read-write.
+# One service: the web app. The signal table is baked into the image as a
+# parquet file rather than loaded into a database -- it is a read-only ~28 MB
+# snapshot replaced wholesale by the pipeline, so a database would add
+# operational cost and no benefit.
+#
+# Accounts DO need a real database, and it is deliberately not declared here.
+# Render's free Postgres is deleted after 30 days, which is acceptable for a
+# demo and not for accounts real people were asked to create. Point
+# DATABASE_URL at an external Postgres with a durable free tier (Neon,
+# Supabase) instead. To move onto Render's own Postgres later, add a
+# `databases:` block and swap DATABASE_URL to `fromDatabase`.
 
 services:
   - type: web
     name: reportscope
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: starter          # free tier sleeps after inactivity; starter does not
+    # Free sleeps after ~15 minutes idle, so the first visitor after a quiet
+    # spell waits 30-50s for a cold start. Change to `starter` to stop that.
+    plan: free
     region: oregon
     healthCheckPath: /healthz
     autoDeploy: false      # deploy deliberately, not on every push to main
 
     envVars:
-      # Supplied by Render.
       - key: PORT
         value: 8000
-      - key: DATABASE_URL
-        fromDatabase:
-          name: reportscope-db
-          property: connectionString
 
       # Generated once by Render and kept. A changing key signs every user out
       # on each deploy and invalidates pending password-reset links.
@@ -33,18 +36,24 @@ services:
       # Cookies are HTTPS-only here because Render terminates TLS.
       - key: RXSIGNAL_COOKIE_SECURE
         value: "true"
-      - key: APP_BASE_URL
-        value: https://reportscope.onrender.com    # match your real hostname
 
       - key: RXSIGNAL_RATE_LIMIT
         value: "60"
 
-      # Set these in the Render dashboard, not here -- this file is committed.
-      #   RXSIGNAL_ACCESS_CODE_HASH   gate for closed review (scripts/make_access_code.py)
-      #   RXSIGNAL_ADMIN_CODE         guards /admin/analytics
-      #   OPENFDA_API_KEY             only needed if you refresh data on the host
-      #   SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASSWORD / SMTP_FROM
-      - key: RXSIGNAL_ACCESS_CODE_HASH
+      # Set every one of these in the Render dashboard, not here -- this file is
+      # committed to a repository.
+      #
+      #   DATABASE_URL          the external Postgres connection string
+      #   APP_BASE_URL          this service's real https:// URL, no trailing
+      #                         slash. It builds the links inside verification
+      #                         emails AND the sitemap, so a wrong value gives
+      #                         dead links and a wrong sitemap, silently.
+      #   RXSIGNAL_ADMIN_CODE   guards /admin/analytics
+      #   SMTP_*                mail credentials
+      #   OPENFDA_API_KEY       only if refreshing data on the host
+      - key: DATABASE_URL
+        sync: false
+      - key: APP_BASE_URL
         sync: false
       - key: RXSIGNAL_ADMIN_CODE
         sync: false
@@ -58,9 +67,3 @@ services:
         sync: false
       - key: SMTP_FROM
         sync: false
-
-databases:
-  - name: reportscope-db
-    plan: basic-256mb
-    region: oregon
-    postgresMajorVersion: "16"
