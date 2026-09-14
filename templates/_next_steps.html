@@ -1,0 +1,41 @@
+{# Expects `next_step_drug`. Deliberately below the table and deliberately not a
+   .disclaimer: the reader has already been warned twice by the time they reach
+   it, and a third warning panel would be read as more of the same. This is the
+   one part of the page that asks them to do something, so it takes the accent
+   rather than the caution hue. #}
+<section class="next-steps">
+  <h2 class="next-steps-title">What to do with this</h2>
+  <p>
+    These results are a starting point for a conversation, not a finding about
+    you.
+  </p>
+  <p>
+    If you are worried about a medicine you take, speak to your prescriber or
+    pharmacist. <strong>Do not stop taking a prescribed medicine because of
+    anything on this page</strong> &mdash; stopping can be more dangerous than
+    continuing.
+  </p>
+  <p>
+    If you believe you have experienced a side effect, you can report it to the
+    FDA directly through
+    <a href="https://www.fda.gov/safety/medwatch-fda-safety-information-and-adverse-event-reporting-program"
+       target="_blank" rel="noopener noreferrer">MedWatch</a>.
+    Reports like these are what this database is built from, so a report you
+    file becomes part of what a page like this can show.
+  </p>
+  {% if next_step_drug %}
+  <p>
+    The official product label is the authoritative account of what is known
+    about {{ next_step_drug }}:
+    <a href="https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all&amp;query={{ next_step_drug | urlencode }}"
+       target="_blank" rel="noopener noreferrer">look it up on DailyMed</a>.
+  </p>
+  {% else %}
+  <p>
+    The official product label is the authoritative account of what is known
+    about any drug listed here:
+    <a href="https://dailymed.nlm.nih.gov/dailymed/search.cfm?labeltype=all"
+       target="_blank" rel="noopener noreferrer">search DailyMed</a>.
+  </p>
+  {% endif %}
+</section>

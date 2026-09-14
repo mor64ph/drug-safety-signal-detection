@@ -1,0 +1,484 @@
+"""
+M5: Disproportionality scoring engine.
+
+Implements ROR, PRR, IC (Information Component), and IC025 for each
+(drug_class/molecule, reaction_pt) pair.
+
+IC025 is the primary ranking key (lower confidence bound of IC).
+Screening gate: a >= 3 AND ROR_lower > 1 → signal=True.
+
+References:
+  - Norén (2006) for IC variance approximation
+  - Evans et al. for PRR/chi2
+"""
+
+from __future__ import annotations
+
+import json
+import warnings
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pandas as pd
+
+from src.client import total as api_total
+
+_BG_CACHE = Path(__file__).resolve().parent.parent / "data" / "raw" / "bg_totals.json"
+
+
+# ---------------------------------------------------------------------------
+# Contingency table helpers
+# ---------------------------------------------------------------------------
+
+def _contingency(
+    df: pd.DataFrame,
+    drug_col: str,
+    drug_val: Any,
+    reaction_val: str,
+) -> tuple[int, int, int, int]:
+    """
+    Build 2x2 contingency table cells (a, b, c, d) at REPORT level.
+
+    a: reports mentioning drug_val and reaction_val
+    b: reports mentioning drug_val but not reaction_val
+    c: reports mentioning reaction_val but not drug_val
+    d: reports mentioning neither
+
+    The unit of analysis is the report, not the flattened row. A report with
+    40 drugs and 47 reactions produces 1,880 rows; counting rows would inflate
+    b by the reaction count and deflate ROR by a factor that varies per drug.
+    """
+    reports = df["safetyreportid"]
+    drug_reports = set(reports[df[drug_col] == drug_val].dropna())
+    react_reports = set(
+        reports[df["reaction_pt"].str.upper() == reaction_val.upper()].dropna()
+    )
+    all_reports = set(reports.dropna())
+
+    a = len(drug_reports & react_reports)
+    b = len(drug_reports) - a
+    c = len(react_reports) - a
+    d = len(all_reports) - a - b - c
+    return a, b, c, max(d, 0)
+
+
+# ---------------------------------------------------------------------------
+# Metric calculations
+# ---------------------------------------------------------------------------
+
+def _ror(a: int, b: int, c: int, d: int) -> tuple[float, float, float]:
+    """
+    Reporting Odds Ratio and 95% CI.
+
+    Returns (ROR, ROR_lower, ROR_upper). Returns (NaN, NaN, NaN) if
+    any cell is zero.
+    """
+    if b == 0 or c == 0:
+        return float("nan"), float("nan"), float("nan")
+    ror = (a * d) / (b * c)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        se = np.sqrt(1 / max(a, 1) + 1 / b + 1 / c + 1 / max(d, 1))
+    ln_ror = np.log(ror)
+    ror_lower = np.exp(ln_ror - 1.96 * se)
+    ror_upper = np.exp(ln_ror + 1.96 * se)
+    return float(ror), float(ror_lower), float(ror_upper)
+
+
+def _prr(a: int, b: int, c: int, d: int) -> float:
+    """Proportional Reporting Ratio."""
+    denom = (c + d)
+    if (a + b) == 0 or denom == 0 or c == 0:
+        return float("nan")
+    return (a / (a + b)) / (c / denom)
+
+
+def _chi2(a: int, b: int, c: int, d: int) -> float:
+    """
+    Pearson chi-squared for 2x2 table.
+
+    Uses the formula from Evans et al. adjusted for FAERS sparse cells.
+    """
+    n = a + b + c + d
+    if n == 0:
+        return float("nan")
+    exp_a = (a + b) * (a + c) / n
+    if exp_a == 0:
+        return float("nan")
+    # Full chi2 formula for 2x2
+    num = (a * d - b * c) ** 2 * n
+    den = (a + b) * (c + d) * (a + c) * (b + d)
+    if den == 0:
+        return float("nan")
+    return float(num / den)
+
+
+def _ic_and_ic025(a: int, b: int, c: int, d: int) -> tuple[float, float]:
+    """
+    Information Component (IC) and IC025 (lower 95% confidence bound).
+
+    IC = log2( (a * N) / ((a+b) * (a+c)) )
+
+    IC variance (Norén 2006 approximation):
+      var_IC ≈ (1 - a/(a+b)) / (a * ln2)  +  (1 - (a+c)/N) / ((a+c) * ln2)
+
+    IC025 = IC - 1.96 * sqrt(var_IC)
+
+    Returns (IC, IC025). Both NaN if a==0.
+    """
+    N = a + b + c + d
+    if a == 0 or (a + b) == 0 or (a + c) == 0 or N == 0:
+        return float("nan"), float("nan")
+
+    ln2 = np.log(2)
+    ic = np.log2((a * N) / ((a + b) * (a + c)))
+
+    # Variance approximation
+    term1 = (1 - a / (a + b)) / (a * ln2)
+    term2 = (1 - (a + c) / N) / ((a + c) * ln2)
+    var_ic = max(term1 + term2, 0)  # clamp to 0 to avoid sqrt(<0)
+    ic025 = float(ic) - 1.96 * float(np.sqrt(var_ic))
+    return float(ic), float(ic025)
+
+
+# ---------------------------------------------------------------------------
+# Main scoring function
+# ---------------------------------------------------------------------------
+
+def score(
+    df: pd.DataFrame,
+    drug_col: str = "drug_class",
+    drug_filter: str | None = None,
+    reaction_filter: str | None = None,
+) -> pd.DataFrame:
+    """
+    Score all (drug, reaction_pt) pairs in the DataFrame.
+
+    Args:
+        df: Normalised DataFrame from M4.
+        drug_col: Column to use for drug grouping ('drug_class' or 'molecule').
+        drug_filter: If given, score only rows where drug_col == drug_filter.
+        reaction_filter: If given, score only rows where reaction_pt matches.
+
+    Returns:
+        DataFrame of scored pairs sorted by IC025 descending.
+        Columns: drug, reaction_pt, a, b, c, d, N, ROR, ROR_lower, ROR_upper,
+                 PRR, chi2, IC, IC025, signal.
+    """
+    cols = [
+        "drug", "reaction_pt", "a", "b", "c", "d", "N",
+        "ROR", "ROR_lower", "ROR_upper", "PRR", "chi2",
+        "IC", "IC025", "signal",
+    ]
+
+    work = df[[drug_col, "reaction_pt", "safetyreportid"]].copy()
+    work["reaction_pt"] = work["reaction_pt"].fillna("").str.upper()
+    work = work[(work["reaction_pt"] != "") & work[drug_col].notna()]
+    work = work.dropna(subset=["safetyreportid"])
+    if work.empty:
+        return pd.DataFrame(columns=cols)
+
+    # Report-level marginals over the WHOLE universe, before any filtering.
+    # Counting flattened rows here would inflate b by the per-report reaction
+    # count and deflate every ROR by a drug-dependent factor.
+    N = work["safetyreportid"].nunique()
+    drug_tot = work[[drug_col, "safetyreportid"]].drop_duplicates().groupby(drug_col).size()
+    rxn_tot = (
+        work[["reaction_pt", "safetyreportid"]].drop_duplicates()
+        .groupby("reaction_pt").size()
+    )
+
+    pairs = work.drop_duplicates()
+    if drug_filter:
+        pairs = pairs[pairs[drug_col] == drug_filter]
+    if reaction_filter:
+        pairs = pairs[pairs["reaction_pt"] == reaction_filter.upper()]
+    if pairs.empty:
+        return pd.DataFrame(columns=cols)
+
+    a_tbl = pairs.groupby([drug_col, "reaction_pt"]).size()
+    if a_tbl.empty:
+        return pd.DataFrame(columns=cols)
+
+    idx = a_tbl.index
+    drug_idx = idx.get_level_values(0)
+    rxn_idx = idx.get_level_values(1)
+
+    a = a_tbl.to_numpy(dtype=float)
+    ab = drug_tot.reindex(drug_idx).to_numpy(dtype=float)
+    ac = rxn_tot.reindex(rxn_idx).to_numpy(dtype=float)
+    b = ab - a
+    c = ac - a
+    d = float(N) - a - b - c
+
+    ln2 = np.log(2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        ror = (a * d) / (b * c)
+        se = np.sqrt(1 / a + 1 / b + 1 / c + 1 / d)
+        ln_ror = np.log(ror)
+        ror_lo = np.exp(ln_ror - 1.96 * se)
+        ror_hi = np.exp(ln_ror + 1.96 * se)
+        prr = (a / ab) / (c / (c + d))
+        chi2 = (a * d - b * c) ** 2 * N / (ab * (c + d) * ac * (b + d))
+        ic = np.log2((a * N) / (ab * ac))
+        var_ic = (1 - a / ab) / (a * ln2) + (1 - ac / N) / (ac * ln2)
+        ic025 = ic - 1.96 * np.sqrt(np.clip(var_ic, 0, None))
+
+    # Degenerate tables (an empty margin) cannot yield a ratio.
+    bad = (b <= 0) | (c <= 0) | (d <= 0)
+    for arr in (ror, ror_lo, ror_hi, prr, chi2):
+        arr[bad] = np.nan
+
+    signal = (a >= 3) & np.isfinite(ror_lo) & (ror_lo > 1.0)
+
+    result = pd.DataFrame(
+        {
+            "drug": drug_idx.to_numpy(),
+            "reaction_pt": rxn_idx.to_numpy(),
+            "a": a.astype(int),
+            "b": b.astype(int),
+            "c": c.astype(int),
+            "d": d.astype(int),
+            "N": int(N),
+            "ROR": np.round(ror, 4),
+            "ROR_lower": np.round(ror_lo, 4),
+            "ROR_upper": np.round(ror_hi, 4),
+            "PRR": np.round(prr, 4),
+            "chi2": np.round(chi2, 4),
+            "IC": np.round(ic, 4),
+            "IC025": np.round(ic025, 4),
+            "signal": signal,
+        }
+    )
+    result["tier"] = [
+        tier(v) if n >= 3 else "none" for v, n in zip(result["IC025"], result["a"])
+    ]
+    result = result.sort_values("IC025", ascending=False, na_position="last")
+    return result.reset_index(drop=True)
+
+
+# ---------------------------------------------------------------------------
+# API-based scoring (for M6 validation against population counts)
+# ---------------------------------------------------------------------------
+
+def tier(ic025: float | None) -> str:
+    """
+    Grade the strength of evidence from IC025.
+
+    A binary pass/fail on ROR_lower > 1 is close to useless against 20.7M
+    reports: the confidence interval is narrow enough that trivial elevations
+    clear it, and 79% of measured pairs did. IC025 bands separate "reported
+    somewhat more than expected" from "reported far more than expected", which
+    is the distinction a reader actually needs.
+
+    These are thresholds on a reporting ratio. None of them indicates cause.
+    """
+    if ic025 is None or (isinstance(ic025, float) and np.isnan(ic025)):
+        return "none"
+    if ic025 > 2.0:
+        return "strong"
+    if ic025 > 1.0:
+        return "moderate"
+    if ic025 > 0.0:
+        return "weak"
+    return "none"
+
+
+def _load_bg_cache() -> dict[str, int]:
+    if _BG_CACHE.exists():
+        try:
+            return json.loads(_BG_CACHE.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return {}
+
+
+def _save_bg_cache(cache: dict[str, int]) -> None:
+    _BG_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    _BG_CACHE.write_text(json.dumps(cache, indent=0, sort_keys=True), encoding="utf-8")
+
+
+def load_dme() -> list[str]:
+    """Serious events checked for every drug regardless of reporting frequency."""
+    path = Path(__file__).resolve().parent.parent / "config" / "dme.txt"
+    if not path.exists():
+        return []
+    return [
+        line.strip().upper()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+
+
+def dme_counts(drug_search: str, terms: list[str], chunk: int = 12) -> dict[str, int]:
+    """
+    Report counts for designated medical events, via the count endpoint.
+
+    Restricting the search to reports containing at least one listed event makes
+    those events dominate the response, so a handful of calls recovers counts
+    that would otherwise require one call per term. Chunking keeps the matched
+    set narrow enough that no target term is pushed past the 100-bucket cap by
+    unrelated co-reported reactions.
+    """
+    from src.client import call, q_reaction, F_REACTION
+
+    found: dict[str, int] = {}
+    wanted = {t.upper() for t in terms}
+    for i in range(0, len(terms), chunk):
+        group = terms[i:i + chunk]
+        clause = "(" + " OR ".join(q_reaction(t) for t in group) + ")"
+        try:
+            data = call({"search": f"{drug_search} AND {clause}",
+                         "count": f"{F_REACTION}.exact"})
+        except Exception:
+            continue
+        for bucket in data.get("results", []) or []:
+            term = str(bucket.get("term", "")).upper()
+            if term in wanted:
+                found[term] = int(bucket.get("count", 0))
+    return found
+
+
+def score_via_counts(
+    drug_search: str,
+    drug_label: str,
+    max_terms: int = 100,
+    stoplist: set[str] | None = None,
+    grand_total: int = 20_692_690,
+    dme_terms: list[str] | None = None,
+) -> pd.DataFrame:
+    """
+    Build an exact, population-level scored table using the count endpoint.
+
+    Background cells come from all 20.7M reports rather than a local sample,
+    so the numbers match the validated control figures exactly. Downloading
+    the drug's own reports would not give a usable background: every record
+    in such a corpus contains the drug, collapsing cell c.
+
+    Cost: 2 + (terms not already cached) API calls. Reaction background totals
+    are drug-independent, so the cache is shared across every drug scored.
+
+    Returns a DataFrame with the same columns as score().
+    """
+    from src.client import counts, q_reaction, F_REACTION
+
+    ab = api_total(drug_search)
+    if ab == 0:
+        return pd.DataFrame()
+
+    buckets = counts(drug_search, f"{F_REACTION}.exact", limit=max_terms)
+    cache = _load_bg_cache()
+    stop = {s.upper() for s in (stoplist or set())}
+
+    # Frequency-ranked candidates, then the serious events that ranking hides.
+    candidates: dict[str, int] = {}
+    for bucket in buckets:
+        term = str(bucket.get("term", "")).upper()
+        if term:
+            candidates[term] = int(bucket.get("count", 0))
+
+    dme_found: dict[str, int] = {}
+    if dme_terms:
+        dme_found = dme_counts(drug_search, dme_terms)
+        for term, n in dme_found.items():
+            candidates.setdefault(term, n)
+
+    rows: list[dict] = []
+    fetched = 0
+    for term, a in candidates.items():
+        if not term or term in stop or a == 0:
+            continue
+
+        if term in cache:
+            ac = cache[term]
+        else:
+            ac = api_total(q_reaction(term))
+            cache[term] = ac
+            fetched += 1
+
+        b = max(ab - a, 0)
+        c = max(ac - a, 0)
+        d = max(grand_total - a - b - c, 0)
+        if b == 0 or c == 0 or d == 0:
+            continue
+
+        ror, ror_lo, ror_hi = _ror(a, b, c, d)
+        ic, ic025 = _ic_and_ic025(a, b, c, d)
+        rows.append(
+            {
+                "drug": drug_label,
+                "reaction_pt": term,
+                "a": a, "b": b, "c": c, "d": d, "N": grand_total,
+                "ROR": round(ror, 4), "ROR_lower": round(ror_lo, 4),
+                "ROR_upper": round(ror_hi, 4),
+                "PRR": round(_prr(a, b, c, d), 4),
+                "chi2": round(_chi2(a, b, c, d), 4),
+                "IC": round(ic, 4), "IC025": round(ic025, 4),
+                "signal": bool(a >= 3 and ror_lo > 1.0),
+                "tier": tier(ic025) if a >= 3 else "none",
+                "dme": term in dme_found,
+            }
+        )
+
+    if fetched:
+        _save_bg_cache(cache)
+
+    result = pd.DataFrame(rows)
+    if result.empty:
+        return result
+    return result.sort_values("IC025", ascending=False).reset_index(drop=True)
+
+
+def score_from_api(drug_search: str, reaction_pt: str) -> dict:
+    """
+    Compute ROR using API total() calls for comparison mode (M6 validation).
+
+    Uses the full FAERS population as the background, not the local DataFrame.
+    This allows validation when only a subset has been fetched locally.
+
+    Args:
+        drug_search: OpenFDA search string for the drug (e.g. pharm_class filter).
+        reaction_pt: Reaction MedDRA PT to test.
+
+    Returns:
+        dict with keys: a, b_proxy, c, d_proxy, N_total, ROR, ROR_lower, ROR_upper.
+        Note: b and d are approximated from totals (not exact pairs).
+    """
+    from src.client import total as api_total, q_reaction
+
+    N_total = 20_692_690  # Grand total as of 2026-07-30
+
+    rxn_search = q_reaction(reaction_pt)
+
+    # a: drug AND reaction
+    drug_and_rxn = f"({drug_search}) AND {rxn_search}"
+    a = api_total(drug_and_rxn)
+
+    # a+b: drug total
+    drug_total = api_total(drug_search)
+
+    # a+c: reaction total
+    ac = api_total(rxn_search)
+
+    b = max(drug_total - a, 0)
+    c = max(ac - a, 0)
+    d = max(N_total - a - b - c, 0)
+
+    ror, ror_lo, ror_hi = _ror(a, b, c, d)
+    ic, ic025 = _ic_and_ic025(a, b, c, d)
+
+    return {
+        "drug_search": drug_search,
+        "reaction_pt": reaction_pt,
+        "a": a,
+        "b_proxy": b,
+        "c": c,
+        "d_proxy": d,
+        "N_total": N_total,
+        "ROR": round(ror, 4) if not np.isnan(ror) else None,
+        "ROR_lower": round(ror_lo, 4) if not np.isnan(ror_lo) else None,
+        "ROR_upper": round(ror_hi, 4) if not np.isnan(ror_hi) else None,
+        "IC": round(ic, 4) if not np.isnan(ic) else None,
+        "IC025": round(ic025, 4) if not np.isnan(ic025) else None,
+    }

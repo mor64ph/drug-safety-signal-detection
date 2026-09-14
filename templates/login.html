@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal &mdash; sign in</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-narrow">
+
+    <header class="page-head">
+      <p class="kicker">Account</p>
+      <h1>Sign in</h1>
+    </header>
+
+    {% if errors %}
+    <div class="alert alert-warning mb-3">
+      <ul>
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="{{ url_for('auth.login') }}" novalidate>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="next" value="{{ next_url }}">
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email"
+                   value="{{ email }}" autocomplete="email" autofocus required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password"
+                   autocomplete="current-password" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Sign in</button>
+        </form>
+      </div>
+    </div>
+
+    <p class="form-text mt-3 mb-1">
+      <a href="{{ url_for('auth.forgot') }}">Forgotten your password?</a>
+    </p>
+    <p class="form-text">
+      No account yet? <a href="{{ url_for('auth.register') }}">Create one</a>.
+      Searching works without one.
+    </p>
+
+    <footer class="page-foot">
+      Computed from <span class="num-inline">{{ data_total }}</span> FAERS reports,
+      current to <strong>{{ data_as_of }}</strong>.
+    </footer>
+
+  </main>
+</body>
+</html>

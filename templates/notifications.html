@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal &mdash; alerts</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-mid">
+
+    <header class="page-head">
+      <p class="kicker">Your list</p>
+      <h1>Alerts</h1>
+      <p class="lede">
+        Changes since the previous data refresh, for the drugs you track.
+      </p>
+    </header>
+
+    <div class="disclaimer">
+      <span class="disclaimer-label">A change here is a change in reporting</span>
+      <p class="disclaimer-body">
+        It means a reaction is now being reported alongside the drug more often
+        than the rest of the database would predict, or more strongly than at the
+        last check &mdash; not that the drug has become more dangerous, and not
+        that anything new has been discovered about it. New drugs, media
+        coverage and legal advertising all move these figures without
+        anything changing in the medicine. Bring it to your prescriber rather
+        than acting on it.
+      </p>
+    </div>
+
+    {% if not rows %}
+    <div class="empty">
+      <p class="empty-title">Nothing yet</p>
+      <p>
+        Alerts appear here when the reporting pattern changes for a drug on
+        <a href="{{ url_for('user_features.dashboard') }}">your list</a>.
+      </p>
+    </div>
+    {% endif %}
+
+    {% for n in rows %}
+    <div class="alert-item">
+      <div class="alert-item-head">
+        <span class="alert-item-subject">
+          <span class="badge-row">
+            {% if n.id in new_ids %}
+            <span class="badge tier-moderate">new</span>
+            {% endif %}
+            {% if n.kind == 'new_signal' %}
+            <span class="badge tier-strong">newly surfaced</span>
+            {% elif n.kind == 'strengthened' %}
+            <span class="badge tier-moderate">strengthened</span>
+            {% else %}
+            <span class="badge label-known">label updated</span>
+            {% endif %}
+          </span>
+          <strong>{{ n.drug }}</strong>
+          <span class="text-muted">&mdash;</span>
+          {{ n.reaction_pt }}
+        </span>
+        <span class="alert-item-date">
+          {{ n.created_at.strftime('%d %b %Y') }}
+        </span>
+      </div>
+      <p class="alert-item-detail">
+        {{ n.detail }}
+        {% if n.ic025 is not none and n.prev_ic025 is not none %}
+        <span class="num-inline">
+          IC025 {{ "%.2f"|format(n.prev_ic025) }} &rarr; {{ "%.2f"|format(n.ic025) }}
+        </span>
+        {% elif n.ic025 is not none %}
+        <span class="num-inline">IC025 {{ "%.2f"|format(n.ic025) }}</span>
+        {% endif %}
+        <a class="ms-2" href="{{ url_for('search', drug=n.drug) }}">full report</a>
+      </p>
+    </div>
+    {% endfor %}
+
+    <p class="form-text mt-4">
+      Alerts stop as soon as you switch off change alerts on your
+      <a href="{{ url_for('auth.account') }}">account page</a>, or remove the
+      drug from your list.
+    </p>
+
+    <footer class="page-foot">
+      rxsignal &mdash; reporting-pattern analysis &mdash; not a medical tool
+    </footer>
+
+  </main>
+</body>
+</html>

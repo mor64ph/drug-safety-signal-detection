@@ -1,0 +1,853 @@
+{
+  "_note": "Every pharm_class_epc string here was read back from the API's own count endpoint, never typed from memory. Invented strings such as 'Biguanide [EPC]' return 0 reports with no error, so a typo looks exactly like a drug nobody reports. Run scripts/verify_targets.py after editing. Molecules need no EPC: they are searched across generic_name, activesubstance and medicinalproduct, which is also how withdrawn drugs stay visible.",
+
+  "areas": {
+    "diabetes": {
+      "label": "other drugs for diabetes",
+      "classes": [
+        "GLP-1 Receptor Agonist [EPC]",
+        "Dipeptidyl Peptidase 4 Inhibitor [EPC]",
+        "Sodium-Glucose Cotransporter 2 Inhibitor [EPC]",
+        "Sulfonylurea [EPC]",
+        "Insulin Analog [EPC]",
+        "Thiazolidinedione [EPC]"
+      ]
+    },
+    "lipid": {
+      "label": "other lipid-lowering drugs",
+      "classes": [
+        "HMG-CoA Reductase Inhibitor [EPC]",
+        "Peroxisome Proliferator Receptor alpha Agonist [EPC]",
+        "Nicotinic Acid [EPC]",
+        "PCSK9 Inhibitor [EPC]",
+        "Dietary Cholesterol Absorption Inhibitor [EPC]"
+      ]
+    },
+    "antihypertensive": {
+      "label": "other blood-pressure drugs",
+      "classes": [
+        "Angiotensin Converting Enzyme Inhibitor [EPC]",
+        "Angiotensin 2 Receptor Blocker [EPC]",
+        "beta-Adrenergic Blocker [EPC]",
+        "Dihydropyridine Calcium Channel Blocker [EPC]",
+        "Calcium Channel Blocker [EPC]",
+        "Thiazide Diuretic [EPC]",
+        "alpha-Adrenergic Blocker [EPC]"
+      ]
+    },
+    "cardiac": {
+      "label": "other heart drugs",
+      "classes": [
+        "Antiarrhythmic [EPC]",
+        "Nitrate Vasodilator [EPC]",
+        "beta-Adrenergic Blocker [EPC]",
+        "Loop Diuretic [EPC]",
+        "Aldosterone Antagonist [EPC]"
+      ]
+    },
+    "diuretic": {
+      "label": "other diuretics",
+      "classes": [
+        "Loop Diuretic [EPC]",
+        "Thiazide Diuretic [EPC]",
+        "Aldosterone Antagonist [EPC]"
+      ]
+    },
+    "antithrombotic": {
+      "label": "other blood thinners",
+      "classes": [
+        "Factor Xa Inhibitor [EPC]",
+        "P2Y12 Platelet Inhibitor [EPC]",
+        "Platelet Aggregation Inhibitor [EPC]"
+      ]
+    },
+    "acid": {
+      "label": "other acid-reducing drugs",
+      "classes": [
+        "Proton Pump Inhibitor [EPC]",
+        "Histamine-2 Receptor Antagonist [EPC]"
+      ]
+    },
+    "analgesic": {
+      "label": "other painkillers",
+      "classes": [
+        "Nonsteroidal Anti-inflammatory Drug [EPC]",
+        "Opioid Agonist [EPC]",
+        "Partial Opioid Agonist [EPC]"
+      ]
+    },
+    "psychotropic": {
+      "label": "other mental-health drugs",
+      "classes": [
+        "Atypical Antipsychotic [EPC]",
+        "Benzodiazepine [EPC]",
+        "Serotonin Reuptake Inhibitor [EPC]",
+        "Mood Stabilizer [EPC]"
+      ]
+    },
+    "neuro": {
+      "label": "other drugs acting on the nervous system",
+      "classes": [
+        "Anti-epileptic Agent [EPC]",
+        "gamma-Aminobutyric Acid-ergic Agonist [EPC]",
+        "Mood Stabilizer [EPC]",
+        "Central Nervous System Stimulant [EPC]"
+      ]
+    },
+    "antibiotic": {
+      "label": "other antibiotics",
+      "classes": [
+        "Fluoroquinolone Antibacterial [EPC]",
+        "Sulfonamide Antimicrobial [EPC]",
+        "Dihydrofolate Reductase Inhibitor Antibacterial [EPC]",
+        "Tetracycline-class Drug [EPC]"
+      ]
+    },
+    "antiinflammatory": {
+      "label": "other anti-inflammatory drugs",
+      "classes": [
+        "Corticosteroid [EPC]",
+        "Nonsteroidal Anti-inflammatory Drug [EPC]",
+        "Antirheumatic Agent [EPC]",
+        "Xanthine Oxidase Inhibitor [EPC]"
+      ]
+    },
+    "immunology": {
+      "label": "other immune-modifying drugs",
+      "classes": [
+        "Tumor Necrosis Factor Blocker [EPC]",
+        "Interleukin-23 Antagonist [EPC]",
+        "Interleukin-17A Antagonist [EPC]",
+        "Interleukin-6 Receptor Antagonist [EPC]",
+        "Janus Kinase Inhibitor [EPC]",
+        "Calcineurin Inhibitor Immunosuppressant [EPC]",
+        "Selective T Cell Costimulation Modulator [EPC]"
+      ]
+    },
+    "oncology": {
+      "label": "other cancer drugs",
+      "classes": [
+        "Kinase Inhibitor [EPC]",
+        "Alkylating Drug [EPC]",
+        "Platinum-based Drug [EPC]",
+        "Microtubule Inhibitor [EPC]",
+        "Nucleoside Metabolic Inhibitor [EPC]",
+        "Programmed Death Receptor-1 Blocking Antibody [EPC]",
+        "Aromatase Inhibitor [EPC]",
+        "Proteasome Inhibitor [EPC]"
+      ]
+    },
+    "respiratory": {
+      "label": "other lung and airway drugs",
+      "classes": [
+        "Leukotriene Receptor Antagonist [EPC]",
+        "Corticosteroid [EPC]",
+        "Anti-IgE [EPC]",
+        "Phosphodiesterase 4 Inhibitor [EPC]"
+      ]
+    },
+    "antiviral": {
+      "label": "other antivirals",
+      "classes": [
+        "Human Immunodeficiency Virus Nucleoside Analog Reverse Transcriptase Inhibitor [EPC]",
+        "Nucleoside Analog Antiviral [EPC]",
+        "Herpes Simplex Virus Nucleoside Analog DNA Polymerase Inhibitor [EPC]",
+        "Protease Inhibitor [EPC]"
+      ]
+    },
+    "allergy": {
+      "label": "other allergy drugs",
+      "classes": [
+        "Histamine-1 Receptor Antagonist [EPC]",
+        "Leukotriene Receptor Antagonist [EPC]",
+        "Corticosteroid [EPC]"
+      ]
+    },
+    "urology": {
+      "label": "other urological drugs",
+      "classes": [
+        "5-alpha Reductase Inhibitor [EPC]",
+        "alpha-Adrenergic Blocker [EPC]",
+        "Cholinergic Muscarinic Antagonist [EPC]",
+        "Phosphodiesterase 5 Inhibitor [EPC]"
+      ]
+    },
+    "hormone": {
+      "label": "other hormone treatments",
+      "classes": [
+        "Estrogen [EPC]",
+        "Progestin [EPC]",
+        "Corticosteroid [EPC]"
+      ]
+    },
+    "bone": {
+      "label": "other bone drugs",
+      "classes": [
+        "RANK Ligand Inhibitor [EPC]",
+        "Parathyroid Hormone Analog [EPC]",
+        "Vitamin D [EPC]",
+        "Calcium [EPC]"
+      ]
+    },
+    "gi": {
+      "label": "other gut drugs",
+      "classes": [
+        "Serotonin-3 Receptor Antagonist [EPC]",
+        "Aminosalicylate [EPC]",
+        "Osmotic Laxative [EPC]",
+        "Proton Pump Inhibitor [EPC]"
+      ]
+    },
+    "antifungal": {
+      "label": "other antifungals",
+      "classes": ["Azole Antifungal [EPC]"]
+    },
+    "ophthalmic": {
+      "label": "other eye drugs",
+      "classes": [
+        "Prostaglandin Analog [EPC]",
+        "beta-Adrenergic Blocker [EPC]",
+        "Vascular Endothelial Growth Factor Inhibitor [EPC]"
+      ]
+    }
+  },
+
+  "classes": {
+    "glp1": {
+      "pharm_class_epc": "GLP-1 Receptor Agonist [EPC]", "area": "diabetes",
+      "molecules": {
+        "semaglutide": ["semaglutide", "oral semaglutide", "ozempic", "wegovy", "rybelsus"],
+        "liraglutide": ["liraglutide", "victoza", "saxenda"],
+        "dulaglutide": ["dulaglutide", "trulicity"],
+        "exenatide": ["exenatide", "byetta", "bydureon"],
+        "tirzepatide": ["tirzepatide", "mounjaro", "zepbound"],
+        "lixisenatide": ["lixisenatide", "adlyxin", "lyxumia"]
+      }
+    },
+    "sglt2": {
+      "pharm_class_epc": "Sodium-Glucose Cotransporter 2 Inhibitor [EPC]", "area": "diabetes",
+      "molecules": {
+        "empagliflozin": ["empagliflozin", "jardiance"],
+        "dapagliflozin": ["dapagliflozin", "farxiga", "forxiga"],
+        "canagliflozin": ["canagliflozin", "invokana"]
+      }
+    },
+    "dpp4": {
+      "pharm_class_epc": "Dipeptidyl Peptidase 4 Inhibitor [EPC]", "area": "diabetes",
+      "molecules": {
+        "sitagliptin": ["sitagliptin", "januvia"],
+        "linagliptin": ["linagliptin", "tradjenta"],
+        "vildagliptin": ["vildagliptin", "galvus"]
+      }
+    },
+    "sulfonylurea": {
+      "pharm_class_epc": "Sulfonylurea [EPC]", "area": "diabetes",
+      "molecules": {
+        "glipizide": ["glipizide", "glucotrol"],
+        "glimepiride": ["glimepiride", "amaryl"],
+        "glyburide": ["glyburide", "glibenclamide", "diabeta"],
+        "gliclazide": ["gliclazide", "diamicron"]
+      }
+    },
+    "insulin": {
+      "pharm_class_epc": "Insulin Analog [EPC]", "area": "diabetes",
+      "molecules": {
+        "insulin glargine": ["insulin glargine", "lantus", "basaglar", "toujeo"],
+        "insulin aspart": ["insulin aspart", "novolog", "novorapid"],
+        "insulin lispro": ["insulin lispro", "humalog"],
+        "insulin degludec": ["insulin degludec", "tresiba"],
+        "insulin human": ["insulin human", "humulin", "novolin"]
+      }
+    },
+    "thiazolidinedione": {
+      "pharm_class_epc": "Thiazolidinedione [EPC]", "area": "diabetes",
+      "molecules": {
+        "pioglitazone": ["pioglitazone", "actos"],
+        "rosiglitazone": ["rosiglitazone", "avandia"]
+      }
+    },
+    "biguanide": {
+      "area": "diabetes",
+      "_no_epc": "Metformin carries no EPC class in openFDA; 'Biguanide [EPC]' returns 0.",
+      "molecules": { "metformin": ["metformin", "glucophage"] }
+    },
+    "statin": {
+      "pharm_class_epc": "HMG-CoA Reductase Inhibitor [EPC]", "area": "lipid",
+      "molecules": {
+        "atorvastatin": ["atorvastatin", "lipitor"],
+        "rosuvastatin": ["rosuvastatin", "crestor"],
+        "simvastatin": ["simvastatin", "zocor"],
+        "pravastatin": ["pravastatin", "pravachol"],
+        "lovastatin": ["lovastatin", "mevacor"],
+        "fluvastatin": ["fluvastatin", "lescol"],
+        "pitavastatin": ["pitavastatin", "livalo"],
+        "cerivastatin": ["cerivastatin", "baycol"]
+      }
+    },
+    "lipid_other": {
+      "area": "lipid",
+      "molecules": {
+        "ezetimibe": ["ezetimibe", "zetia"],
+        "fenofibrate": ["fenofibrate", "tricor"],
+        "gemfibrozil": ["gemfibrozil", "lopid"],
+        "evolocumab": ["evolocumab", "repatha"],
+        "alirocumab": ["alirocumab", "praluent"],
+        "niacin": ["niacin", "nicotinic acid"]
+      }
+    },
+    "ace_inhibitor": {
+      "pharm_class_epc": "Angiotensin Converting Enzyme Inhibitor [EPC]", "area": "antihypertensive",
+      "molecules": {
+        "lisinopril": ["lisinopril", "zestril", "prinivil"],
+        "ramipril": ["ramipril", "altace"],
+        "enalapril": ["enalapril", "vasotec"],
+        "perindopril": ["perindopril", "coversyl"],
+        "captopril": ["captopril", "capoten"]
+      }
+    },
+    "arb": {
+      "pharm_class_epc": "Angiotensin 2 Receptor Blocker [EPC]", "area": "antihypertensive",
+      "molecules": {
+        "losartan": ["losartan", "cozaar"],
+        "valsartan": ["valsartan", "diovan"],
+        "olmesartan": ["olmesartan", "benicar"],
+        "irbesartan": ["irbesartan", "avapro"],
+        "telmisartan": ["telmisartan", "micardis"],
+        "candesartan": ["candesartan", "atacand"]
+      }
+    },
+    "beta_blocker": {
+      "pharm_class_epc": "beta-Adrenergic Blocker [EPC]", "area": "antihypertensive",
+      "molecules": {
+        "metoprolol": ["metoprolol", "lopressor", "toprol"],
+        "atenolol": ["atenolol", "tenormin"],
+        "carvedilol": ["carvedilol", "coreg"],
+        "propranolol": ["propranolol", "inderal"],
+        "bisoprolol": ["bisoprolol", "zebeta"],
+        "nebivolol": ["nebivolol", "bystolic"]
+      }
+    },
+    "ccb": {
+      "pharm_class_epc": "Dihydropyridine Calcium Channel Blocker [EPC]", "area": "antihypertensive",
+      "molecules": {
+        "amlodipine": ["amlodipine", "norvasc"],
+        "nifedipine": ["nifedipine", "procardia", "adalat"],
+        "felodipine": ["felodipine", "plendil"],
+        "diltiazem": ["diltiazem", "cardizem"],
+        "verapamil": ["verapamil", "calan", "isoptin"]
+      }
+    },
+    "thiazide": {
+      "pharm_class_epc": "Thiazide Diuretic [EPC]", "area": "antihypertensive",
+      "molecules": {
+        "hydrochlorothiazide": ["hydrochlorothiazide", "microzide"],
+        "chlorthalidone": ["chlorthalidone", "thalitone"],
+        "indapamide": ["indapamide", "lozol"]
+      }
+    },
+    "alpha_blocker": {
+      "pharm_class_epc": "alpha-Adrenergic Blocker [EPC]", "area": "urology",
+      "molecules": {
+        "tamsulosin": ["tamsulosin", "flomax"],
+        "doxazosin": ["doxazosin", "cardura"],
+        "prazosin": ["prazosin", "minipress"]
+      }
+    },
+    "loop_diuretic": {
+      "pharm_class_epc": "Loop Diuretic [EPC]", "area": "diuretic",
+      "molecules": {
+        "furosemide": ["furosemide", "lasix"],
+        "torsemide": ["torsemide", "demadex"],
+        "bumetanide": ["bumetanide", "bumex"]
+      }
+    },
+    "aldosterone": {
+      "pharm_class_epc": "Aldosterone Antagonist [EPC]", "area": "diuretic",
+      "molecules": {
+        "spironolactone": ["spironolactone", "aldactone"],
+        "eplerenone": ["eplerenone", "inspra"]
+      }
+    },
+    "antiarrhythmic": {
+      "pharm_class_epc": "Antiarrhythmic [EPC]", "area": "cardiac",
+      "molecules": {
+        "amiodarone": ["amiodarone", "cordarone", "pacerone"],
+        "flecainide": ["flecainide", "tambocor"],
+        "sotalol": ["sotalol", "betapace"],
+        "digoxin": ["digoxin", "lanoxin"]
+      }
+    },
+    "nitrate": {
+      "pharm_class_epc": "Nitrate Vasodilator [EPC]", "area": "cardiac",
+      "molecules": {
+        "nitroglycerin": ["nitroglycerin", "glyceryl trinitrate"],
+        "isosorbide mononitrate": ["isosorbide mononitrate", "imdur"]
+      }
+    },
+    "factor_xa": {
+      "pharm_class_epc": "Factor Xa Inhibitor [EPC]", "area": "antithrombotic",
+      "molecules": {
+        "apixaban": ["apixaban", "eliquis"],
+        "rivaroxaban": ["rivaroxaban", "xarelto"],
+        "edoxaban": ["edoxaban", "savaysa", "lixiana"]
+      }
+    },
+    "p2y12": {
+      "pharm_class_epc": "P2Y12 Platelet Inhibitor [EPC]", "area": "antithrombotic",
+      "molecules": {
+        "clopidogrel": ["clopidogrel", "plavix"],
+        "ticagrelor": ["ticagrelor", "brilinta"],
+        "prasugrel": ["prasugrel", "effient"]
+      }
+    },
+    "anticoagulant_other": {
+      "area": "antithrombotic",
+      "molecules": {
+        "warfarin": ["warfarin", "coumadin", "jantoven"],
+        "dabigatran": ["dabigatran", "pradaxa"],
+        "enoxaparin": ["enoxaparin", "lovenox"],
+        "heparin": ["heparin"],
+        "aspirin": ["aspirin", "acetylsalicylic acid"]
+      }
+    },
+    "ppi": {
+      "pharm_class_epc": "Proton Pump Inhibitor [EPC]", "area": "acid",
+      "molecules": {
+        "omeprazole": ["omeprazole", "prilosec"],
+        "pantoprazole": ["pantoprazole", "protonix"],
+        "esomeprazole": ["esomeprazole", "nexium"],
+        "lansoprazole": ["lansoprazole", "prevacid"],
+        "rabeprazole": ["rabeprazole", "aciphex"]
+      }
+    },
+    "h2ra": {
+      "pharm_class_epc": "Histamine-2 Receptor Antagonist [EPC]", "area": "acid",
+      "molecules": {
+        "famotidine": ["famotidine", "pepcid"],
+        "ranitidine": ["ranitidine", "zantac"]
+      }
+    },
+    "nsaid": {
+      "pharm_class_epc": "Nonsteroidal Anti-inflammatory Drug [EPC]", "area": "analgesic",
+      "molecules": {
+        "ibuprofen": ["ibuprofen", "advil", "motrin"],
+        "naproxen": ["naproxen", "aleve", "naprosyn"],
+        "celecoxib": ["celecoxib", "celebrex"],
+        "diclofenac": ["diclofenac", "voltaren"],
+        "meloxicam": ["meloxicam", "mobic"],
+        "indomethacin": ["indomethacin", "indocin"],
+        "ketorolac": ["ketorolac", "toradol"]
+      }
+    },
+    "opioid": {
+      "pharm_class_epc": "Opioid Agonist [EPC]", "area": "analgesic",
+      "molecules": {
+        "oxycodone": ["oxycodone", "oxycontin", "percocet"],
+        "tramadol": ["tramadol", "ultram"],
+        "hydrocodone": ["hydrocodone", "vicodin", "norco"],
+        "morphine": ["morphine", "ms contin"],
+        "fentanyl": ["fentanyl", "duragesic"],
+        "codeine": ["codeine"],
+        "methadone": ["methadone", "dolophine"],
+        "buprenorphine": ["buprenorphine", "suboxone", "subutex"],
+        "tapentadol": ["tapentadol", "nucynta"]
+      }
+    },
+    "analgesic_other": {
+      "area": "analgesic",
+      "molecules": {
+        "acetaminophen": ["acetaminophen", "paracetamol", "tylenol"],
+        "cyclobenzaprine": ["cyclobenzaprine", "flexeril"],
+        "baclofen": ["baclofen", "lioresal"],
+        "tizanidine": ["tizanidine", "zanaflex"]
+      }
+    },
+    "triptan": {
+      "pharm_class_epc": "Serotonin-1b and Serotonin-1d Receptor Agonist [EPC]", "area": "neuro",
+      "molecules": {
+        "sumatriptan": ["sumatriptan", "imitrex"],
+        "rizatriptan": ["rizatriptan", "maxalt"]
+      }
+    },
+    "ssri": {
+      "pharm_class_epc": "Serotonin Reuptake Inhibitor [EPC]", "area": "psychotropic",
+      "molecules": {
+        "sertraline": ["sertraline", "zoloft"],
+        "fluoxetine": ["fluoxetine", "prozac"],
+        "escitalopram": ["escitalopram", "lexapro"],
+        "citalopram": ["citalopram", "celexa"],
+        "paroxetine": ["paroxetine", "paxil"],
+        "fluvoxamine": ["fluvoxamine", "luvox"]
+      }
+    },
+    "antidepressant_other": {
+      "area": "psychotropic",
+      "molecules": {
+        "venlafaxine": ["venlafaxine", "effexor"],
+        "duloxetine": ["duloxetine", "cymbalta"],
+        "bupropion": ["bupropion", "wellbutrin", "zyban"],
+        "mirtazapine": ["mirtazapine", "remeron"],
+        "trazodone": ["trazodone", "desyrel"],
+        "amitriptyline": ["amitriptyline", "elavil"],
+        "nortriptyline": ["nortriptyline", "pamelor"],
+        "desvenlafaxine": ["desvenlafaxine", "pristiq"]
+      }
+    },
+    "atypical_antipsychotic": {
+      "pharm_class_epc": "Atypical Antipsychotic [EPC]", "area": "psychotropic",
+      "molecules": {
+        "quetiapine": ["quetiapine", "seroquel"],
+        "aripiprazole": ["aripiprazole", "abilify"],
+        "olanzapine": ["olanzapine", "zyprexa"],
+        "risperidone": ["risperidone", "risperdal"],
+        "ziprasidone": ["ziprasidone", "geodon"],
+        "lurasidone": ["lurasidone", "latuda"],
+        "clozapine": ["clozapine", "clozaril"],
+        "paliperidone": ["paliperidone", "invega"]
+      }
+    },
+    "antipsychotic_typical": {
+      "area": "psychotropic",
+      "molecules": {
+        "haloperidol": ["haloperidol", "haldol"],
+        "chlorpromazine": ["chlorpromazine", "thorazine"]
+      }
+    },
+    "mood_stabilizer": {
+      "pharm_class_epc": "Mood Stabilizer [EPC]", "area": "psychotropic",
+      "molecules": {
+        "lithium": ["lithium", "lithium carbonate"],
+        "valproate": ["valproate", "valproic acid", "divalproex", "depakote"]
+      }
+    },
+    "benzodiazepine": {
+      "pharm_class_epc": "Benzodiazepine [EPC]", "area": "psychotropic",
+      "molecules": {
+        "alprazolam": ["alprazolam", "xanax"],
+        "lorazepam": ["lorazepam", "ativan"],
+        "clonazepam": ["clonazepam", "klonopin"],
+        "diazepam": ["diazepam", "valium"],
+        "temazepam": ["temazepam", "restoril"],
+        "midazolam": ["midazolam", "versed"]
+      }
+    },
+    "hypnotic": {
+      "pharm_class_epc": "gamma-Aminobutyric Acid-ergic Agonist [EPC]", "area": "neuro",
+      "molecules": {
+        "zolpidem": ["zolpidem", "ambien"],
+        "zopiclone": ["zopiclone", "eszopiclone", "lunesta"]
+      }
+    },
+    "stimulant": {
+      "pharm_class_epc": "Central Nervous System Stimulant [EPC]", "area": "neuro",
+      "molecules": {
+        "methylphenidate": ["methylphenidate", "ritalin", "concerta"],
+        "amphetamine": ["amphetamine", "adderall", "dextroamphetamine"],
+        "lisdexamfetamine": ["lisdexamfetamine", "vyvanse"]
+      }
+    },
+    "antiepileptic": {
+      "pharm_class_epc": "Anti-epileptic Agent [EPC]", "area": "neuro",
+      "molecules": {
+        "gabapentin": ["gabapentin", "neurontin"],
+        "pregabalin": ["pregabalin", "lyrica"],
+        "levetiracetam": ["levetiracetam", "keppra"],
+        "lamotrigine": ["lamotrigine", "lamictal"],
+        "topiramate": ["topiramate", "topamax"],
+        "carbamazepine": ["carbamazepine", "tegretol"],
+        "oxcarbazepine": ["oxcarbazepine", "trileptal"],
+        "phenytoin": ["phenytoin", "dilantin"],
+        "phenobarbital": ["phenobarbital", "phenobarbitone"]
+      }
+    },
+    "dementia": {
+      "area": "neuro",
+      "molecules": {
+        "donepezil": ["donepezil", "aricept"],
+        "memantine": ["memantine", "namenda"],
+        "rivastigmine": ["rivastigmine", "exelon"]
+      }
+    },
+    "parkinson": {
+      "pharm_class_epc": "Aromatic Amino Acid [EPC]", "area": "neuro",
+      "molecules": {
+        "levodopa": ["levodopa", "carbidopa", "sinemet"],
+        "pramipexole": ["pramipexole", "mirapex"],
+        "ropinirole": ["ropinirole", "requip"]
+      }
+    },
+    "fluoroquinolone": {
+      "pharm_class_epc": "Fluoroquinolone Antibacterial [EPC]", "area": "antibiotic",
+      "molecules": {
+        "ciprofloxacin": ["ciprofloxacin", "cipro"],
+        "levofloxacin": ["levofloxacin", "levaquin"],
+        "moxifloxacin": ["moxifloxacin", "avelox"]
+      }
+    },
+    "tetracycline": {
+      "pharm_class_epc": "Tetracycline-class Drug [EPC]", "area": "antibiotic",
+      "molecules": {
+        "doxycycline": ["doxycycline", "vibramycin"],
+        "minocycline": ["minocycline", "minocin"]
+      }
+    },
+    "antibiotic_other": {
+      "area": "antibiotic",
+      "molecules": {
+        "amoxicillin": ["amoxicillin", "amoxil", "augmentin"],
+        "azithromycin": ["azithromycin", "zithromax"],
+        "cephalexin": ["cephalexin", "keflex"],
+        "ceftriaxone": ["ceftriaxone", "rocephin"],
+        "clarithromycin": ["clarithromycin", "biaxin"],
+        "clindamycin": ["clindamycin", "cleocin"],
+        "metronidazole": ["metronidazole", "flagyl"],
+        "nitrofurantoin": ["nitrofurantoin", "macrobid"],
+        "vancomycin": ["vancomycin", "vancocin"],
+        "penicillin": ["penicillin"],
+        "trimethoprim": ["trimethoprim", "sulfamethoxazole", "bactrim"],
+        "gentamicin": ["gentamicin"],
+        "rifampicin": ["rifampicin", "rifampin"],
+        "isoniazid": ["isoniazid"]
+      }
+    },
+    "antifungal": {
+      "pharm_class_epc": "Azole Antifungal [EPC]", "area": "antifungal",
+      "molecules": {
+        "fluconazole": ["fluconazole", "diflucan"],
+        "itraconazole": ["itraconazole", "sporanox"],
+        "terbinafine": ["terbinafine", "lamisil"]
+      }
+    },
+    "antiviral_hiv": {
+      "pharm_class_epc": "Human Immunodeficiency Virus Nucleoside Analog Reverse Transcriptase Inhibitor [EPC]",
+      "area": "antiviral",
+      "molecules": {
+        "tenofovir": ["tenofovir"],
+        "emtricitabine": ["emtricitabine"],
+        "dolutegravir": ["dolutegravir", "tivicay"],
+        "efavirenz": ["efavirenz"]
+      }
+    },
+    "antiviral_other": {
+      "area": "antiviral",
+      "molecules": {
+        "acyclovir": ["acyclovir", "aciclovir", "zovirax"],
+        "valacyclovir": ["valacyclovir", "valtrex"],
+        "oseltamivir": ["oseltamivir", "tamiflu"],
+        "remdesivir": ["remdesivir", "veklury"],
+        "nirmatrelvir": ["nirmatrelvir", "paxlovid"]
+      }
+    },
+    "corticosteroid": {
+      "pharm_class_epc": "Corticosteroid [EPC]", "area": "antiinflammatory",
+      "molecules": {
+        "prednisone": ["prednisone", "deltasone"],
+        "prednisolone": ["prednisolone"],
+        "dexamethasone": ["dexamethasone", "decadron"],
+        "methylprednisolone": ["methylprednisolone", "medrol"],
+        "hydrocortisone": ["hydrocortisone", "cortef"],
+        "budesonide": ["budesonide", "entocort", "pulmicort"],
+        "fluticasone": ["fluticasone", "flovent", "flonase"],
+        "triamcinolone": ["triamcinolone", "kenalog"]
+      }
+    },
+    "dmard": {
+      "pharm_class_epc": "Antirheumatic Agent [EPC]", "area": "antiinflammatory",
+      "molecules": {
+        "methotrexate": ["methotrexate"],
+        "hydroxychloroquine": ["hydroxychloroquine", "plaquenil"],
+        "sulfasalazine": ["sulfasalazine", "azulfidine"],
+        "leflunomide": ["leflunomide", "arava"]
+      }
+    },
+    "xanthine_oxidase": {
+      "pharm_class_epc": "Xanthine Oxidase Inhibitor [EPC]", "area": "antiinflammatory",
+      "molecules": {
+        "allopurinol": ["allopurinol", "zyloprim"],
+        "febuxostat": ["febuxostat", "uloric"],
+        "colchicine": ["colchicine", "colcrys"]
+      }
+    },
+    "tnf_blocker": {
+      "pharm_class_epc": "Tumor Necrosis Factor Blocker [EPC]", "area": "immunology",
+      "molecules": {
+        "adalimumab": ["adalimumab", "humira"],
+        "etanercept": ["etanercept", "enbrel"],
+        "infliximab": ["infliximab", "remicade"],
+        "golimumab": ["golimumab", "simponi"],
+        "certolizumab": ["certolizumab", "cimzia"]
+      }
+    },
+    "interleukin": {
+      "pharm_class_epc": "Interleukin-23 Antagonist [EPC]", "area": "immunology",
+      "molecules": {
+        "ustekinumab": ["ustekinumab", "stelara"],
+        "secukinumab": ["secukinumab", "cosentyx"],
+        "dupilumab": ["dupilumab", "dupixent"],
+        "tocilizumab": ["tocilizumab", "actemra"],
+        "guselkumab": ["guselkumab", "tremfya"]
+      }
+    },
+    "jak_inhibitor": {
+      "pharm_class_epc": "Janus Kinase Inhibitor [EPC]", "area": "immunology",
+      "molecules": {
+        "tofacitinib": ["tofacitinib", "xeljanz"],
+        "upadacitinib": ["upadacitinib", "rinvoq"],
+        "baricitinib": ["baricitinib", "olumiant"]
+      }
+    },
+    "immunosuppressant": {
+      "pharm_class_epc": "Calcineurin Inhibitor Immunosuppressant [EPC]", "area": "immunology",
+      "molecules": {
+        "tacrolimus": ["tacrolimus", "prograf"],
+        "ciclosporin": ["ciclosporin", "cyclosporine", "neoral"],
+        "mycophenolate": ["mycophenolate", "cellcept"],
+        "azathioprine": ["azathioprine", "imuran"]
+      }
+    },
+    "oncology_kinase": {
+      "pharm_class_epc": "Kinase Inhibitor [EPC]", "area": "oncology",
+      "molecules": {
+        "imatinib": ["imatinib", "gleevec"],
+        "ibrutinib": ["ibrutinib", "imbruvica"],
+        "palbociclib": ["palbociclib", "ibrance"],
+        "osimertinib": ["osimertinib", "tagrisso"]
+      }
+    },
+    "oncology_immuno": {
+      "pharm_class_epc": "Programmed Death Receptor-1 Blocking Antibody [EPC]", "area": "oncology",
+      "molecules": {
+        "pembrolizumab": ["pembrolizumab", "keytruda"],
+        "nivolumab": ["nivolumab", "opdivo"],
+        "atezolizumab": ["atezolizumab", "tecentriq"]
+      }
+    },
+    "oncology_cytotoxic": {
+      "pharm_class_epc": "Platinum-based Drug [EPC]", "area": "oncology",
+      "molecules": {
+        "cisplatin": ["cisplatin"],
+        "carboplatin": ["carboplatin"],
+        "paclitaxel": ["paclitaxel", "taxol"],
+        "docetaxel": ["docetaxel", "taxotere"],
+        "doxorubicin": ["doxorubicin", "adriamycin"],
+        "cyclophosphamide": ["cyclophosphamide", "cytoxan"],
+        "fluorouracil": ["fluorouracil"],
+        "capecitabine": ["capecitabine", "xeloda"],
+        "gemcitabine": ["gemcitabine", "gemzar"]
+      }
+    },
+    "oncology_targeted": {
+      "pharm_class_epc": "CD20-directed Cytolytic Antibody [EPC]", "area": "oncology",
+      "molecules": {
+        "rituximab": ["rituximab", "rituxan"],
+        "trastuzumab": ["trastuzumab", "herceptin"],
+        "bevacizumab": ["bevacizumab", "avastin"],
+        "lenalidomide": ["lenalidomide", "revlimid"],
+        "bortezomib": ["bortezomib", "velcade"]
+      }
+    },
+    "hormone_cancer": {
+      "pharm_class_epc": "Aromatase Inhibitor [EPC]", "area": "oncology",
+      "molecules": {
+        "anastrozole": ["anastrozole", "arimidex"],
+        "letrozole": ["letrozole", "femara"],
+        "tamoxifen": ["tamoxifen", "nolvadex"]
+      }
+    },
+    "respiratory": {
+      "pharm_class_epc": "Leukotriene Receptor Antagonist [EPC]", "area": "respiratory",
+      "molecules": {
+        "montelukast": ["montelukast", "singulair"],
+        "albuterol": ["albuterol", "salbutamol", "ventolin", "proventil"],
+        "salmeterol": ["salmeterol", "serevent"],
+        "formoterol": ["formoterol", "symbicort"],
+        "tiotropium": ["tiotropium", "spiriva"],
+        "ipratropium": ["ipratropium", "atrovent"],
+        "omalizumab": ["omalizumab", "xolair"]
+      }
+    },
+    "antihistamine": {
+      "pharm_class_epc": "Histamine-1 Receptor Antagonist [EPC]", "area": "allergy",
+      "molecules": {
+        "cetirizine": ["cetirizine", "zyrtec"],
+        "loratadine": ["loratadine", "claritin"],
+        "fexofenadine": ["fexofenadine", "allegra"],
+        "diphenhydramine": ["diphenhydramine", "benadryl"],
+        "hydroxyzine": ["hydroxyzine", "atarax", "vistaril"]
+      }
+    },
+    "urology_other": {
+      "pharm_class_epc": "5-alpha Reductase Inhibitor [EPC]", "area": "urology",
+      "molecules": {
+        "finasteride": ["finasteride", "propecia", "proscar"],
+        "dutasteride": ["dutasteride", "avodart"],
+        "sildenafil": ["sildenafil", "viagra"],
+        "tadalafil": ["tadalafil", "cialis"],
+        "oxybutynin": ["oxybutynin", "ditropan"],
+        "solifenacin": ["solifenacin", "vesicare"],
+        "mirabegron": ["mirabegron", "myrbetriq"]
+      }
+    },
+    "thyroid": {
+      "area": "hormone",
+      "_no_epc": "Levothyroxine has no EPC class; molecule-level search only.",
+      "molecules": {
+        "levothyroxine": ["levothyroxine", "synthroid", "euthyrox"],
+        "methimazole": ["methimazole", "tapazole"],
+        "carbimazole": ["carbimazole"]
+      }
+    },
+    "hormone_sex": {
+      "pharm_class_epc": "Progestin [EPC]", "area": "hormone",
+      "molecules": {
+        "levonorgestrel": ["levonorgestrel", "mirena", "plan b"],
+        "ethinylestradiol": ["ethinylestradiol", "ethinyl estradiol"],
+        "estradiol": ["estradiol", "estrace"],
+        "testosterone": ["testosterone", "androgel"],
+        "medroxyprogesterone": ["medroxyprogesterone", "depo-provera"]
+      }
+    },
+    "bone": {
+      "pharm_class_epc": "RANK Ligand Inhibitor [EPC]", "area": "bone",
+      "molecules": {
+        "denosumab": ["denosumab", "prolia", "xgeva"],
+        "alendronate": ["alendronate", "fosamax"],
+        "zoledronic acid": ["zoledronic acid", "reclast", "zometa"],
+        "risedronate": ["risedronate", "actonel"],
+        "teriparatide": ["teriparatide", "forteo"]
+      }
+    },
+    "gi_other": {
+      "pharm_class_epc": "Serotonin-3 Receptor Antagonist [EPC]", "area": "gi",
+      "molecules": {
+        "ondansetron": ["ondansetron", "zofran"],
+        "metoclopramide": ["metoclopramide", "reglan"],
+        "mesalamine": ["mesalamine", "mesalazine", "asacol"],
+        "loperamide": ["loperamide", "imodium"],
+        "polyethylene glycol": ["polyethylene glycol", "miralax"],
+        "vedolizumab": ["vedolizumab", "entyvio"]
+      }
+    },
+    "ophthalmic": {
+      "pharm_class_epc": "Prostaglandin Analog [EPC]", "area": "ophthalmic",
+      "molecules": {
+        "latanoprost": ["latanoprost", "xalatan"],
+        "timolol": ["timolol", "timoptic"],
+        "ranibizumab": ["ranibizumab", "lucentis"],
+        "aflibercept": ["aflibercept", "eylea"]
+      }
+    },
+    "supplement": {
+      "pharm_class_epc": "Vitamin D [EPC]", "area": "bone",
+      "molecules": {
+        "cholecalciferol": ["cholecalciferol", "vitamin d3", "ergocalciferol"],
+        "folic acid": ["folic acid", "folate"],
+        "cyanocobalamin": ["cyanocobalamin", "vitamin b12"],
+        "ferrous sulfate": ["ferrous sulfate", "iron sulfate"],
+        "calcium carbonate": ["calcium carbonate"],
+        "potassium chloride": ["potassium chloride"],
+        "magnesium oxide": ["magnesium oxide"]
+      }
+    }
+  }
+}

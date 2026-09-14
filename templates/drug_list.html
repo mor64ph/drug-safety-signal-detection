@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal &mdash;
+    {% if drugs %}{{ drugs | length }} drugs side by side{% else %}several drugs at once{% endif %}
+  </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-wide">
+
+    <a href="/" class="backlink">
+      <svg width="10" height="8" viewBox="0 0 10 8" aria-hidden="true"><path d="M4 0 0 4l4 4V5h6V3H4z" fill="currentColor"/></svg>Back to search
+    </a>
+
+    <header class="page-head">
+      <p class="kicker">Several drugs at once</p>
+      {% if drugs %}
+      <h1>{{ drugs | map(attribute='drug') | join(', ') }}</h1>
+      <p class="lede">
+        The strongest reactions for each of these
+        <span class="num-inline">{{ drugs | length }}</span> drugs, scored
+        separately, followed by the reactions that appear under more than one of
+        them.
+      </p>
+      {% else %}
+      <h1>Several drugs at once</h1>
+      {% endif %}
+    </header>
+
+    <!-- The framing this page exists or does not exist on, and the hard
+         requirement of it. A list of drugs someone actually takes together is
+         the single place a reader is most likely to assume the tool answers the
+         question about the combination. src/interactions.py was built to answer
+         it, failed all twelve known-answer controls and was withheld. -->
+    <div class="disclaimer">
+      <span class="disclaimer-label">Not an interaction check</span>
+      <p class="disclaimer-body">
+        <strong>A reaction appearing under several of these drugs means it was
+        reported with each of them separately &mdash; not that combining them
+        causes it or makes it worse.</strong>
+      </p>
+      <p class="disclaimer-body">{{ not_interaction }}</p>
+    </div>
+
+    <!-- DISCLAIMER — appears BEFORE results table, non-negotiable -->
+    <div class="disclaimer">
+      <span class="disclaimer-label">Important limitation</span>
+      <p class="disclaimer-body">{{ disclaimer }}</p>
+    </div>
+
+    {% if notes %}
+    <!-- One unrecognised name does not cost the caller the rest of the list. -->
+    <div class="alert alert-warning mb-3">
+      <ul>
+        {% for note in notes %}<li>{{ note }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="card mb-4">
+      <div class="card-header">Choose the list</div>
+      <div class="card-body">
+        <form action="{{ url_for('drug_list') }}" method="get">
+          <label for="drugs" class="form-label">
+            Drugs, separated by commas
+            <span class="form-label-note">&mdash; up to {{ max_drugs }}</span>
+          </label>
+          <div class="d-flex flex-wrap gap-2">
+            <input type="text" class="form-control" id="drugs" name="drugs"
+                   list="list-drugs" style="min-width:18rem;flex:1"
+                   value="{{ raw_drugs }}" maxlength="512" autocomplete="off"
+                   placeholder="e.g. atorvastatin, metformin, lisinopril" required>
+            <button type="submit" class="btn btn-primary">Show them</button>
+          </div>
+          <datalist id="list-drugs">
+            {% for row in catalogue %}
+            <option value="{{ row.drug }}"></option>
+            {% endfor %}
+          </datalist>
+          <div class="form-text mt-2">
+            Brand names are resolved to their active ingredient, so
+            <em>Lipitor</em> is listed as atorvastatin. A name that is not in the
+            catalogue is reported back on its own and the rest of the list still
+            runs.
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if drugs %}
+
+    {% include "_how_to_read.html" %}
+
+    <!-- Each drug on its own first, then the overlap. In that order on purpose:
+         a reader who has seen the same reaction attributed independently to
+         four drugs has already been shown what the shared table means. -->
+    {% for entry in drugs %}
+    <div class="card mb-3">
+      <div class="tracked-head">
+        <span class="tracked-name">{{ entry.drug }}</span>
+        <span class="tracked-actions">
+          <span class="num-inline">{{ "{:,}".format(entry.total_reports) }}</span>
+          reports &middot;
+          <a href="{{ url_for('search', drug=entry.drug) }}">full report</a>
+        </span>
+      </div>
+      <div class="card-body">
+        {% if entry.pairs %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th title="{{ column_help.reaction }}">Reaction (PT)</th>
+                <th class="num" title="{{ column_help.a }}">a (reports)</th>
+                <th class="num d-none d-md-table-cell" title="{{ column_help.ror }}">ROR [95% CI]</th>
+                <th class="num" title="{{ column_help.ic025 }}">IC025</th>
+                <th class="text-center" title="{{ column_help.strength }}">Strength</th>
+                <th class="d-none d-md-table-cell" title="{{ column_help.trend }}">Trend</th>
+                <th title="{{ column_help.comparator }}">Reasons to doubt it</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pair in entry.pairs %}
+              <tr class="signal-row">
+                <td class="row-name">
+                  {{ pair.reaction_pt }}
+                  {% if pair.dme %}
+                  <span class="badge dme-badge"
+                        title="Checked on every drug because it is inherently serious, not because it is frequently reported">serious event</span>
+                  {% endif %}
+                  {% if pair.boxed %}
+                  <span class="badge label-boxed">in boxed warning</span>
+                  {% elif pair.labelled is sameas true %}
+                  <span class="badge label-known">already labelled</span>
+                  {% elif pair.labelled is sameas false %}
+                  <span class="badge label-unknown">not found in label</span>
+                  {% endif %}
+                </td>
+                <td class="num">{{ "{:,}".format(pair.a) }}</td>
+                <td class="num d-none d-md-table-cell">{{ pair.ROR_ci }}</td>
+                <td class="num fw-semibold">{{ pair.IC025 }}</td>
+                <td class="text-center text-nowrap">
+                  <span class="badge tier-{{ pair.tier }}">{{ pair.tier }}</span>
+                </td>
+                <td class="spark-cell d-none d-md-table-cell">{{ spark(pair) }}</td>
+                <td>
+                  {% if pair.bias_flags %}
+                  <span class="badge-row">
+                    {% for flag in pair.bias_flags %}
+                    <span class="badge flag-badge">{{ flag }}</span>
+                    {% endfor %}
+                  </span>
+                  {% else %}
+                  <span class="cell-none">no flags raised</span>
+                  {% endif %}
+                  {% if pair.ac_note %}
+                  <span class="cell-note">{{ pair.ac_note }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="form-text mt-2 mb-0">
+          {% if entry.strong_all | length > per_drug %}
+          The {{ per_drug }} strongest of
+          <span class="num-inline">{{ entry.strong_all | length }}</span>
+          strong-tier reactions, of
+          <span class="num-inline">{{ entry.reactions }}</span> examined for this
+          drug. The <a href="{{ url_for('search', drug=entry.drug) }}">full
+          report</a> lists the rest.
+          {% else %}
+          All <span class="num-inline">{{ entry.strong_all | length }}</span>
+          strong-tier reactions, of
+          <span class="num-inline">{{ entry.reactions }}</span> examined for this
+          drug. The <a href="{{ url_for('search', drug=entry.drug) }}">full
+          report</a> lists the weaker ones.
+          {% endif %}
+        </p>
+        {% else %}
+        <p class="form-text mb-0">
+          No reaction reaches the strong band for {{ entry.drug }}, out of
+          <span class="num-inline">{{ entry.reactions }}</span> examined. That is
+          not a clean bill of health &mdash; it means nothing was reported with it
+          disproportionately enough to appear here. The
+          <a href="{{ url_for('search', drug=entry.drug) }}">full report</a> shows
+          the moderate and weak rows with their caveats.
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if drugs | length > 1 %}
+    <div class="section-rule"></div>
+
+    <section>
+      <header class="page-head">
+        <h2>Shared reactions</h2>
+        <p class="lede">
+          Reactions in the strong band for more than one of these drugs, most
+          widely shared first, then by the highest IC025 among the drugs sharing
+          it. <strong>Each figure was computed for one drug on its own against
+          the whole database.</strong> A reaction in this table was reported with
+          each of those drugs separately; it says nothing whatever about taking
+          them together.
+        </p>
+      </header>
+
+      {% if shared %}
+      <div class="table-frame">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th title="{{ column_help.reaction }}">Reaction (PT)</th>
+                <th class="num" title="How many of the listed drugs have this reaction in the strong band, each measured on its own">Drugs</th>
+                {% for entry in drugs %}
+                <th class="num">{{ entry.drug }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in shared %}
+              <tr>
+                <td class="row-name">{{ row.reaction_pt }}</td>
+                <td class="num fw-semibold">{{ row.shared_by }}</td>
+                {% for pair in row.cells %}
+                {% if pair %}
+                <td class="num" title="{{ pair.drug }} — ROR {{ pair.ROR_ci }}, IC025 {{ pair.IC025 }}{% if pair.bias_flags %} — {{ pair.bias_flags | join(', ') }}{% endif %}">
+                  {{ "{:,}".format(pair.a) }}
+                  <span class="cell-note">IC025 {{ pair.IC025 }}</span>
+                </td>
+                {% else %}
+                <td class="num cmp-absent"
+                    title="Not in the strong band for {{ drugs[loop.index0].drug }}. Against 20.7 million reports that usually means too few reports to score, not none.">
+                  <span class="cmp-absent-label">not strong</span>
+                </td>
+                {% endif %}
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="readnotes">
+        <p class="readnotes-title">Reading the overlap</p>
+        <p>
+          Computed over every strong-tier reaction each drug has, not only the
+          {{ per_drug }} shown in its panel above. The figure in each cell is
+          <em>a</em> &mdash; how many reports name that drug and that reaction
+          together &mdash; with the IC025 beneath it.
+        </p>
+        <p>
+          <strong>Overlap is the normal state of this data, not a finding.</strong>
+          {% if widespread | length > 1 %}
+          {{ widespread[0].term }} is reported with
+          <span class="num-inline">{{ widespread[0].drugs }}</span> of the
+          <span class="num-inline">{{ total_drugs }}</span> drugs here and
+          {{ widespread[1].term }} with
+          <span class="num-inline">{{ widespread[1].drugs }}</span>, so terms
+          overlap for any list of drugs anyone enters &mdash; the gravest ones
+          included.
+          {% endif %}
+          A reaction shared by several drugs more often reflects that they are
+          prescribed to similar people, for similar lengths of time, at similar
+          ages, than anything the molecules have in common.
+        </p>
+        <p>
+          A cell marked <span class="cmp-absent-label">not strong</span> is not a
+          statement in that drug's favour: the reaction may be moderate or weak
+          for it, or may have had too few reports to score at all.
+        </p>
+      </div>
+      {% else %}
+      <div class="empty">
+        <p class="empty-title">No reaction is in the strong band for more than one of these drugs</p>
+        <p>
+          Nothing overlaps at the strong band. That is not a finding about the
+          combination either way &mdash; nothing on this page can be, because
+          every figure here was computed for one drug on its own.
+        </p>
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% with next_step_drug = '' %}
+      {% include "_next_steps.html" %}
+    {% endwith %}
+
+    <div class="card mt-4">
+      <div class="card-header">Take this to an appointment</div>
+      <div class="card-body">
+        <p class="form-text mb-2">
+          If you are here because of symptoms you are having, the
+          <a href="{{ url_for('worksheet.worksheet') }}">discussion aid</a> is the
+          page to print. It sets each symptom against each medicine, leads with
+          what the official label says rather than with a ratio, and does not rank
+          your medicines &mdash; because this data cannot tell you which one is
+          responsible.
+        </p>
+      </div>
+    </div>
+
+    {% elif submitted %}
+    <div class="empty">
+      <p class="empty-title">Nothing on that list could be looked up</p>
+      <p>
+        None of those names is in the catalogue of scored drugs. A drug that is
+        missing has not been examined, which is not the same as having been
+        examined and found clear.
+      </p>
+    </div>
+    {% endif %}
+
+    <footer class="page-foot">
+      Computed from <span class="num-inline">{{ data_total }}</span> FAERS reports,
+      current to <strong>{{ data_as_of }}</strong>. FAERS is updated quarterly;
+      figures from a later extract will differ.
+      <br>
+      rxsignal &mdash; reporting-pattern analysis &mdash; not a medical tool
+      &mdash; not an interaction check &mdash; results are hypotheses for human
+      review
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmLQLOFSZBYYHqX5OBGJqKdUNpU4"
+          crossorigin="anonymous"></script>
+</body>
+</html>

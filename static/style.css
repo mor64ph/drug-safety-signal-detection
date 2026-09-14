@@ -1,0 +1,1851 @@
+/* ==========================================================================
+   rxsignal — visual system
+
+   The tool's credibility rests on how carefully it states what it cannot do,
+   so the presentation is deliberately quiet: a clinical reference set in the
+   system UI face, not an application chrome. Bootstrap is kept underneath for
+   the grid, the reset and the collapse behaviour; everything it says visually
+   is overridden here.
+
+   Two readers at once. A pharmacovigilance reviewer judges the table in three
+   seconds from whether the figures align and the rules are restrained. A
+   patient on a 375px screen judges it from whether the hierarchy is obvious
+   and nothing shouts. Neither is served by decoration, so there is none:
+   no gradients, no drop shadows, no pill badges, no icon set, no colour that
+   makes a claim the statistics cannot support.
+
+   Fonts are the OS stack. The Content-Security-Policy names cdn.jsdelivr.net
+   and nothing else, and no webfont is worth widening it.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+             "Helvetica Neue", Arial, sans-serif;
+
+  /* Ink. Never pure black: #000 on white is harsher than any printed page and
+     reads as a default rather than a decision. */
+  --ink:        #1a1d21;
+  --ink-soft:   #3c444c;
+  --ink-muted:  #5a636b;
+  --ink-faint:  #7b838b;
+
+  /* Surfaces. A warm neutral page so white panels read as paper on a desk
+     rather than as windows on a screen. */
+  --page:       #f5f4f1;
+  --surface:    #ffffff;
+  --surface-2:  #faf9f7;
+  --surface-3:  #f0efec;
+
+  /* Rules. Light enough that the eye follows the numbers, not the grid. */
+  --rule:       #e3e6e9;
+  --rule-firm:  #ced4da;
+  --rule-ink:   #b6bdc4;
+
+  /* One accent: a deep slate-teal, for links and the primary action only.
+     It is never used to grade a result. */
+  --accent:      #1c5468;
+  --accent-deep: #123c4c;
+  --accent-wash: #eef3f5;
+  --accent-edge: #b9ccd4;
+
+  /* Strength ramp. A single warm-earth hue stepped by intensity and resolving
+     into neutral grey — deliberately not a traffic light. Red would read as
+     "dangerous" and green as "safe", and this tool is entitled to neither
+     claim: it grades how disproportionate the *reporting* is, nothing more.
+     Every tier carries its word as well as its colour, so the ramp is never
+     the only thing distinguishing one band from another.
+
+     Lightness runs monotonically with the band — 0.083, 0.148, 0.181 relative
+     luminance — so the ramp still reads as a ramp in greyscale, and all three
+     clear 4.5:1 against the white text they carry. */
+  --tier-strong:    #7d4216;
+  --tier-moderate:  #8d6415;
+  --tier-weak:      #70777d;
+  --tier-wash:      #fcf7f2;   /* row tint for a strong pair */
+  --tier-edge:      #d8c3b1;
+
+  /* Caution surfaces. Same earth hue as the ramp, kept pale so a warning
+     panel reads as considered rather than as an automated alert. */
+  --caution-wash: #fbf6ef;
+  --caution-edge: #e0cdb4;
+
+  /* Muted brick, used once: the irreversible account deletion. */
+  --danger:      #96341f;
+  --danger-edge: #dbb5ac;
+
+  --focus: 0 0 0 3px rgba(28, 84, 104, 0.20);
+}
+
+/* --------------------------------------------------------------------------
+   2. Bootstrap identity override
+
+   Set at the variable layer first so Bootstrap's own components inherit the
+   palette, then corrected component by component below.
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-bs-theme="light"] {
+  --bs-body-font-family: var(--font-ui);
+  --bs-body-font-size: 1rem;
+  --bs-body-line-height: 1.55;
+  --bs-body-color: var(--ink);
+  --bs-body-color-rgb: 26, 29, 33;
+  --bs-body-bg: var(--page);
+  --bs-body-bg-rgb: 245, 244, 241;
+
+  --bs-emphasis-color: var(--ink);
+  --bs-secondary-color: var(--ink-muted);
+  --bs-secondary-bg: var(--surface-3);
+  --bs-tertiary-bg: var(--surface-2);
+
+  --bs-primary: #1c5468;
+  --bs-primary-rgb: 28, 84, 104;
+  --bs-secondary-rgb: 90, 99, 107;
+
+  --bs-link-color: var(--accent);
+  --bs-link-color-rgb: 28, 84, 104;
+  --bs-link-hover-color: var(--accent-deep);
+  --bs-link-hover-color-rgb: 18, 60, 76;
+  --bs-link-decoration: underline;
+
+  --bs-border-color: var(--rule);
+  --bs-border-color-translucent: var(--rule);
+  --bs-border-radius: 3px;
+  --bs-border-radius-sm: 2px;
+  --bs-border-radius-lg: 3px;
+  --bs-border-radius-xl: 3px;
+
+  --bs-heading-color: var(--ink);
+  --bs-code-color: var(--accent-deep);
+  --bs-danger: #96341f;
+  --bs-danger-rgb: 150, 52, 31;
+}
+
+/* --------------------------------------------------------------------------
+   3. Base
+   -------------------------------------------------------------------------- */
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--page);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1;
+}
+
+/* A real scale rather than Bootstrap's. Headings are tighter and considerably
+   lighter than the stock 2rem/700 — weight is a blunt instrument and the type
+   here has to carry authority without raising its voice. */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.22;
+  margin-bottom: 0.5rem;
+}
+
+h1 { font-size: 2.125rem; letter-spacing: -0.025em; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.0625rem; }
+h5 { font-size: 0.9375rem; }
+h6 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* Generous in prose, tight in tables. */
+p {
+  line-height: 1.65;
+  margin-bottom: 0.85rem;
+}
+
+p.small, .small p, .small {
+  line-height: 1.6;
+}
+
+strong, b { font-weight: 600; }
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-edge);
+}
+
+a:hover {
+  color: var(--accent-deep);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  opacity: 1;
+  margin: 1.25rem 0;
+}
+
+.text-muted,
+.text-body-secondary { color: var(--ink-muted) !important; }
+
+/* Bootstrap's .text-primary is a bright blue link colour applied to headings.
+   Subject names are set in ink with weight instead — they are the thing being
+   reported on, not something to click. */
+.text-primary { color: var(--accent) !important; }
+
+/* --------------------------------------------------------------------------
+   4. Figures
+
+   Every number in this interface is meant to be compared against the number
+   above it. Proportional digits make a column of ratios ragged and a ragged
+   column reads as approximate, so all figures are lining, tabular and right
+   aligned. `.font-monospace` is kept as an alias because it is used widely in
+   the templates; it no longer selects a monospace face.
+   -------------------------------------------------------------------------- */
+
+.num,
+.font-monospace,
+.table .num,
+.table td.num,
+.table th.num {
+  font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.005em;
+}
+
+.num,
+.font-monospace {
+  text-align: right;
+}
+
+/* A confidence interval broken across two lines stops being one quantity.
+   Figures are short; the column gives way instead. */
+.table td.num,
+.table th.num { white-space: nowrap; }
+
+/* Inline figures inside a sentence keep the tabular digits but not the
+   alignment, which would otherwise push the sentence apart. */
+.num-inline {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  text-align: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   5. Masthead
+   -------------------------------------------------------------------------- */
+
+.masthead {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+
+.masthead-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+}
+
+.masthead-brand {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.wordmark {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.wordmark:hover { color: var(--ink); text-decoration: none; }
+
+.wordmark-rule {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0;
+  margin-right: 0.45rem;
+  vertical-align: 0.2em;
+  border-top: 2px solid var(--tier-strong);
+}
+
+.wordmark-sub {
+  margin-left: 0.6rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--rule);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+}
+
+.masthead-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.1rem;
+  font-size: 0.8125rem;
+}
+
+.masthead-nav a,
+.masthead-nav .linklike {
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+
+.masthead-nav a:hover,
+.masthead-nav .linklike:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* A form button that has to sit in a row of links. */
+.linklike {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   6. Page furniture
+   -------------------------------------------------------------------------- */
+
+.page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 3rem;
+}
+
+.page-narrow { max-width: 34rem; }
+.page-form   { max-width: 44rem; }
+.page-mid    { max-width: 60rem; }
+.page-wide   { max-width: 70rem; }
+
+/* The verification banner. Full-bleed directly under the masthead so it reads
+   as a site-level state rather than as a panel that failed to line up with the
+   document — page widths vary from 34rem to 1320px and it cannot match them
+   all. */
+.notice-band {
+  background: var(--accent-wash);
+  border-bottom: 1px solid var(--accent-edge);
+}
+
+.notice-band .notice {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0.7rem 1.25rem;
+  background: transparent;
+  border: 0;
+}
+
+/* Prose set to a comfortable measure. Long lines of clinical caveat are the
+   part readers give up on first. */
+.measure { max-width: 68ch; }
+
+.kicker {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.backlink {
+  display: inline-block;
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.backlink:hover { color: var(--accent); text-decoration: underline; }
+
+.backlink svg { vertical-align: -1px; margin-right: 0.3rem; }
+
+/* The subject of the page: a drug name, a reaction term. Set in ink with
+   weight rather than in the link colour. */
+.subject { font-weight: 600; }
+
+/* Joins two drug names in a comparison heading without competing with them. */
+.vs {
+  font-weight: 400;
+  color: var(--ink-faint);
+  font-size: 0.72em;
+  letter-spacing: 0;
+  padding: 0 0.1em;
+}
+
+.page-head { margin-bottom: 1.1rem; }
+
+.page-head h1,
+.page-head h2 { margin-bottom: 0.35rem; }
+
+.page-head .lede {
+  color: var(--ink-soft);
+  max-width: 72ch;
+  margin-bottom: 0;
+}
+
+.page-head .lede + .lede { margin-top: 0.5rem; }
+
+.section-rule {
+  border-top: 1px solid var(--rule);
+  margin: 2rem 0 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. The disclaimer
+
+   Above the table, always, and impossible to miss — but a yellow alert box
+   reads as something a framework emitted rather than something the authors
+   mean. A ruled panel with a stated label and a comfortable measure reads as
+   a position. It is not collapsible and it is not small.
+   -------------------------------------------------------------------------- */
+
+.disclaimer {
+  background: var(--caution-wash);
+  border: 1px solid var(--caution-edge);
+  border-left: 3px solid var(--tier-strong);
+  padding: 0.95rem 1.2rem 1rem;
+  margin-bottom: 1.25rem;
+  /* The panel ends where its text ends. Run full-bleed across a 1320px page
+     and the empty right half reads as a framework default rather than as a
+     measure someone chose. */
+  max-width: 54rem;
+}
+
+.disclaimer-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tier-strong);
+  margin-bottom: 0.4rem;
+}
+
+.disclaimer-body {
+  font-size: 0.9375rem;
+  line-height: 1.62;
+  color: var(--ink);
+  margin-bottom: 0;
+}
+
+.disclaimer-body + .disclaimer-body { margin-top: 0.65rem; }
+
+.disclaimer-body strong { font-weight: 600; }
+
+/* Used inside the undiagnosed-rows drawer, where the panel is already nested
+   inside an opened section. */
+.disclaimer-tight {
+  padding: 0.75rem 0.95rem 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.disclaimer-tight .disclaimer-body { font-size: 0.875rem; }
+
+/* A standing account notice — not a limitation of the analysis, so it takes
+   the accent rather than the caution hue and does not compete with the
+   disclaimer above the table. */
+.notice {
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-edge);
+  border-left: 3px solid var(--accent);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notice p { margin-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   8. Panels (Bootstrap .card, restyled)
+   -------------------------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+.card + .card { margin-top: 0.75rem; }
+
+.card-header {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.55rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  border-radius: 0 !important;
+}
+
+.card-header .fw-semibold { font-weight: 600; }
+
+/* Headers that carry a live control or a drug name are left in sentence case;
+   uppercasing a MedDRA term or an ingredient name would misrepresent it. */
+.card-header-plain {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.card-body { padding: 1rem 1.1rem; }
+
+.card-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.list-group-item {
+  background: var(--surface);
+  border-color: var(--rule);
+  padding: 0.5rem 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. Forms
+   -------------------------------------------------------------------------- */
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+
+.form-label .form-label-note {
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.form-control,
+.form-select {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  color: var(--ink);
+  background-color: var(--surface);
+  border: 1px solid var(--rule-firm);
+  border-radius: 3px;
+  padding: 0.45rem 0.7rem;
+  box-shadow: none;
+}
+
+.form-control::placeholder { color: var(--ink-faint); }
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus);
+}
+
+.form-control-lg {
+  font-size: 1.0625rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 3px;
+}
+
+.form-text {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  max-width: 72ch;
+}
+
+.form-check-input {
+  border-color: var(--rule-ink);
+  border-radius: 2px;
+  margin-top: 0.28em;
+}
+
+.form-check-input:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.form-check-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus);
+}
+
+.form-check-label { font-size: 0.9375rem; line-height: 1.55; }
+
+/* --------------------------------------------------------------------------
+   10. Buttons
+   -------------------------------------------------------------------------- */
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 0.42rem 0.9rem;
+  box-shadow: none !important;
+  --bs-btn-focus-shadow-rgb: 28, 84, 104;
+}
+
+.btn:focus-visible { box-shadow: var(--focus) !important; }
+
+.btn-primary {
+  --bs-btn-bg: var(--accent);
+  --bs-btn-border-color: var(--accent);
+  --bs-btn-hover-bg: var(--accent-deep);
+  --bs-btn-hover-border-color: var(--accent-deep);
+  --bs-btn-active-bg: var(--accent-deep);
+  --bs-btn-active-border-color: var(--accent-deep);
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-bg: var(--rule-ink);
+  --bs-btn-disabled-border-color: var(--rule-ink);
+  font-weight: 600;
+}
+
+.btn-lg {
+  font-size: 0.9375rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 3px;
+}
+
+.btn-sm { font-size: 0.8125rem; padding: 0.28rem 0.65rem; }
+
+.btn-outline-primary {
+  --bs-btn-color: var(--accent);
+  --bs-btn-border-color: var(--accent-edge);
+  --bs-btn-hover-bg: var(--accent-wash);
+  --bs-btn-hover-border-color: var(--accent);
+  --bs-btn-hover-color: var(--accent-deep);
+  --bs-btn-active-bg: var(--accent-wash);
+  --bs-btn-active-border-color: var(--accent);
+  --bs-btn-active-color: var(--accent-deep);
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--ink-soft);
+  --bs-btn-border-color: var(--rule-firm);
+  --bs-btn-hover-bg: var(--surface-3);
+  --bs-btn-hover-border-color: var(--rule-ink);
+  --bs-btn-hover-color: var(--ink);
+  --bs-btn-active-bg: var(--surface-3);
+  --bs-btn-active-border-color: var(--rule-ink);
+  --bs-btn-active-color: var(--ink);
+  background-color: var(--surface);
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--danger);
+  --bs-btn-border-color: var(--danger-edge);
+  --bs-btn-hover-bg: var(--danger);
+  --bs-btn-hover-border-color: var(--danger);
+  --bs-btn-hover-color: #fff;
+}
+
+/* The control that opens a drawer of rows. Reads as a disclosure, not as an
+   action with consequences. */
+.btn-disclosure {
+  background: var(--surface);
+  border: 1px solid var(--rule-firm);
+  color: var(--ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.btn-disclosure:hover {
+  background: var(--surface-3);
+  border-color: var(--rule-ink);
+  color: var(--ink);
+}
+
+.btn-disclosure svg {
+  opacity: 0.55;
+  transition: transform 0.12s ease-out;
+}
+
+.btn-disclosure[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* --------------------------------------------------------------------------
+   11. Tables
+
+   Horizontal rules only. Vertical grid lines on a table this wide build a
+   cage around the figures and make the whole thing read as a spreadsheet
+   export; the alignment already separates the columns. No zebra striping for
+   the same reason — it implies a grouping that does not exist in the data.
+   -------------------------------------------------------------------------- */
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ink);
+  --bs-table-border-color: var(--rule);
+  --bs-table-hover-bg: #f2f4f6;
+  --bs-table-hover-color: var(--ink);
+  --bs-table-striped-bg: transparent;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  margin-bottom: 0;
+  border-color: var(--rule);
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.5rem 0.7rem;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--rule);
+  vertical-align: middle;
+}
+
+/* No vertical rules anywhere, whatever Bootstrap class is on the element. */
+.table > :not(caption) > * > *,
+.table-bordered > :not(caption) > * > * {
+  border-left-width: 0 !important;
+  border-right-width: 0 !important;
+  border-top-width: 0;
+}
+
+.table thead th {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--rule-firm) !important;
+  white-space: nowrap;
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  vertical-align: bottom;
+}
+
+/* Bootstrap's .table-dark / .table-light on a thead paint a bar. Neutralised:
+   a black header bar is the single loudest thing on the page and it is not
+   the most important. */
+.table > thead.table-dark,
+.table > thead.table-dark > tr > *,
+.table > thead.table-light,
+.table > thead.table-light > tr > * {
+  --bs-table-bg: var(--surface-2);
+  --bs-table-color: var(--ink-muted);
+  background-color: var(--surface-2);
+  color: var(--ink-muted);
+  border-color: var(--rule);
+}
+
+/* A grouping header spanning two drugs in the comparison table. */
+.table thead th.group-head {
+  text-align: center;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 600;
+  border-bottom-color: var(--rule) !important;
+}
+
+/* The one vertical rule in the whole interface. A comparison table sets two
+   drugs' figures next to each other in six near-identical columns, and without
+   a boundary the eye carries a number from one drug to the other. That is the
+   single misreading this page cannot afford, so it gets a hairline — and only
+   at the boundary between the two drugs, not between columns. */
+.table thead th.group-divide,
+.table tbody td.group-divide {
+  border-left: 1px solid var(--rule) !important;
+}
+
+.table tbody tr:last-child > * { border-bottom-width: 0; }
+
+.table-hover > tbody > tr:hover > * {
+  --bs-table-bg-state: var(--bs-table-hover-bg);
+}
+
+/* Sortable header. The cue is drawn, not typed: a ↕ character renders as a
+   colour emoji on some platforms. */
+.th-sort { cursor: pointer; user-select: none; }
+.th-sort:hover { color: var(--ink); background: var(--surface-3); }
+.sort-cue { fill: currentColor; opacity: 0.38; margin-left: 0.25rem; vertical-align: 0.5px; }
+.th-sort:hover .sort-cue { opacity: 0.75; }
+
+/* The anchor of every row. A reader scanning for a reaction name should find
+   it without reading anything else on the line. */
+.table .row-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.table .row-name a { font-weight: 500; }
+
+.table .row-name .badge { vertical-align: 1px; }
+
+/* Strong pairs get the faintest warm wash — enough to group them at a glance,
+   not enough to read as a highlight or a warning. */
+tr.signal-row {
+  --bs-table-bg: var(--tier-wash);
+}
+
+tr.signal-row > * { background-color: var(--tier-wash); }
+
+.table-hover > tbody > tr.signal-row:hover > * {
+  background-color: transparent;
+}
+
+/* A qualifier that belongs to the row rather than to a figure. */
+.cell-note {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+}
+
+.cell-none {
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+}
+
+.cell-unassessed {
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.table-responsive { border-radius: 3px; }
+
+/* The table sits on paper. */
+.table-frame {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.table-frame > .table-responsive { border-radius: 0; }
+
+/* --------------------------------------------------------------------------
+   12. Badges
+
+   Informational badges are outlined; only the strength tier is filled. The
+   distinction is the point — "already labelled" describes where a fact came
+   from, and filling it would give it the same voice as the grade.
+   -------------------------------------------------------------------------- */
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  padding: 0.18em 0.45em;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+/* Strength tiers. Filled, because this is the graded quantity. The ramp runs
+   dark-earth → mid-earth → neutral: an intensity sequence, not a signal
+   colour. The word is always printed alongside, so the band survives being
+   read in greyscale or by someone who cannot separate the two browns. */
+.badge.tier-strong,
+.badge.tier-moderate,
+.badge.tier-weak {
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.6563rem;
+  padding: 0.22em 0.5em;
+}
+
+.badge.tier-strong,
+.tier-count.tier-strong   { background-color: var(--tier-strong);   border-color: var(--tier-strong); }
+.badge.tier-moderate,
+.tier-count.tier-moderate { background-color: var(--tier-moderate); border-color: var(--tier-moderate); }
+.badge.tier-weak,
+.tier-count.tier-weak     { background-color: var(--tier-weak);     border-color: var(--tier-weak); }
+
+/* The counts above the table. Same ramp, larger, so the shape of the result
+   set is legible before any row is read. */
+.tier-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.tier-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.tier-count .tier-count-n {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.tier-summary-note {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin: 0;
+  max-width: 52ch;
+}
+
+/* Selected for severity rather than frequency. Outlined so it never competes
+   with the grade on the same line. */
+.badge.dme-badge {
+  background-color: transparent;
+  color: var(--tier-strong);
+  border-color: var(--tier-edge);
+}
+
+/* Expectedness, taken from the official label rather than from FAERS. All
+   three are outlined: they say where a fact came from, not how strong it is.
+   "not found in label" is the interesting case and carries the accent. */
+.badge.label-known,
+.badge.label-unknown,
+.badge.label-boxed {
+  background-color: transparent;
+  font-weight: 500;
+}
+
+.badge.label-known   { color: var(--ink-muted);  border-color: var(--rule-firm); }
+.badge.label-unknown { color: var(--accent);     border-color: var(--accent-edge); background-color: var(--accent-wash); }
+.badge.label-boxed   { color: var(--tier-strong); border-color: var(--tier-strong); }
+
+/* Bias diagnostics. Bootstrap's .bg-secondary is a filled grey slab; these
+   are reasons to doubt a figure, which is qualifying information, so they are
+   outlined like the rest of the qualifiers. */
+.badge.bg-secondary,
+.badge.flag-badge {
+  background-color: var(--surface-3) !important;
+  color: var(--ink-soft) !important;
+  border-color: var(--rule-firm);
+  font-weight: 500;
+}
+
+.badge.cmp-only-badge {
+  background-color: transparent;
+  color: var(--ink-muted);
+  border-color: var(--rule-firm);
+  font-weight: 500;
+}
+
+.badge-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  vertical-align: baseline;
+}
+
+/* --------------------------------------------------------------------------
+   13. Sparkline
+
+   Sized in the markup by sparkline_svg(). These rules only stop the cell
+   growing around it and keep the column from being squeezed away.
+   -------------------------------------------------------------------------- */
+
+.spark-cell {
+  width: 132px;
+  min-width: 132px;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+.spark {
+  display: block;
+  overflow: visible;
+}
+
+.spark-key {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0;
+  vertical-align: middle;
+  border-top: 2px solid #7f868d;   /* _SPARK_STROKE in src/app.py */
+}
+
+.spark-key-spike { border-top-color: var(--tier-strong); }
+
+/* --------------------------------------------------------------------------
+   14. Comparison table
+   -------------------------------------------------------------------------- */
+
+/* An absent cell is tinted rather than left blank: a blank cell in a
+   side-by-side reads as zero, and "not scored" almost never means zero. */
+.cmp-absent {
+  background-color: var(--surface-3) !important;
+  color: var(--ink-faint) !important;
+}
+
+.cmp-absent-label {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   15. Glossary / how to read
+   -------------------------------------------------------------------------- */
+
+.glossary {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1rem 1.1rem;
+}
+
+.glossary dl {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 9rem) minmax(0, 1fr);
+  gap: 0.55rem 1.5rem;
+  margin-bottom: 0;
+  max-width: 96ch;
+}
+
+.glossary dt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding-top: 0.15rem;
+}
+
+.glossary dd {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-bottom: 0;
+}
+
+@media (max-width: 575.98px) {
+  .glossary dl { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  .glossary dd { margin-bottom: 0.7rem; }
+  .glossary dd:last-of-type { margin-bottom: 0; }
+}
+
+/* The reading notes under a table: dense, quiet, and unavoidable. */
+.readnotes {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.9rem;
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+
+/* The measure sits on the paragraphs, not the block: a rule that stopped at
+   92ch would read as a half-drawn line across the page. */
+.readnotes p { margin-bottom: 0.6rem; line-height: 1.65; max-width: 92ch; }
+.readnotes p:last-child { margin-bottom: 0; }
+.readnotes strong { color: var(--ink-soft); }
+.readnotes .badge { vertical-align: 1px; }
+
+.readnotes-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+/* The bias explanations. A definition list, because that is what they are. */
+.defs { margin: 0; }
+
+.defs dt {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 0.75rem;
+}
+
+.defs dt:first-child { margin-top: 0; }
+
+.defs dd {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0.15rem 0 0;
+  max-width: 80ch;
+}
+
+.flagged-pair {
+  border-left: 2px solid var(--rule-firm);
+  padding: 0.1rem 0 0.1rem 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.flagged-pair strong { font-weight: 600; }
+
+/* --------------------------------------------------------------------------
+   16. Undiagnosed drawer
+
+   Rows nobody has checked look identical to rows that have been. They stay
+   behind the toggle, inside a visibly separate enclosure, with the warning
+   attached.
+   -------------------------------------------------------------------------- */
+
+.drawer { margin-top: 1.5rem; }
+
+.drawer-body {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: var(--surface-3);
+  border: 1px solid var(--rule-firm);
+  border-radius: 3px;
+}
+
+.drawer-body .table-frame { margin-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   17. Next steps
+
+   Quieter than .disclaimer on purpose: by the time a reader reaches it they
+   have passed two warning panels, and a third would be skipped along with the
+   action it is asking for.
+   -------------------------------------------------------------------------- */
+
+.next-steps {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: 1.1rem 1.2rem;
+  margin-top: 1.75rem;
+}
+
+.next-steps h2,
+.next-steps .next-steps-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+
+.next-steps p {
+  font-size: 0.9375rem;
+  line-height: 1.62;
+  max-width: 76ch;
+  margin-bottom: 0.6rem;
+}
+
+.next-steps p:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   18. Landing page
+   -------------------------------------------------------------------------- */
+
+.hero {
+  padding: 1.75rem 0 0;
+}
+
+/* Statement and search side by side on a desktop, so both land in the first
+   screen; stacked in reading order on a phone. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem 3rem;
+  align-items: start;
+}
+
+@media (min-width: 56rem) {
+  .hero-grid { grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr); }
+}
+
+.hero-statement .disclaimer { margin-bottom: 0; }
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.hero-sub {
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.1rem;
+}
+
+.hero-lede {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 62ch;
+  margin-bottom: 0.75rem;
+}
+
+.hero-cannot {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 62ch;
+  margin-bottom: 1.4rem;
+}
+
+.hero-cannot strong { color: var(--ink); font-weight: 600; }
+
+.search-panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  border-radius: 3px;
+  padding: 1.25rem 1.35rem 1.35rem;
+}
+
+.search-primary .form-label { font-size: 0.9375rem; }
+
+.search-alt {
+  border-top: 1px solid var(--rule);
+  margin-top: 1.35rem;
+  padding-top: 1.15rem;
+}
+
+.search-alt + .search-alt { margin-top: 1.15rem; }
+
+.search-alt-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1.5rem 2.25rem;
+  margin-top: 0.5rem;
+}
+
+.about-grid h2 {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.about-grid p {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.about-grid p:last-child { margin-bottom: 0; }
+
+/* Coverage list */
+.coverage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.coverage-count {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.coverage-count .num-inline { font-weight: 600; }
+
+.catalogue-scroll {
+  max-height: 340px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.catalogue-scroll .table { font-size: 0.8125rem; }
+
+.catalogue-scroll .table > :not(caption) > * > * { padding: 0.35rem 0.7rem; }
+
+.catalogue-brands { color: var(--ink-faint); }
+
+/* --------------------------------------------------------------------------
+   19. Gate, error and empty states
+   -------------------------------------------------------------------------- */
+
+.standalone {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+}
+
+.standalone-inner {
+  width: 100%;
+  max-width: 30rem;
+}
+
+.gate-mark {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.gate-kicker {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.5rem;
+}
+
+.gate-panel {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--tier-strong);
+  border-radius: 3px;
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.gate-panel p {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.gate-form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.gate-form .form-control { flex: 1 1 12rem; }
+
+.gate-foot {
+  margin-top: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+  line-height: 1.6;
+}
+
+.gate-panel .error-code {
+  font-size: 3.25rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--rule-ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  margin-bottom: 0.6rem;
+}
+
+.gate-panel .error-message {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+/* Empty results, no tracked drugs, no alerts. Stated in a panel rather than
+   left as a stray grey sentence. */
+.empty {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rule-ink);
+  border-radius: 3px;
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.empty-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+
+.empty p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: 68ch;
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   20. Alerts (form feedback)
+   -------------------------------------------------------------------------- */
+
+.alert {
+  border-radius: 3px;
+  border: 1px solid var(--rule-firm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  padding: 0.8rem 1rem;
+}
+
+.alert-warning {
+  background: var(--caution-wash);
+  border-color: var(--caution-edge);
+  border-left: 3px solid var(--tier-moderate);
+  color: var(--ink);
+}
+
+.alert-success {
+  background: var(--accent-wash);
+  border-color: var(--accent-edge);
+  border-left: 3px solid var(--accent);
+  color: var(--ink);
+}
+
+.alert ul { margin-bottom: 0; padding-left: 1.1rem; }
+
+/* --------------------------------------------------------------------------
+   21. Dashboard / notifications / account
+   -------------------------------------------------------------------------- */
+
+.tracked-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.tracked-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tracked-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.alert-item {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.alert-item-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+}
+
+.alert-item-subject { font-size: 0.9375rem; }
+.alert-item-subject strong { font-weight: 600; }
+
+.alert-item-date {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+
+.alert-item-detail {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  margin: 0.35rem 0 0;
+}
+
+.datalist {
+  display: grid;
+  grid-template-columns: minmax(8rem, 12rem) 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.datalist dt {
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.datalist dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.panel-danger { border-color: var(--danger-edge); }
+
+.panel-danger .card-header {
+  color: var(--danger);
+  background: #fbf3f1;
+  border-bottom-color: var(--danger-edge);
+}
+
+/* Analytics stat tiles */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.75rem 0.9rem;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+}
+
+.stat-note {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   22. Clinician worksheet
+
+   The one page in the interface whose hierarchy is deliberately inverted. Every
+   other table leads with the graded figure; here the figure is the small type
+   on the right and the sentence about the official label is the line the eye
+   lands on. The strength badge is not used at all: filled, it is the loudest
+   thing in a row, and a column of it would rank-order the reader's own
+   medicines by eye whatever order the rows are actually in. That is the one
+   misreading this page cannot afford.
+   -------------------------------------------------------------------------- */
+
+/* The non-specificity of a symptom, stated before any medicine is named. Set
+   in the neutral surface rather than the caution hue: it is the key fact of the
+   section, not a warning, and by this point the reader has passed two warning
+   panels already. */
+.ws-common {
+  background: var(--surface-3);
+  border-left: 3px solid var(--rule-ink);
+  border-radius: 0 3px 3px 0;
+  padding: 0.75rem 1rem 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.ws-common-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.4rem;
+}
+
+.ws-common p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 74ch;
+  margin-bottom: 0.5rem;
+}
+
+.ws-common p:last-child { margin-bottom: 0; }
+
+/* The checkable fact. Larger than the table's own body size, because it is the
+   thing a prescriber can actually act on. */
+.ws-fact {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 72ch;
+}
+
+.ws-fact + .badge { margin-top: 0.25rem; }
+
+/* The figures, demoted. */
+.ws-second {
+  display: block;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+
+.ws-symptom .table .row-name { white-space: nowrap; }
+
+/* Ruled space to write in. A printed discussion aid with nowhere to write is a
+   handout. */
+.ws-write {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1rem 1.1rem 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.ws-write-line {
+  border-bottom: 1px solid var(--rule);
+  height: 1.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   23. Footer
+   -------------------------------------------------------------------------- */
+
+footer,
+.page-foot {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+
+.page-foot .num-inline,
+footer .num-inline { color: var(--ink-muted); }
+
+.page-foot strong,
+footer strong { color: var(--ink-muted); font-weight: 600; }
+
+/* --------------------------------------------------------------------------
+   24. Narrow screens
+
+   Everything has to hold at 375px. The tables still scroll inside
+   .table-responsive, but the reaction name and the strength band must be
+   readable without scrolling to them: a figure the reader cannot attach to a
+   name or a grade is worse than one they never saw.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+  .wordmark-sub { display: none; }
+}
+
+@media (max-width: 767.98px) {
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.3rem; }
+  .hero h1 { font-size: 1.9rem; }
+  .hero-lede,
+  .hero-cannot { font-size: 1rem; }
+  .page { padding: 1.25rem 1rem 2.5rem; }
+  .masthead-inner { padding: 0.6rem 1rem; }
+}
+
+@media (max-width: 575.98px) {
+  body { font-size: 0.9375rem; }
+
+  .table { font-size: 0.8125rem; }
+
+  .table > :not(caption) > * > * { padding: 0.45rem 0.4rem; }
+
+  .table .row-name { font-size: 0.875rem; }
+
+  .search-panel,
+  .gate-panel,
+  .next-steps { padding: 1rem; }
+
+  .drawer-body { padding: 0.75rem; }
+
+  .tier-count .tier-count-n { font-size: 0.9375rem; }
+
+  /* The band has to sit entirely on screen next to the name it grades. At
+     375px "MODERATE" is the widest thing competing for the last 60px, so it
+     gives up its letter-spacing rather than its last two letters. */
+  .badge.tier-strong,
+  .badge.tier-moderate,
+  .badge.tier-weak {
+    font-size: 0.625rem;
+    letter-spacing: 0.02em;
+    padding: 0.2em 0.38em;
+  }
+
+  /* Wide enough to read a MedDRA term, narrow enough that the strength band
+     stays on the first screen. Long terms wrap rather than stretch the row
+     off the side. */
+  #results-table td:first-child,
+  .table-responsive .table td:first-child,
+  .table-responsive .table th:first-child {
+    min-width: 9.75rem;
+    max-width: 12rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* Headers wrap here, including the figure columns. "A (REPORTS)" held on one
+     line is wider than the figures beneath it and pushes the strength band off
+     the right edge, which is the column a reader most needs beside the name. */
+  .table thead th,
+  .table thead th.num { white-space: normal; }
+
+  /* Pin the name column. The columns that qualify a figure — the strength
+     band and the reasons to doubt it — sit off the right edge at this width,
+     and a reader who scrolls across to them would otherwise lose the row they
+     belong to. That is the specific failure that turns a qualified number
+     into a bare one.
+
+     Only the first header row: the comparison table spans its name column
+     across two rows, so the second row's first cell is a metric and pinning
+     it would park it on top of the name. */
+  .table-responsive .table > tbody > tr > *:first-child,
+  .table-responsive .table > thead > tr:first-child > *:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+  }
+
+  /* A sticky cell has to paint its own background or the columns sliding
+     under it show through. */
+  .table-responsive .table > tbody > tr > *:first-child {
+    background-color: var(--surface);
+    border-right: 1px solid var(--rule) !important;
+  }
+
+  .table-responsive .table > tbody > tr.signal-row > *:first-child {
+    background-color: var(--tier-wash);
+  }
+
+  .table-responsive .table > thead > tr:first-child > *:first-child {
+    background-color: var(--surface-2);
+    border-right: 1px solid var(--rule) !important;
+  }
+
+  .datalist { grid-template-columns: 1fr; gap: 0.1rem 0; }
+  .datalist dd { margin-bottom: 0.6rem; }
+
+  .disclaimer { padding: 0.8rem 0.9rem 0.85rem; }
+  .disclaimer-body { font-size: 0.9063rem; }
+}
+
+/* --------------------------------------------------------------------------
+   25. Print — a reviewer will print a results page
+   -------------------------------------------------------------------------- */
+
+@media print {
+  body { background: #fff; }
+  .masthead-nav,
+  .btn,
+  .search-panel,
+  .backlink { display: none !important; }
+  .collapse { display: block !important; height: auto !important; }
+  .table-frame,
+  .card,
+  .disclaimer { break-inside: avoid; }
+}
+
+/* The worksheet is printed on purpose rather than incidentally: it exists to be
+   carried into an appointment. The entry forms and the verification banner go;
+   every disclaimer, the privacy note, the data date and all of the content
+   stay, because a page handed to a clinician without its caveats is worse than
+   no page. */
+@media print {
+  .ws-form,
+  .notice-band { display: none !important; }
+
+  .ws-symptom,
+  .ws-common,
+  .ws-write,
+  .next-steps,
+  .notice { break-inside: avoid; }
+
+  /* Browsers drop background fills when printing, so a panel that reads as a
+     tinted block on screen arrives as text inside a hairline. The panels that
+     carry the caveats get a firmer rule instead of the fill. */
+  .disclaimer,
+  .notice,
+  .ws-common { border-color: var(--rule-ink); }
+
+  .disclaimer { border-left-color: var(--tier-strong); }
+  .notice { border-left-color: var(--accent); }
+
+  .page,
+  .page-mid { max-width: 100%; padding: 0; }
+}

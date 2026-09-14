@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal &mdash; drugs you track</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-mid">
+
+    <header class="page-head">
+      <div class="coverage-head">
+        <div>
+          <p class="kicker">Your list</p>
+          <h1>Drugs you track</h1>
+        </div>
+        <a href="{{ url_for('user_features.notifications') }}">
+          {% if unread %}
+            <span class="badge tier-moderate">{{ unread }} new</span> alerts
+          {% else %}
+            alerts
+          {% endif %}
+        </a>
+      </div>
+    </header>
+
+    <!-- Standing note. Not dismissible: what follows is a list of reactions
+         attached to the reader's own medicines, which is the single place
+         this tool is most likely to be misread as a finding about them. -->
+    <div class="disclaimer">
+      <span class="disclaimer-label">What this list is</span>
+      <p class="disclaimer-body">
+        These are reactions that appear in FAERS reports alongside your drugs far
+        more often than the rest of the database would predict. That is a
+        statement about what gets reported, not about what your medicine does to
+        you, and not a safety assessment of your treatment. Reporting is shaped
+        by how new a drug is, by news coverage and by litigation.
+      </p>
+      <p class="disclaimer-body">
+        Most of these reactions will never happen to you, and this page cannot
+        tell you how likely any of them is, because the data contains no record
+        of the people who took the drug and were fine. <strong>Do not stop or
+        change a medicine because of anything here.</strong> Take it to your
+        prescriber instead.
+      </p>
+    </div>
+
+    {% if errors %}
+    <div class="alert alert-warning mb-3">
+      <ul>
+        {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="card mb-4">
+      <div class="card-header">Add a drug</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('user_features.add_medication') }}"
+              class="d-flex flex-wrap gap-2">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="text" class="form-control" name="drug" style="min-width:16rem;flex:1"
+                 placeholder="A drug you take &mdash; e.g. Ozempic, atorvastatin"
+                 autocomplete="off" maxlength="64" required>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+        <div class="form-text mt-2">
+          Brand names are resolved to their active ingredient, so
+          <em>Lipitor</em> is stored as atorvastatin. Up to
+          {{ max_medications }} drugs. A drug that is not in the catalogue
+          has not been examined &mdash; which is not the same as having been
+          examined and found clear.
+        </div>
+      </div>
+    </div>
+
+    {% if not cards %}
+    <div class="empty">
+      <p class="empty-title">Nothing tracked yet</p>
+      <p>
+        Add a drug above, or
+        <a href="{{ url_for('index') }}">search without tracking anything</a>.
+      </p>
+    </div>
+    {% endif %}
+
+    {% for card in cards %}
+    <div class="card mb-3">
+      <div class="tracked-head">
+        <span class="tracked-name">{{ card.row.drug }}</span>
+        <span class="tracked-actions">
+          <a href="{{ url_for('search', drug=card.row.drug) }}">full report</a>
+          <form method="post"
+                action="{{ url_for('user_features.delete_medication', med_id=card.row.id) }}"
+                class="m-0">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">
+              Remove
+            </button>
+          </form>
+        </span>
+      </div>
+      <div class="card-body">
+        {% if card.signals %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <tbody>
+              {% for pair in card.signals %}
+              <tr>
+                <td class="row-name">
+                  {{ pair.reaction_pt }}
+                  {% if pair.dme %}
+                  <span class="badge dme-badge">serious event</span>
+                  {% endif %}
+                  {% if pair.boxed %}
+                  <span class="badge label-boxed">in boxed warning</span>
+                  {% elif pair.labelled is sameas true %}
+                  <span class="badge label-known">already labelled</span>
+                  {% elif pair.labelled is sameas false %}
+                  <span class="badge label-unknown">not found in label</span>
+                  {% endif %}
+                </td>
+                <td class="num text-nowrap"
+                    title="{{ column_help.a }}">{{ "{:,}".format(pair.a) }} reports</td>
+                <td class="num fw-semibold"
+                    title="{{ column_help.ic025 }}">{{ pair.IC025 }}</td>
+                <td class="text-center text-nowrap"
+                    title="{{ column_help.strength }}"><span class="badge tier-{{ pair.tier }}">{{ pair.tier }}</span></td>
+                <td class="spark-cell d-none d-md-table-cell">{{ spark(pair) }}</td>
+              </tr>
+              {% if pair.bias_flags or pair.ac_note %}
+              <tr>
+                <td colspan="5" class="pt-0">
+                  {% if pair.bias_flags %}
+                  <span class="badge-row">
+                    {% for flag in pair.bias_flags %}
+                    <span class="badge flag-badge">{{ flag }}</span>
+                    {% endfor %}
+                  </span>
+                  {% endif %}
+                  {% if pair.ac_note %}
+                  <span class="cell-note">{{ pair.ac_note }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="form-text mt-2 mb-0">
+          Strongest reactions for this drug that have also been checked for
+          the usual reasons a result misleads. The full report lists
+          everything else.
+        </p>
+        {% else %}
+        <p class="form-text mb-0">
+          No strong reactions for this drug have been through the bias
+          checks. That is not a clean bill of health: it means nothing has
+          cleared both bars, so there is nothing worth putting on this page.
+          The <a href="{{ url_for('search', drug=card.row.drug) }}">full
+          report</a> shows the weaker and unchecked rows with their caveats.
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if cards %}
+    <div class="card mt-4">
+      <div class="card-header">All of them at once</div>
+      <div class="card-body">
+        <p class="form-text mb-2">
+          <a href="{{ url_for('drug_list', drugs=list_drugs) }}">See
+          {% if list_shown < list_total %}
+            the first {{ list_shown }} of your {{ list_total }} drugs
+          {% else %}
+            all {{ list_shown }} of your drugs
+          {% endif %}
+          side by side</a>, each still scored separately, with the reactions that
+          appear under more than one of them named as such.
+          <strong>That is not an interaction check</strong> &mdash; a reaction
+          appearing under several of your drugs means it was reported with each of
+          them separately, not that taking them together causes it.
+        </p>
+        <p class="form-text mb-0">
+          If you are here because of symptoms rather than because of a drug, the
+          <a href="{{ url_for('worksheet.worksheet') }}">discussion aid</a> is the
+          page to print for an appointment. It does not use your account and does
+          not store what you enter.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if recent %}
+    <div class="card mt-4">
+      <div class="tracked-head">
+        <span class="tracked-name">Recent searches</span>
+        <span class="tracked-actions">
+          <a href="{{ url_for('user_features.history') }}">all searches</a>
+        </span>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for row in recent %}
+        <li class="list-group-item d-flex justify-content-between align-items-baseline gap-2">
+          <a href="{{ url_for('search', drug=row.matched_drug or row.drug_query) }}">
+            {{ row.drug_query }}
+          </a>
+          <span class="alert-item-date">
+            {{ row.created_at.strftime('%d %b %H:%M') }}
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <footer class="page-foot">
+      Computed from <span class="num-inline">{{ data_total }}</span> FAERS reports,
+      current to <strong>{{ data_as_of }}</strong>. FAERS is updated quarterly.
+      <br>
+      rxsignal &mdash; reporting-pattern analysis &mdash; not a medical tool
+    </footer>
+
+  </main>
+</body>
+</html>

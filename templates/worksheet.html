@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal &mdash; discussion aid for an appointment</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-mid">
+
+    <a href="/" class="backlink">
+      <svg width="10" height="8" viewBox="0 0 10 8" aria-hidden="true"><path d="M4 0 0 4l4 4V5h6V3H4z" fill="currentColor"/></svg>Back to search
+    </a>
+
+    <!-- Headed as what it is. A reader who takes this page for a result has
+         been failed by it, whatever is written further down, so the kicker, the
+         heading and the first line all say the same thing three ways. -->
+    <header class="page-head">
+      <p class="kicker">Discussion aid &mdash; not a result</p>
+      <h1>Questions to take to your prescriber</h1>
+      <p class="lede">
+        This page is <strong>preparation for a conversation</strong>, not an
+        answer to one. It sets each symptom you entered against each medicine you
+        entered and shows two things: how unspecific the symptom is in this
+        database, and whether the medicine's official label mentions it.
+      </p>
+      <p class="lede">
+        It does not tell you which medicine is causing anything, and it does not
+        put your medicines in any order of suspicion. <strong>It cannot: this
+        data has no way to.</strong>
+      </p>
+      {% if blocks %}
+      <p class="mt-3 mb-0">
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">
+          Print this page
+        </button>
+      </p>
+      {% endif %}
+    </header>
+
+    <!-- The framing the feature exists or does not exist on. -->
+    <div class="disclaimer">
+      <span class="disclaimer-label">Read this first</span>
+      <p class="disclaimer-body">
+        <strong>Do not stop taking a prescribed medicine because of anything on
+        this page</strong> &mdash; stopping can be more dangerous than
+        continuing. If something here worries you, take the page to your
+        prescriber or pharmacist and ask about it. Do not act on it alone.
+      </p>
+      <p class="disclaimer-body">
+        This page <strong>cannot tell you what is causing your symptoms</strong>.
+        Symptoms like tiredness, nausea, aches and dizziness have many causes,
+        most of which are not medicines at all, and only someone who can examine
+        you and knows your history can work out which applies to you. Everything
+        below is a prompt for that conversation.
+      </p>
+      <p class="disclaimer-body">
+        A reaction appearing in a medicine's label does not mean the medicine is
+        causing yours. A labelled reaction is one that was seen somewhere in
+        trials or in reports &mdash; usually in a small minority of people. Most
+        people taking the medicine do not get it.
+      </p>
+    </div>
+
+    <!-- DISCLAIMER — appears BEFORE any figures, non-negotiable -->
+    <div class="disclaimer">
+      <span class="disclaimer-label">Important limitation</span>
+      <p class="disclaimer-body">{{ disclaimer }}</p>
+    </div>
+
+    <!-- Health data about an identifiable person the moment it is attached to an
+         account, and this feature has no use for it after the page renders. The
+         entries arrive by POST so they stay out of the URL, the browser history
+         and the access log as well. -->
+    <div class="notice">
+      <p>
+        <strong>Nothing you type here is saved.</strong> No account is needed, no
+        record is written, and your symptoms are not added to any history, any
+        profile or any log. They are used to build this page and then forgotten;
+        the page itself is not stored anywhere either. Close the tab and it is
+        gone, so print or save it if you want to keep it.
+      </p>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-warning mb-3">{{ error }}</div>
+    {% endif %}
+
+    {% if notes %}
+    <!-- Reported back rather than failing the request: one name this extract
+         does not carry must not cost the reader the rest of their list. -->
+    <div class="alert alert-warning mb-3">
+      <ul>
+        {% for note in notes %}<li>{{ note }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div class="card mb-4 ws-form">
+      <div class="card-header">What you take, and what you have noticed</div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('worksheet.worksheet') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label for="ws-medicines" class="form-label">
+              Medicines you take
+              <span class="form-label-note">&mdash; separated by commas, up to {{ max_medicines }}</span>
+            </label>
+            <input type="text" class="form-control" id="ws-medicines" name="medicines"
+                   list="ws-drugs" value="{{ medicines_raw }}" maxlength="1024"
+                   autocomplete="off"
+                   placeholder="e.g. atorvastatin, metformin, lisinopril" required>
+            <datalist id="ws-drugs">
+              {% for row in catalogue %}
+              <option value="{{ row.drug }}"></option>
+              {% endfor %}
+            </datalist>
+            <div class="form-text">
+              Brand names are resolved to their active ingredient, so
+              <em>Lipitor</em> is looked up as atorvastatin.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="ws-symptoms" class="form-label">
+              Symptoms you have noticed
+              <span class="form-label-note">&mdash; separated by commas, up to {{ max_symptoms }}</span>
+            </label>
+            <input type="text" class="form-control" id="ws-symptoms" name="symptoms"
+                   list="ws-symptom-terms" value="{{ symptoms_raw }}" maxlength="1024"
+                   autocomplete="off"
+                   placeholder="e.g. fatigue, myalgia, nausea, dizziness" required>
+            <datalist id="ws-symptom-terms">
+              {% for term in symptom_options %}
+              <option value="{{ term }}"></option>
+              {% endfor %}
+            </datalist>
+            <div class="form-text">
+              Symptoms are matched against the clinical terms this database uses,
+              so <em>pruritus</em> rather than itching and <em>myalgia</em> rather
+              than muscle ache. Anything it cannot match is reported back to you
+              &mdash; which is a statement about this database's coverage and not
+              about your symptom.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Build the discussion aid</button>
+        </form>
+      </div>
+    </div>
+
+    {% if blocks %}
+
+    <div class="section-rule"></div>
+
+    <p class="kicker">
+      Your medicines, in the order you entered them: {{ names | join(', ') }}
+    </p>
+    <p class="form-text">
+      They are in that order everywhere below, and the symptoms are in the order
+      you entered them. <strong>Neither list is ranked.</strong> Nothing on this
+      page is sorted by how strongly a reaction is reported, because sorting it
+      that way would put one of your medicines at the top of every symptom and
+      this data cannot support that.
+    </p>
+
+    {% for block in blocks %}
+    <section class="card mb-4 ws-symptom">
+      <div class="card-header card-header-plain">{{ block.term }}</div>
+      <div class="card-body">
+
+        <!-- The non-specificity of the symptom, before any medicine is named.
+             This is the load-bearing fact of the page: in a realistic case of
+             five medicines and four symptoms, 18 of the 20 combinations produce
+             a row, so a reader who is not told how ordinary that is will read
+             every row as an accusation. -->
+        <div class="ws-common">
+          <p class="ws-common-label">How specific is this symptom?</p>
+          <p>
+            <strong>{{ block.term }} is reported with
+            <span class="num-inline">{{ block.reported_for }}</span> of the
+            <span class="num-inline">{{ block.total_drugs }}</span> medicines in
+            this database.</strong>
+            {% set pct = (block.share * 100) | round | int %}
+            {% if block.share >= 0.5 %}
+              That it appears for a medicine you take tells you very little: it
+              appears for very nearly everything here.
+            {% elif block.share >= 0.15 %}
+              That is around <span class="num-inline">{{ pct }}%</span> of the
+              medicines examined, so seeing it for a medicine you take narrows
+              things down very little.
+            {% else %}
+              That is <span class="num-inline">{{ pct }}%</span> of the medicines
+              examined &mdash; narrower than most terms here. It is still not
+              evidence that a medicine caused your symptom: these are voluntary
+              reports, and everybody who took the same medicine without the
+              symptom is not in this data at all.
+            {% endif %}
+          </p>
+          <p>
+            {% if block.on_your_list == 0 %}
+              None of the <span class="num-inline">{{ names | length }}</span>
+              medicines you entered has {{ block.term }} reported with it in this
+              database.
+            {% else %}
+              <span class="num-inline">{{ block.on_your_list }}</span> of the
+              <span class="num-inline">{{ names | length }}</span> medicines you
+              entered {{ 'has' if block.on_your_list == 1 else 'have' }}
+              {{ block.term }} reported with
+              {{ 'it' if block.on_your_list == 1 else 'them' }} somewhere in this
+              database.
+            {% endif %}
+            Whether a reaction has been reported with a particular medicine
+            depends heavily on how widely that medicine is prescribed and how long
+            it has been on the market &mdash; <strong>not on which medicine is
+            responsible for anything</strong>.
+          </p>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Medicine</th>
+                <th>What the official label says about {{ block.term | lower }}</th>
+                <th class="num" title="{{ column_help.strength }}">Reported together</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in block.rows %}
+              <tr>
+                <td class="row-name">{{ row.drug }}</td>
+                {% if row.pair %}
+                <td>
+                  <span class="ws-fact">{{ row.label_fact }}</span>
+                  {% if row.label_kind == 'boxed' %}
+                  <span class="badge label-boxed">boxed warning</span>
+                  {% endif %}
+                  {% for note in row.notes %}
+                  <span class="cell-note">{{ note }}</span>
+                  {% endfor %}
+                </td>
+                <td class="num">
+                  <span class="ws-second">{{ "{:,}".format(row.pair.a) }} reports name both</span>
+                  <span class="ws-second">
+                    {{ row.pair.tier if row.pair.tier != 'none' else 'no' }}
+                    disproportion
+                  </span>
+                </td>
+                {% else %}
+                <!-- Never "clear", never "safe": too few reports to score and
+                     none at all are indistinguishable here. -->
+                <td>
+                  <span class="cell-unassessed">
+                    {{ block.term }} is not among the reactions reported with this
+                    medicine in this database.
+                  </span>
+                  <span class="cell-note">
+                    That does not mean it cannot happen and does not mean this
+                    medicine is safe for you. A pair with too few reports to score
+                    does not appear here at all, and nobody has to report anything
+                    to FAERS.
+                  </span>
+                </td>
+                <td class="num"><span class="cell-none">&mdash;</span></td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- The residual misreading this page has to answer: whichever of the
+             reader's medicines is the most widely prescribed carries the largest
+             count in every row, and an anxious reader will read that column as a
+             league table however the rows are ordered. -->
+        <p class="form-text mt-2 mb-0">
+          The label is the column worth raising with a prescriber, because it is
+          checkable. <strong>The figures on the right are not comparable between
+          your medicines.</strong> A medicine taken by ten times as many people
+          accumulates roughly ten times as many reports of everything, so the
+          largest number in that column usually marks the most widely prescribed
+          medicine rather than the one responsible for anything. None of these
+          figures is a measure of risk, and this is not a ranking.
+        </p>
+      </div>
+    </section>
+    {% endfor %}
+
+    <section class="next-steps">
+      <h2 class="next-steps-title">Questions worth asking</h2>
+      <p>
+        The single most useful thing to bring is a timeline. When did each
+        medicine start or change dose, and when did each symptom begin? That is
+        something a prescriber can work with, and it is something this database
+        knows nothing about.
+      </p>
+      <p>
+        Other questions worth writing down: is there a non-medicine cause worth
+        ruling out first? Is there a test or a check that would settle it? If a
+        medicine is worth changing, how would we do it and over how long? And if
+        we change nothing, what would make it worth revisiting?
+      </p>
+      <p>
+        If a label does mention your symptom, a useful way to put it is: <em>"the
+        label for this one mentions {{ blocks[0].term | lower }} &mdash; is that
+        worth considering here, or is it unlikely in my case?"</em> That asks for
+        a judgement rather than asserting one.
+      </p>
+    </section>
+
+    <!-- Blank on purpose. A printed discussion aid with nowhere to write is a
+         handout, not an aid. -->
+    <div class="ws-write">
+      <p class="readnotes-title">Notes from the appointment</p>
+      <div class="ws-write-line"></div>
+      <div class="ws-write-line"></div>
+      <div class="ws-write-line"></div>
+      <div class="ws-write-line"></div>
+      <div class="ws-write-line"></div>
+      <div class="ws-write-line"></div>
+    </div>
+
+    <div class="readnotes">
+      <p class="readnotes-title">Where these figures come from</p>
+      <p>
+        FAERS is a database of voluntary, unvalidated reports. It records reports,
+        not patients, and it contains no record of the people who took a medicine
+        and were fine &mdash; so no rate, no probability and no risk can be
+        computed from it by any method. <strong>Reported together</strong> counts
+        the reports naming both a medicine and a reaction;
+        <strong>disproportion</strong> bands how much more often that happens than
+        the rest of the database would predict. Neither says the medicine caused
+        anything.
+      </p>
+      <p>
+        The label column comes from the official product label rather than from
+        FAERS. Label matching is approximate: a reaction recorded as
+        <em>not found</em> may still be described in the label in different words.
+      </p>
+      <p>
+        Full reports, with every reaction and the reasons each figure might
+        mislead:
+        {% for name in names %}<a href="{{ url_for('search', drug=name) }}">{{ name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.
+      </p>
+    </div>
+
+    {% with next_step_drug = '' %}
+      {% include "_next_steps.html" %}
+    {% endwith %}
+
+    {% endif %}
+
+    <footer class="page-foot">
+      Computed from <span class="num-inline">{{ data_total }}</span> FDA FAERS
+      reports, current to <strong>{{ data_as_of }}</strong>. FAERS is updated
+      quarterly; figures from a later extract will differ.
+      <br>
+      rxsignal &mdash; reporting-pattern analysis &mdash; not a medical tool
+      &mdash; this page is a discussion aid, not a diagnosis, a result or a
+      ranking of anyone's medicines
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmLQLOFSZBYYHqX5OBGJqKdUNpU4"
+          crossorigin="anonymous"></script>
+</body>
+</html>

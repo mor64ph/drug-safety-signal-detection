@@ -1,0 +1,18 @@
+flask>=3.0
+waitress>=3.0
+requests>=2.31
+pandas>=2.1
+numpy>=1.26
+scipy>=1.11
+pyarrow>=15.0
+
+# Accounts, tracked drugs and notifications
+sqlalchemy>=2.0
+argon2-cffi>=23.0
+alembic>=1.13
+
+# Postgres driver. SQLAlchemy speaks to Postgres through this; without it a
+# postgresql:// URL fails at connect time with a bare ModuleNotFoundError.
+# Local development defaults to SQLite and does not need it, but the image
+# does, because Render supplies a Postgres DATABASE_URL.
+psycopg[binary]>=3.1

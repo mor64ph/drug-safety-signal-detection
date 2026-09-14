@@ -1,0 +1,28 @@
+# Secrets. Configuration is supplied as environment variables by the host.
+.env
+.env.*
+!.env.example
+
+# Build inputs, not runtime inputs. data/raw/ is the API response cache and
+# 35 MB of label text; only data/results/scored_pairs.parquet is copied in,
+# explicitly, by the Dockerfile.
+data/raw/
+data/flat/
+data/outbox/
+data/*.db
+data/results/*
+!data/results/scored_pairs.parquet
+
+# CA bundle exported from the Windows trust store; the Linux image has its own.
+winca.pem
+
+# scripts/ IS needed in the image: send_digests.py runs as a scheduled job from
+# this same image, and alembic/ + alembic.ini run on every container start.
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+databricks/
+docs/
+*.md
+!README.md

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>rxsignal — adverse event signal detector</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  {% include "_nav.html" %}
+
+  <main class="page page-wide">
+
+    <!-- What this is and what it cannot do, stated before anything else, with
+         the drug search beside it rather than beneath it. The two-column
+         arrangement collapses to the same order on a phone: statement, then
+         limitation, then the field. -->
+    <div class="hero hero-grid">
+      <div class="hero-statement">
+        <h1>rxsignal</h1>
+        <p class="hero-sub">Adverse event signal detection &mdash; FDA FAERS</p>
+
+        <p class="hero-lede">
+          For a given drug, this finds the adverse reactions reported alongside
+          it far more often than the rest of the FDA's adverse event database
+          would predict.
+        </p>
+        <p class="hero-cannot">
+          It is a screening instrument. <strong>It cannot measure risk,
+          incidence or causation</strong>, and it is not a safety assessment of
+          any medicine. What it produces is a ranked list of pairs worth a human
+          looking at.
+        </p>
+
+        <div class="disclaimer">
+          <span class="disclaimer-label">Before you search</span>
+          <p class="disclaimer-body">{{ disclaimer }}</p>
+        </div>
+      </div>
+
+      <!-- Two entry points, labelled apart rather than merged into one box: a
+           term typed into the wrong one would silently return the wrong kind of
+           answer, and both accept free text that looks alike. The drug search
+           is the primary action and is given the weight to say so. -->
+      <div class="search-panel">
+        <form action="/search" method="get" class="search-primary">
+          <label for="drug" class="form-label">
+            Start from a drug
+            <span class="form-label-note">&mdash; which reactions are reported with it</span>
+          </label>
+          <input
+            type="text"
+            class="form-control form-control-lg"
+            id="drug"
+            name="drug"
+            list="drug-options"
+            placeholder="e.g. Ozempic, atorvastatin, ibuprofen"
+            autocomplete="off"
+            autofocus
+            required
+          >
+          <datalist id="drug-options">
+            {% for row in catalogue %}
+            <option value="{{ row.drug }}"></option>
+            {% for b in row.brands %}<option value="{{ b }}"></option>{% endfor %}
+            {% endfor %}
+          </datalist>
+          <div class="form-text mt-2">
+            Generic name, brand name, or class. Brands are resolved to their
+            active ingredient, so <em>Ozempic</em> finds semaglutide.
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+            Search adverse event signals
+          </button>
+        </form>
+
+        <div class="search-alt">
+          <p class="search-alt-title">Or start from a reaction</p>
+          <form action="/reaction" method="get">
+            <label for="reaction-q" class="form-label">
+              Which drugs are reported with it
+            </label>
+            <div class="d-flex flex-wrap gap-2">
+              <input
+                type="text"
+                class="form-control"
+                id="reaction-q"
+                name="q"
+                list="reaction-options"
+                style="min-width:11rem;flex:1"
+                placeholder="e.g. rhabdomyolysis, pancreatitis"
+                autocomplete="off"
+                maxlength="64"
+                required
+              >
+              <button type="submit" class="btn btn-outline-primary">Find drugs</button>
+            </div>
+            <datalist id="reaction-options">
+              {% for option in reaction_options %}
+              <option value="{{ option.term }}"></option>
+              {% endfor %}
+            </datalist>
+            <div class="form-text mt-2">
+              MedDRA preferred terms, so the clinical word rather than the
+              everyday one &mdash; <em>pruritus</em>, not itching. A fragment
+              works: <em>rhabdo</em> offers the terms that contain it.
+              This ranks drugs by how disproportionately the reaction is
+              reported with each, which is not the same as how often they
+              cause it.
+            </div>
+          </form>
+        </div>
+
+        <div class="search-alt">
+          <p class="search-alt-title">Or compare two drugs</p>
+          <form action="/compare" method="get">
+            <label class="form-label" for="cmp-a">
+              The same reactions, side by side
+            </label>
+            <div class="row g-2">
+              <div class="col-12 col-sm">
+                <input type="text" class="form-control" id="cmp-a" name="a" list="drug-options"
+                       placeholder="First drug" autocomplete="off" maxlength="64" required>
+              </div>
+              <div class="col-12 col-sm">
+                <input type="text" class="form-control" name="b" list="drug-options"
+                       placeholder="Second drug" autocomplete="off" maxlength="64" required>
+              </div>
+              <div class="col-12 col-sm-auto d-grid">
+                <button type="submit" class="btn btn-outline-primary">Compare</button>
+              </div>
+            </div>
+            <div class="form-text mt-2">
+              Each drug is scored against the whole database on its own.
+              <strong>This is not an interaction check</strong> and says nothing
+              about taking both together.
+            </div>
+          </form>
+        </div>
+
+        <div class="search-alt">
+          <p class="search-alt-title">Or a whole medication list</p>
+          <form action="{{ url_for('drug_list') }}" method="get">
+            <label class="form-label" for="list-drugs-in">
+              Up to ten drugs, each scored separately
+            </label>
+            <div class="d-flex flex-wrap gap-2">
+              <input type="text" class="form-control" id="list-drugs-in" name="drugs"
+                     style="min-width:11rem;flex:1" autocomplete="off" maxlength="512"
+                     placeholder="atorvastatin, metformin, lisinopril" required>
+              <button type="submit" class="btn btn-outline-primary">Show them</button>
+            </div>
+            <div class="form-text mt-2">
+              Names the catalogue does not have are reported back individually
+              rather than failing the list. <strong>Still not an interaction
+              check</strong> &mdash; a reaction appearing under several of them
+              was reported with each one separately.
+            </div>
+          </form>
+        </div>
+
+        <!-- The route for the reader who arrived because of symptoms rather
+             than because of a drug name. It is a different question, and the
+             search box above answers it badly. -->
+        <div class="search-alt">
+          <p class="search-alt-title">Or you have symptoms and an appointment</p>
+          <p class="form-text mb-2">
+            The <a href="{{ url_for('worksheet.worksheet') }}">discussion aid</a>
+            takes the medicines you take and the symptoms you have noticed and
+            produces a page to print and take to a prescriber. It leads with what
+            each official label says rather than with a ratio, and it
+            <strong>does not rank your medicines by how likely each is to be the
+            cause</strong> &mdash; this data cannot answer that, and a tool that
+            pretended to would name a culprit every time. No account needed and
+            nothing you type is saved.
+          </p>
+          <a href="{{ url_for('worksheet.worksheet') }}" class="btn btn-outline-primary">
+            Prepare for an appointment
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-rule"></div>
+
+    <!-- What this does -->
+    <section class="about-grid">
+      <div>
+        <h2>How a result is produced</h2>
+        <p>
+          For a given drug it finds the adverse events reported alongside it far
+          more often than the rest of the database would predict, then measures
+          the main reasons each result might be misleading: whether the reaction
+          is really the condition the drug treats, whether the reports arrived in
+          one burst, and whether the effect survives comparison against similar
+          drugs rather than against everything.
+        </p>
+      </div>
+      <div>
+        <h2>What it cannot measure</h2>
+        <p>
+          It cannot measure risk. FAERS records reports, not patients, and says
+          nothing about how many people took a drug without incident &mdash; so no
+          rate, probability or risk can be computed from it by any method. What
+          comes out is a ranked list of pairs worth a human looking at.
+        </p>
+      </div>
+    </section>
+
+    <p class="readnotes mt-3">
+      Validated against known answers: statins and rhabdomyolysis reproduce at
+      a reporting odds ratio of <span class="num-inline">12.96</span>, and
+      cerivastatin &mdash; withdrawn worldwide in 2001 for exactly that reaction
+      &mdash; ranks highest of any statin without being told.
+    </p>
+
+    <!-- Coverage -->
+    {% if catalogue %}
+    <div class="section-rule"></div>
+    <section>
+      <div class="coverage-head">
+        <span class="coverage-count">
+          <span class="num-inline">{{ catalogue | length }}</span> drugs covered
+        </span>
+        <button class="btn-disclosure" type="button"
+                data-bs-toggle="collapse" data-bs-target="#drug-list"
+                aria-expanded="false" aria-controls="drug-list">
+          Show the catalogue
+          <svg width="9" height="6" viewBox="0 0 9 6" aria-hidden="true"><path d="M0 0h9L4.5 6z" fill="currentColor"/></svg>
+        </button>
+      </div>
+      <p class="tier-summary-note mb-2">
+        Anything not listed here has not been examined. That is not the same as
+        having been examined and found clear.
+      </p>
+      <div class="collapse" id="drug-list">
+        <div class="catalogue-scroll">
+          <table class="table table-hover">
+            <tbody>
+              {% for row in catalogue %}
+              <tr>
+                <td><a href="/search?drug={{ row.drug }}">{{ row.drug }}</a>
+                  {% if row.brands %}
+                  <span class="catalogue-brands">&mdash; {{ row.brands | join(', ') }}</span>
+                  {% endif %}
+                </td>
+                <td class="num">{{ "{:,}".format(row.reports) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <footer class="page-foot">
+      Computed from <span class="num-inline">{{ data_total }}</span> FDA FAERS
+      reports, current to <strong>{{ data_as_of }}</strong>. Voluntary,
+      unvalidated reports. Not for medical decisions.
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmLQLOFSZBYYHqX5OBGJqKdUNpU4"
+          crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{# Collapsible column glossary, shared by results / reaction_results / compare.
+
+   Closed by default. Testers read "21.5 -> 1.8 vs similar drugs (92% lower)"
+   with nothing on the page telling them what either number is; the header
+   tooltips answer that in passing and this answers it properly. It explains the
+   columns only -- the limitation of the whole tool is stated once, above, in
+   the disclaimer panel, and repeating it here would train people to skip both.
+   Styled as a reference panel rather than as a warning for the same reason. #}
+<div class="mb-3">
+  <button class="btn-disclosure" type="button"
+          data-bs-toggle="collapse" data-bs-target="#how-to-read"
+          aria-expanded="false" aria-controls="how-to-read">
+    How to read this table
+    <svg width="9" height="6" viewBox="0 0 9 6" aria-hidden="true"><path d="M0 0h9L4.5 6z" fill="currentColor"/></svg>
+  </button>
+  <div class="collapse mt-2" id="how-to-read">
+    <div class="glossary">
+      <dl>
+        <dt>a (reports)</dt>
+        <dd>{{ column_help.a }}</dd>
+
+        <dt>ROR</dt>
+        <dd>{{ column_help.ror }}</dd>
+
+        <dt>IC025</dt>
+        <dd>{{ column_help.ic025 }}</dd>
+
+        <dt>Strength</dt>
+        <dd>{{ column_help.strength }}</dd>
+
+        <dt>vs similar drugs</dt>
+        <dd>{{ column_help.comparator }}</dd>
+
+        <dt>Trend</dt>
+        <dd>
+          {{ column_help.trend }}
+          A <span class="spark-key spark-key-spike"></span> coloured line marks a
+          pair where more than a quarter of all reports arrived in one month;
+          <span class="spark-key"></span> grey is steady accrual. An empty cell
+          means the history was never fetched for that row, not that there is
+          none.
+        </dd>
+      </dl>
+    </div>
+  </div>
+</div>

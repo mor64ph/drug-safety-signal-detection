@@ -1,0 +1,66 @@
+{
+  "_note": "Drug pairs with an established clinical interaction, used to test whether the Omega measure recovers known answers before any novel pair is trusted. Each names the mechanism and the reaction that mechanism predicts, so a run can be checked against pharmacology rather than against itself. Names must match the 'drug' column of the scored table.",
+
+  "pairs": [
+    {
+      "a": "warfarin", "b": "nsaid",
+      "expect": "GASTROINTESTINAL HAEMORRHAGE",
+      "mechanism": "Anticoagulation plus NSAID mucosal injury and platelet inhibition. One of the most consistently reported interactions in clinical practice."
+    },
+    {
+      "a": "warfarin", "b": "fluoroquinolone",
+      "expect": "HAEMORRHAGE",
+      "mechanism": "Fluoroquinolones inhibit warfarin metabolism and disturb gut flora producing vitamin K, raising INR."
+    },
+    {
+      "a": "statin", "b": "lipid_other",
+      "expect": "RHABDOMYOLYSIS",
+      "mechanism": "Statin plus fibrate. The textbook myopathy interaction, and the specific combination implicated in the cerivastatin withdrawal."
+    },
+    {
+      "a": "simvastatin", "b": "clarithromycin",
+      "expect": "RHABDOMYOLYSIS",
+      "mechanism": "Macrolide CYP3A4 inhibition raises simvastatin exposure several-fold. Contraindicated."
+    },
+    {
+      "a": "opioid", "b": "benzodiazepine",
+      "expect": "RESPIRATORY DEPRESSION",
+      "mechanism": "Additive central respiratory depression. Carries a boxed warning on both drug classes."
+    },
+    {
+      "a": "ace_inhibitor", "b": "aldosterone",
+      "expect": "HYPERKALAEMIA",
+      "mechanism": "Both raise serum potassium; combined use is a common cause of dangerous hyperkalaemia."
+    },
+    {
+      "a": "ace_inhibitor", "b": "nsaid",
+      "expect": "ACUTE KIDNEY INJURY",
+      "mechanism": "NSAIDs constrict the afferent arteriole while ACE inhibitors dilate the efferent one, collapsing filtration pressure. Worse again with a diuretic."
+    },
+    {
+      "a": "ssri", "b": "nsaid",
+      "expect": "GASTROINTESTINAL HAEMORRHAGE",
+      "mechanism": "SSRIs deplete platelet serotonin and impair aggregation, compounding NSAID mucosal injury."
+    },
+    {
+      "a": "ssri", "b": "triptan",
+      "expect": "SEROTONIN SYNDROME",
+      "mechanism": "Additive serotonergic activity. The basis of an FDA advisory, though its clinical frequency is debated."
+    },
+    {
+      "a": "clopidogrel", "b": "ppi",
+      "expect": "MYOCARDIAL INFARCTION",
+      "mechanism": "Omeprazole inhibits CYP2C19, which clopidogrel needs to become active. An efficacy interaction rather than a toxicity one."
+    },
+    {
+      "a": "digoxin", "b": "amiodarone",
+      "expect": "DIGITALIS TOXICITY",
+      "mechanism": "Amiodarone displaces digoxin from tissue binding and reduces clearance, roughly doubling levels."
+    },
+    {
+      "a": "methotrexate", "b": "nsaid",
+      "expect": "PANCYTOPENIA",
+      "mechanism": "NSAIDs reduce renal methotrexate clearance, raising exposure and marrow suppression risk."
+    }
+  ]
+}

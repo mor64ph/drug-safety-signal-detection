@@ -1,0 +1,109 @@
+# Designated Medical Events -- serious reactions checked for EVERY drug,
+# regardless of how rarely they are reported.
+#
+# WHY THIS FILE EXISTS
+#
+# The candidate reactions for each drug come from the API's count endpoint,
+# which returns the most FREQUENTLY reported terms. That ordering systematically
+# buries the rare, severe events pharmacovigilance exists to find, because
+# common complaints crowd them out. Measured examples of what a frequency-ranked
+# top-60 missed entirely:
+#
+#   fluoroquinolone x TENDONITIS                   ROR 36.4   boxed warning
+#   lamotrigine     x STEVENS-JOHNSON SYNDROME     ROR 22.0   boxed warning
+#   opioid          x RESPIRATORY DEPRESSION       ROR 15.2   the fatal one
+#   allopurinol     x TOXIC EPIDERMAL NECROLYSIS   ROR 11.5   often fatal
+#
+# Every one of those is a real, labelled, clinically critical signal. None of
+# them appeared until they were checked deliberately.
+#
+# The regulatory equivalent is the EMA's Designated Medical Event list: events
+# considered inherently serious enough to review on any drug, without waiting
+# for a frequency threshold. This list follows that principle. It is not the
+# official list and makes no claim to completeness.
+#
+# Lines starting with # are ignored.
+
+# -- Severe cutaneous adverse reactions --------------------------------------
+STEVENS-JOHNSON SYNDROME
+TOXIC EPIDERMAL NECROLYSIS
+DRUG REACTION WITH EOSINOPHILIA AND SYSTEMIC SYMPTOMS
+ERYTHEMA MULTIFORME
+EXFOLIATIVE RASH
+
+# -- Hepatic ------------------------------------------------------------------
+HEPATIC FAILURE
+HEPATIC NECROSIS
+HEPATITIS FULMINANT
+DRUG-INDUCED LIVER INJURY
+HEPATOTOXICITY
+
+# -- Haematological -----------------------------------------------------------
+AGRANULOCYTOSIS
+APLASTIC ANAEMIA
+PANCYTOPENIA
+HAEMOLYTIC ANAEMIA
+THROMBOTIC THROMBOCYTOPENIC PURPURA
+NEUTROPENIA
+
+# -- Cardiac ------------------------------------------------------------------
+TORSADE DE POINTES
+VENTRICULAR FIBRILLATION
+CARDIAC ARREST
+ELECTROCARDIOGRAM QT PROLONGED
+MYOCARDITIS
+
+# -- Neurological -------------------------------------------------------------
+PROGRESSIVE MULTIFOCAL LEUKOENCEPHALOPATHY
+NEUROLEPTIC MALIGNANT SYNDROME
+SEROTONIN SYNDROME
+GUILLAIN-BARRE SYNDROME
+SEIZURE
+ENCEPHALOPATHY
+
+# -- Renal --------------------------------------------------------------------
+ACUTE KIDNEY INJURY
+TUBULOINTERSTITIAL NEPHRITIS
+NEPHROGENIC SYSTEMIC FIBROSIS
+
+# -- Immune and systemic ------------------------------------------------------
+ANAPHYLACTIC REACTION
+ANAPHYLACTIC SHOCK
+ANGIOEDEMA
+SEPSIS
+
+# -- Metabolic ----------------------------------------------------------------
+LACTIC ACIDOSIS
+DIABETIC KETOACIDOSIS
+HYPOGLYCAEMIC COMA
+
+# -- Musculoskeletal ----------------------------------------------------------
+RHABDOMYOLYSIS
+TENDON RUPTURE
+TENDONITIS
+OSTEONECROSIS OF JAW
+
+# -- Gastrointestinal ---------------------------------------------------------
+PANCREATITIS ACUTE
+GASTROINTESTINAL HAEMORRHAGE
+GASTROINTESTINAL PERFORATION
+CLOSTRIDIUM DIFFICILE INFECTION
+INTESTINAL OBSTRUCTION
+ISCHAEMIC COLITIS
+
+# -- Respiratory --------------------------------------------------------------
+RESPIRATORY DEPRESSION
+RESPIRATORY ARREST
+PULMONARY FIBROSIS
+INTERSTITIAL LUNG DISEASE
+
+# -- Behavioural (harm that reaches the patient, not the prescription) --------
+COMPLETED SUICIDE
+SUICIDAL IDEATION
+DRUG DEPENDENCE
+DRUG WITHDRAWAL SYNDROME
+
+# -- Other --------------------------------------------------------------------
+FOURNIER^S GANGRENE
+OPTIC ISCHAEMIC NEUROPATHY
+VISION LOSS

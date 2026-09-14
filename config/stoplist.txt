@@ -1,0 +1,81 @@
+# Reaction terms excluded from signal detection.
+#
+# Every line here is an analysis decision, not a technical detail: excluding a
+# term changes what the tool reports. These are excluded because they describe
+# something that happened to the PRESCRIPTION rather than to the PATIENT'S
+# BIOLOGY. A disproportionality score on them measures how a product is
+# packaged, dosed and dispensed -- real signals, but not pharmacological ones,
+# and not what this tool claims to detect.
+#
+# Lines starting with # are ignored.
+
+# -- Absence of an event, or a non-event -------------------------------------
+NO ADVERSE EVENT
+UNEVALUABLE EVENT
+CONDITION AGGRAVATED
+
+# -- Efficacy rather than harm -----------------------------------------------
+# "The drug did not work well enough" is not an adverse reaction. WEIGHT LOSS
+# POOR ranked fourth for semaglutide (ROR 39.2) purely because weight loss is
+# what the drug is taken for -- the term cannot appear for a drug nobody takes
+# to lose weight, so its disproportionality measures the indication.
+DRUG INEFFECTIVE
+THERAPY NON-RESPONDER
+THERAPEUTIC RESPONSE CHANGED
+THERAPEUTIC RESPONSE DECREASED
+THERAPEUTIC RESPONSE UNEXPECTED
+WEIGHT LOSS POOR
+PRODUCT COMMUNICATION ISSUE
+
+# -- Off-label / misuse ------------------------------------------------------
+OFF LABEL USE
+INTENTIONAL PRODUCT MISUSE
+TREATMENT NONCOMPLIANCE
+
+# -- Dosing and administration errors ----------------------------------------
+# For GLP-1 agonists these dominate the raw ranking (EXTRA DOSE ADMINISTERED
+# and INCORRECT DOSE ADMINISTERED came back first and fourth, ROR 24.8 and
+# 10.9). That is a true pattern about pen-injector devices and the weekly
+# dose-escalation schedule, not about the molecule. Left in, it would crowd
+# out the pharmacological signals the tool exists to surface.
+EXTRA DOSE ADMINISTERED
+INCORRECT DOSE ADMINISTERED
+ACCIDENTAL UNDERDOSE
+UNDERDOSE
+PRODUCT DOSE OMISSION
+PRODUCT DOSE OMISSION ISSUE
+DRUG DOSE OMITTED
+DRUG DOSE INCREASED
+DRUG DOSE DECREASED
+ACCIDENTAL OVERDOSE
+INAPPROPRIATE SCHEDULE OF PRODUCT ADMINISTRATION
+INCORRECT ROUTE OF PRODUCT ADMINISTRATION
+WRONG TECHNIQUE IN PRODUCT USAGE PROCESS
+PRODUCT ADMINISTRATION ERROR
+PRODUCT USE ISSUE
+MEDICATION ERROR
+DEVICE USE ERROR
+
+# -- Dispensing, storage and product quality ---------------------------------
+DRUG DISPENSING ERROR
+WRONG DRUG ADMINISTERED
+DRUG ADMINISTERED TO PATIENT OF INAPPROPRIATE AGE
+EXPIRED PRODUCT ADMINISTERED
+PRODUCT QUALITY ISSUE
+PRODUCT PREPARATION ISSUE
+PRODUCT STORAGE ERROR
+PRODUCT SUBSTITUTION ISSUE
+COUNTERFEIT PRODUCT
+
+# -- Interaction is a relationship, not a reaction ---------------------------
+DRUG INTERACTION
+
+# -- Social and administrative circumstances, not clinical events ------------
+# ECONOMIC PROBLEM surfaced for cerivastatin at ROR 30.4. It is a real thing
+# reporters wrote down, but it describes the aftermath of a withdrawn drug and
+# its litigation, not an effect of the molecule on the body.
+ECONOMIC PROBLEM
+INJURY
+PRODUCT AVAILABILITY ISSUE
+INSURANCE ISSUE
+LOSS OF PERSONAL INDEPENDENCE IN DAILY ACTIVITIES

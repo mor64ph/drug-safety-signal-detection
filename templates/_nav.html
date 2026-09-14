@@ -1,0 +1,51 @@
+{# The masthead, on every page. Sits outside the page container so the rule
+   under it runs the full width and the content below reads as a document set
+   beneath a running head rather than as a panel inside an application.
+
+   The unverified banner is persistent on purpose: an account that cannot
+   receive email will silently miss every notification it was created for, and
+   the user is the only one who can fix that. #}
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-brand">
+      <a href="{{ url_for('index') }}" class="wordmark">
+        <span class="wordmark-rule" aria-hidden="true"></span>rxsignal
+      </a>
+      <span class="wordmark-sub">FAERS disproportionality analysis</span>
+    </div>
+    <nav class="masthead-nav" aria-label="Tools">
+      <a href="{{ url_for('drug_list') }}">Several drugs</a>
+      <a href="{{ url_for('worksheet.worksheet') }}">Discussion aid</a>
+    </nav>
+    <nav class="masthead-nav" aria-label="Account">
+      {% if nav_user %}
+        <a href="{{ url_for('user_features.dashboard') }}">My drugs</a>
+        <a href="{{ url_for('user_features.notifications') }}">Alerts</a>
+        <a href="{{ url_for('auth.account') }}">Account</a>
+        <form method="post" action="{{ url_for('auth.logout') }}" class="m-0">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="linklike">Sign out</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Sign in</a>
+        <a href="{{ url_for('auth.register') }}">Create account</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+{% if nav_user and not nav_user.email_verified %}
+<div class="notice-band">
+  <div class="notice">
+    <p>
+      <strong>Confirm your email address.</strong>
+      We sent a link when you registered. Until it is opened you will not receive
+      alerts about the drugs you track, and you cannot add any.
+    </p>
+    <form method="post" action="{{ url_for('auth.resend_verification') }}" class="m-0">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-outline-secondary btn-sm">Resend link</button>
+    </form>
+  </div>
+</div>
+{% endif %}

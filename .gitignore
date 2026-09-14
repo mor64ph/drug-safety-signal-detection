@@ -1,0 +1,30 @@
+# Secrets -- never commit a real API key
+.env
+
+# Cached API responses and intermediate tables: large, rebuildable, and not
+# needed to serve.
+data/raw/
+data/flat/
+data/results/*
+
+# The scored table IS committed. The Dockerfile copies it into the image and
+# the host builds from this repository, so ignoring it means the build fails at
+# that COPY with a path that plainly exists on the developer's machine. ~17 MB,
+# well inside Git's comfortable range.
+!data/results/scored_pairs.parquet
+
+# Any SQLite database and its WAL/SHM sidecars. Globbed rather than named:
+# the accounts store holds real user data, and the sidecars from a throwaway
+# test database were picked up by an exact-name rule that did not match them.
+*.db
+*.db-wal
+*.db-shm
+
+# Mail written to disk when no SMTP server is configured; contains addresses
+data/outbox/
+
+# CA bundle exported from the Windows trust store at runtime
+winca.pem
+
+__pycache__/
+*.pyc
