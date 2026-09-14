@@ -20,6 +20,7 @@ data/*.db
 data/results/*
 !data/results/scored_pairs.parquet
 !data/results/label_interaction_pairs.json
+!data/results/drug_facts.json
 
 # CA bundle exported from the Windows trust store; the Linux image has its own.
 winca.pem

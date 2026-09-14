@@ -33,6 +33,7 @@ RUN sed -i 's/\r$//' docker-entrypoint.sh && chmod +x docker-entrypoint.sh
 # cache and 35 MB of label text, which are build inputs, not runtime ones.
 COPY data/results/scored_pairs.parquet ./data/results/scored_pairs.parquet
 COPY data/results/label_interaction_pairs.json ./data/results/label_interaction_pairs.json
+COPY data/results/drug_facts.json ./data/results/drug_facts.json
 
 # Run unprivileged: a web process has no reason to be able to write its own code.
 RUN useradd --create-home --shell /usr/sbin/nologin rxsignal \

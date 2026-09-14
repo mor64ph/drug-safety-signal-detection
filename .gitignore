@@ -17,6 +17,7 @@ data/results/*
 # the image builds from this repository. 2.5 MB. The 4.8 MB of raw label prose
 # it is derived from stays out -- data/raw/ is ignored above.
 !data/results/label_interaction_pairs.json
+!data/results/drug_facts.json
 
 # Any SQLite database and its WAL/SHM sidecars. Globbed rather than named:
 # the accounts store holds real user data, and the sidecars from a throwaway

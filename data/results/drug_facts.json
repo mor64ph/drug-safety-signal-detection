@@ -1,0 +1,1848 @@
+{
+ "ace_inhibitor": {
+  "applications": 134,
+  "first_approval": "1981-04-06",
+  "from_class_members": true,
+  "years_marketed": 45.3
+ },
+ "acetaminophen": {
+  "applications": 499,
+  "first_approval": "1968-11-07",
+  "years_marketed": 57.7
+ },
+ "acyclovir": {
+  "applications": 97,
+  "first_approval": "1982-03-29",
+  "years_marketed": 44.3
+ },
+ "adalimumab": {
+  "applications": 11,
+  "first_approval": "2002-12-31",
+  "years_marketed": 23.6
+ },
+ "aflibercept": {
+  "applications": 9,
+  "first_approval": "2011-11-18",
+  "years_marketed": 14.7
+ },
+ "albuterol": {
+  "applications": 101,
+  "first_approval": "1981-05-01",
+  "years_marketed": 45.2
+ },
+ "aldosterone": {
+  "applications": 41,
+  "first_approval": "1960-01-21",
+  "from_class_members": true,
+  "years_marketed": 66.5
+ },
+ "alendronate": {
+  "applications": 21,
+  "first_approval": "1995-09-29",
+  "years_marketed": 30.8
+ },
+ "alirocumab": {
+  "applications": 1,
+  "first_approval": "2015-07-24",
+  "years_marketed": 11.0
+ },
+ "allopurinol": {
+  "applications": 30,
+  "first_approval": "1966-08-19",
+  "years_marketed": 59.9
+ },
+ "alpha_blocker": {
+  "applications": 66,
+  "first_approval": "1976-06-23",
+  "from_class_members": true,
+  "years_marketed": 50.1
+ },
+ "alprazolam": {
+  "applications": 39,
+  "first_approval": "1981-10-16",
+  "years_marketed": 44.8
+ },
+ "amiodarone": {
+  "applications": 35,
+  "first_approval": "1985-12-24",
+  "years_marketed": 40.6
+ },
+ "amitriptyline": {
+  "applications": 115,
+  "first_approval": "1961-04-07",
+  "years_marketed": 65.3
+ },
+ "amlodipine": {
+  "applications": 115,
+  "first_approval": "1992-07-31",
+  "years_marketed": 34.0
+ },
+ "amoxicillin": {
+  "applications": 114,
+  "first_approval": "1974-01-18",
+  "years_marketed": 52.5
+ },
+ "amphetamine": {
+  "applications": 102,
+  "first_approval": "1955-09-09",
+  "years_marketed": 70.9
+ },
+ "anastrozole": {
+  "applications": 20,
+  "first_approval": "1995-12-27",
+  "years_marketed": 30.6
+ },
+ "antiarrhythmic": {
+  "applications": 86,
+  "first_approval": "1954-11-16",
+  "from_class_members": true,
+  "years_marketed": 71.7
+ },
+ "antiepileptic": {
+  "applications": 489,
+  "first_approval": "1953-01-06",
+  "from_class_members": true,
+  "years_marketed": 73.6
+ },
+ "antifungal": {
+  "applications": 82,
+  "first_approval": "1990-01-29",
+  "from_class_members": true,
+  "years_marketed": 36.5
+ },
+ "antihistamine": {
+  "applications": 346,
+  "first_approval": "1946-03-04",
+  "from_class_members": true,
+  "years_marketed": 80.4
+ },
+ "antiviral_hiv": {
+  "applications": 138,
+  "first_approval": "1998-09-17",
+  "from_class_members": true,
+  "years_marketed": 27.9
+ },
+ "apixaban": {
+  "applications": 15,
+  "first_approval": "2012-12-28",
+  "years_marketed": 13.6
+ },
+ "arb": {
+  "applications": 281,
+  "first_approval": "1995-04-14",
+  "from_class_members": true,
+  "years_marketed": 31.3
+ },
+ "aripiprazole": {
+  "applications": 48,
+  "first_approval": "2002-11-15",
+  "years_marketed": 23.7
+ },
+ "aspirin": {
+  "applications": 91,
+  "first_approval": "1950-04-12",
+  "years_marketed": 76.3
+ },
+ "atenolol": {
+  "applications": 40,
+  "first_approval": "1981-08-19",
+  "years_marketed": 44.9
+ },
+ "atezolizumab": {
+  "applications": 3,
+  "first_approval": "2016-05-18",
+  "years_marketed": 10.2
+ },
+ "atorvastatin": {
+  "applications": 43,
+  "first_approval": "1996-12-17",
+  "years_marketed": 29.6
+ },
+ "atypical_antipsychotic": {
+  "applications": 272,
+  "first_approval": "1989-09-26",
+  "from_class_members": true,
+  "years_marketed": 36.8
+ },
+ "azathioprine": {
+  "applications": 8,
+  "first_approval": "1968-03-20",
+  "years_marketed": 58.4
+ },
+ "azithromycin": {
+  "applications": 73,
+  "first_approval": "1991-11-01",
+  "years_marketed": 34.7
+ },
+ "baclofen": {
+  "applications": 47,
+  "first_approval": "1977-11-22",
+  "years_marketed": 48.7
+ },
+ "baricitinib": {
+  "applications": 3,
+  "first_approval": "2018-05-31",
+  "years_marketed": 8.2
+ },
+ "benzodiazepine": {
+  "applications": 246,
+  "first_approval": "1963-11-15",
+  "from_class_members": true,
+  "years_marketed": 62.7
+ },
+ "beta_blocker": {
+  "applications": 284,
+  "first_approval": "1967-11-13",
+  "from_class_members": true,
+  "years_marketed": 58.7
+ },
+ "bevacizumab": {
+  "applications": 8,
+  "first_approval": "2004-02-26",
+  "years_marketed": 22.4
+ },
+ "bisoprolol": {
+  "applications": 30,
+  "first_approval": "1992-07-31",
+  "years_marketed": 34.0
+ },
+ "bone": {
+  "applications": 99,
+  "first_approval": "1995-09-29",
+  "from_class_members": true,
+  "years_marketed": 30.8
+ },
+ "bortezomib": {
+  "applications": 29,
+  "first_approval": "2003-05-13",
+  "years_marketed": 23.2
+ },
+ "budesonide": {
+  "applications": 38,
+  "first_approval": "1994-02-14",
+  "years_marketed": 32.5
+ },
+ "bumetanide": {
+  "applications": 26,
+  "first_approval": "1983-02-28",
+  "years_marketed": 43.4
+ },
+ "buprenorphine": {
+  "applications": 52,
+  "first_approval": "1981-12-29",
+  "years_marketed": 44.6
+ },
+ "bupropion": {
+  "applications": 72,
+  "first_approval": "1985-12-30",
+  "years_marketed": 40.6
+ },
+ "calcium carbonate": {
+  "applications": 4,
+  "first_approval": "2000-10-16",
+  "years_marketed": 25.8
+ },
+ "canagliflozin": {
+  "applications": 5,
+  "first_approval": "2013-03-29",
+  "years_marketed": 13.3
+ },
+ "candesartan": {
+  "applications": 15,
+  "first_approval": "1998-06-04",
+  "years_marketed": 28.2
+ },
+ "capecitabine": {
+  "applications": 15,
+  "first_approval": "1998-04-30",
+  "years_marketed": 28.2
+ },
+ "captopril": {
+  "applications": 32,
+  "first_approval": "1981-04-06",
+  "years_marketed": 45.3
+ },
+ "carbamazepine": {
+  "applications": 49,
+  "first_approval": "1968-03-11",
+  "years_marketed": 58.4
+ },
+ "carboplatin": {
+  "applications": 37,
+  "first_approval": "1989-03-03",
+  "years_marketed": 37.4
+ },
+ "carvedilol": {
+  "applications": 21,
+  "first_approval": "1995-09-14",
+  "years_marketed": 30.9
+ },
+ "ccb": {
+  "applications": 310,
+  "first_approval": "1981-08-12",
+  "from_class_members": true,
+  "years_marketed": 45.0
+ },
+ "ceftriaxone": {
+  "applications": 41,
+  "first_approval": "1984-12-21",
+  "years_marketed": 41.6
+ },
+ "celecoxib": {
+  "applications": 32,
+  "first_approval": "1998-12-31",
+  "years_marketed": 27.6
+ },
+ "cephalexin": {
+  "applications": 48,
+  "first_approval": "1971-01-04",
+  "years_marketed": 55.6
+ },
+ "cerivastatin": {
+  "applications": 1,
+  "first_approval": "1997-06-26",
+  "years_marketed": 29.1
+ },
+ "certolizumab": {
+  "applications": 1,
+  "first_approval": "2008-04-22",
+  "years_marketed": 18.3
+ },
+ "cetirizine": {
+  "applications": 78,
+  "first_approval": "1995-12-08",
+  "years_marketed": 30.6
+ },
+ "chlorpromazine": {
+  "applications": 66,
+  "first_approval": "1957-09-18",
+  "years_marketed": 68.9
+ },
+ "chlorthalidone": {
+  "applications": 69,
+  "first_approval": "1960-04-07",
+  "years_marketed": 66.3
+ },
+ "cholecalciferol": {
+  "applications": 26,
+  "first_approval": "1941-01-11",
+  "years_marketed": 85.5
+ },
+ "ciclosporin": {
+  "applications": 37,
+  "first_approval": "1983-11-14",
+  "years_marketed": 42.7
+ },
+ "ciprofloxacin": {
+  "applications": 65,
+  "first_approval": "1987-10-22",
+  "years_marketed": 38.8
+ },
+ "cisplatin": {
+  "applications": 10,
+  "first_approval": "1978-12-19",
+  "years_marketed": 47.6
+ },
+ "citalopram": {
+  "applications": 37,
+  "first_approval": "1998-07-17",
+  "years_marketed": 28.0
+ },
+ "clarithromycin": {
+  "applications": 33,
+  "first_approval": "1991-10-31",
+  "years_marketed": 34.7
+ },
+ "clindamycin": {
+  "applications": 128,
+  "first_approval": "1970-02-22",
+  "years_marketed": 56.4
+ },
+ "clonazepam": {
+  "applications": 19,
+  "first_approval": "1975-06-04",
+  "years_marketed": 51.2
+ },
+ "clopidogrel": {
+  "applications": 26,
+  "first_approval": "1997-11-17",
+  "years_marketed": 28.7
+ },
+ "clozapine": {
+  "applications": 16,
+  "first_approval": "1989-09-26",
+  "years_marketed": 36.8
+ },
+ "codeine": {
+  "applications": 152,
+  "first_approval": "1952-01-21",
+  "years_marketed": 74.5
+ },
+ "colchicine": {
+  "applications": 33,
+  "first_approval": "1961-07-27",
+  "years_marketed": 65.0
+ },
+ "corticosteroid": {
+  "applications": 845,
+  "first_approval": "1951-12-21",
+  "from_class_members": true,
+  "years_marketed": 74.6
+ },
+ "cyanocobalamin": {
+  "applications": 48,
+  "first_approval": "1947-07-28",
+  "years_marketed": 79.0
+ },
+ "cyclobenzaprine": {
+  "applications": 26,
+  "first_approval": "1977-08-26",
+  "years_marketed": 48.9
+ },
+ "cyclophosphamide": {
+  "applications": 31,
+  "first_approval": "1959-11-16",
+  "years_marketed": 66.7
+ },
+ "dabigatran": {
+  "applications": 11,
+  "first_approval": "2010-10-19",
+  "years_marketed": 15.8
+ },
+ "dapagliflozin": {
+  "applications": 31,
+  "first_approval": "2014-01-08",
+  "years_marketed": 12.6
+ },
+ "denosumab": {
+  "applications": 12,
+  "first_approval": "2010-06-01",
+  "years_marketed": 16.2
+ },
+ "desvenlafaxine": {
+  "applications": 16,
+  "first_approval": "2008-02-29",
+  "years_marketed": 18.4
+ },
+ "dexamethasone": {
+  "applications": 124,
+  "first_approval": "1958-10-30",
+  "years_marketed": 67.7
+ },
+ "diazepam": {
+  "applications": 69,
+  "first_approval": "1963-11-15",
+  "years_marketed": 62.7
+ },
+ "diclofenac": {
+  "applications": 99,
+  "first_approval": "1988-07-28",
+  "years_marketed": 38.0
+ },
+ "digoxin": {
+  "applications": 19,
+  "first_approval": "1954-11-16",
+  "years_marketed": 71.7
+ },
+ "diltiazem": {
+  "applications": 71,
+  "first_approval": "1982-11-05",
+  "years_marketed": 43.7
+ },
+ "diphenhydramine": {
+  "applications": 71,
+  "first_approval": "1946-03-04",
+  "years_marketed": 80.4
+ },
+ "dmard": {
+  "applications": 95,
+  "first_approval": "1950-06-20",
+  "from_class_members": true,
+  "years_marketed": 76.1
+ },
+ "docetaxel": {
+  "applications": 31,
+  "first_approval": "1996-05-14",
+  "years_marketed": 30.2
+ },
+ "dolutegravir": {
+  "applications": 6,
+  "first_approval": "2013-08-12",
+  "years_marketed": 13.0
+ },
+ "donepezil": {
+  "applications": 57,
+  "first_approval": "1996-11-25",
+  "years_marketed": 29.7
+ },
+ "doxazosin": {
+  "applications": 21,
+  "first_approval": "1990-11-02",
+  "years_marketed": 35.7
+ },
+ "doxorubicin": {
+  "applications": 30,
+  "first_approval": "1974-08-07",
+  "years_marketed": 52.0
+ },
+ "doxycycline": {
+  "applications": 135,
+  "first_approval": "1967-12-05",
+  "years_marketed": 58.7
+ },
+ "dpp4": {
+  "applications": 32,
+  "first_approval": "2006-10-16",
+  "from_class_members": true,
+  "years_marketed": 19.8
+ },
+ "dulaglutide": {
+  "applications": 1,
+  "first_approval": "2014-09-18",
+  "years_marketed": 11.9
+ },
+ "duloxetine": {
+  "applications": 29,
+  "first_approval": "2004-08-03",
+  "years_marketed": 22.0
+ },
+ "dupilumab": {
+  "applications": 1,
+  "first_approval": "2017-03-28",
+  "years_marketed": 9.3
+ },
+ "dutasteride": {
+  "applications": 25,
+  "first_approval": "2001-11-20",
+  "years_marketed": 24.7
+ },
+ "edoxaban": {
+  "applications": 1,
+  "first_approval": "2015-01-08",
+  "years_marketed": 11.6
+ },
+ "efavirenz": {
+  "applications": 26,
+  "first_approval": "1998-09-17",
+  "years_marketed": 27.9
+ },
+ "empagliflozin": {
+  "applications": 7,
+  "first_approval": "2014-08-01",
+  "years_marketed": 12.0
+ },
+ "emtricitabine": {
+  "applications": 41,
+  "first_approval": "2003-07-02",
+  "years_marketed": 23.1
+ },
+ "enalapril": {
+  "applications": 37,
+  "first_approval": "1985-12-24",
+  "years_marketed": 40.6
+ },
+ "enoxaparin": {
+  "applications": 13,
+  "first_approval": "1993-03-29",
+  "years_marketed": 33.3
+ },
+ "eplerenone": {
+  "applications": 10,
+  "first_approval": "2002-09-27",
+  "years_marketed": 23.8
+ },
+ "escitalopram": {
+  "applications": 29,
+  "first_approval": "2002-08-14",
+  "years_marketed": 24.0
+ },
+ "esomeprazole": {
+  "applications": 71,
+  "first_approval": "2001-02-20",
+  "years_marketed": 25.4
+ },
+ "estradiol": {
+  "applications": 466,
+  "first_approval": "1943-06-25",
+  "years_marketed": 83.1
+ },
+ "etanercept": {
+  "applications": 3,
+  "first_approval": "1998-11-02",
+  "years_marketed": 27.7
+ },
+ "ethinylestradiol": {
+  "applications": 365,
+  "first_approval": "1943-06-25",
+  "years_marketed": 83.1
+ },
+ "evolocumab": {
+  "applications": 1,
+  "first_approval": "2015-08-27",
+  "years_marketed": 10.9
+ },
+ "exenatide": {
+  "applications": 5,
+  "first_approval": "2005-04-28",
+  "years_marketed": 21.3
+ },
+ "ezetimibe": {
+  "applications": 31,
+  "first_approval": "2002-10-25",
+  "years_marketed": 23.8
+ },
+ "factor_xa": {
+  "applications": 43,
+  "first_approval": "2011-07-01",
+  "from_class_members": true,
+  "years_marketed": 15.1
+ },
+ "famotidine": {
+  "applications": 109,
+  "first_approval": "1986-10-15",
+  "years_marketed": 39.8
+ },
+ "febuxostat": {
+  "applications": 16,
+  "first_approval": "2009-02-13",
+  "years_marketed": 17.5
+ },
+ "felodipine": {
+  "applications": 15,
+  "first_approval": "1991-07-25",
+  "years_marketed": 35.0
+ },
+ "fenofibrate": {
+  "applications": 68,
+  "first_approval": "1993-12-31",
+  "years_marketed": 32.6
+ },
+ "fentanyl": {
+  "applications": 34,
+  "first_approval": "1968-02-19",
+  "years_marketed": 58.4
+ },
+ "ferrous sulfate": {
+  "applications": 1,
+  "first_approval": "1946-08-13",
+  "years_marketed": 80.0
+ },
+ "fexofenadine": {
+  "applications": 36,
+  "first_approval": "1996-07-25",
+  "years_marketed": 30.0
+ },
+ "finasteride": {
+  "applications": 27,
+  "first_approval": "1992-06-19",
+  "years_marketed": 34.1
+ },
+ "flecainide": {
+  "applications": 11,
+  "first_approval": "1985-10-31",
+  "years_marketed": 40.7
+ },
+ "fluconazole": {
+  "applications": 41,
+  "first_approval": "1990-01-29",
+  "years_marketed": 36.5
+ },
+ "fluoroquinolone": {
+  "applications": 144,
+  "first_approval": "1987-10-22",
+  "from_class_members": true,
+  "years_marketed": 38.8
+ },
+ "fluorouracil": {
+  "applications": 41,
+  "first_approval": "1962-04-25",
+  "years_marketed": 64.3
+ },
+ "fluoxetine": {
+  "applications": 80,
+  "first_approval": "1987-12-29",
+  "years_marketed": 38.6
+ },
+ "fluticasone": {
+  "applications": 52,
+  "first_approval": "1990-12-14",
+  "years_marketed": 35.6
+ },
+ "fluvastatin": {
+  "applications": 7,
+  "first_approval": "1993-12-31",
+  "years_marketed": 32.6
+ },
+ "fluvoxamine": {
+  "applications": 27,
+  "first_approval": "1994-12-05",
+  "years_marketed": 31.6
+ },
+ "folic acid": {
+  "applications": 52,
+  "first_approval": "1946-08-13",
+  "years_marketed": 80.0
+ },
+ "formoterol": {
+  "applications": 23,
+  "first_approval": "2001-02-16",
+  "years_marketed": 25.4
+ },
+ "furosemide": {
+  "applications": 58,
+  "first_approval": "1966-07-01",
+  "years_marketed": 60.1
+ },
+ "gabapentin": {
+  "applications": 79,
+  "first_approval": "1993-12-30",
+  "years_marketed": 32.6
+ },
+ "gemcitabine": {
+  "applications": 34,
+  "first_approval": "1996-05-15",
+  "years_marketed": 30.2
+ },
+ "gemfibrozil": {
+  "applications": 18,
+  "first_approval": "1981-12-21",
+  "years_marketed": 44.6
+ },
+ "gentamicin": {
+  "applications": 47,
+  "first_approval": "1966-03-15",
+  "years_marketed": 60.4
+ },
+ "gi_other": {
+  "applications": 272,
+  "first_approval": "1976-12-28",
+  "from_class_members": true,
+  "years_marketed": 49.6
+ },
+ "glimepiride": {
+  "applications": 21,
+  "first_approval": "1995-11-30",
+  "years_marketed": 30.7
+ },
+ "glipizide": {
+  "applications": 30,
+  "first_approval": "1984-05-08",
+  "years_marketed": 42.2
+ },
+ "glp1": {
+  "applications": 29,
+  "first_approval": "2005-04-28",
+  "from_class_members": true,
+  "years_marketed": 21.3
+ },
+ "glyburide": {
+  "applications": 27,
+  "first_approval": "1984-05-01",
+  "years_marketed": 42.2
+ },
+ "golimumab": {
+  "applications": 3,
+  "first_approval": "2009-04-24",
+  "years_marketed": 17.3
+ },
+ "guselkumab": {
+  "applications": 1,
+  "first_approval": "2017-07-13",
+  "years_marketed": 9.0
+ },
+ "h2ra": {
+  "applications": 194,
+  "first_approval": "1983-06-09",
+  "from_class_members": true,
+  "years_marketed": 43.1
+ },
+ "haloperidol": {
+  "applications": 83,
+  "first_approval": "1967-04-12",
+  "years_marketed": 59.3
+ },
+ "heparin": {
+  "applications": 59,
+  "first_approval": "1939-02-09",
+  "years_marketed": 87.5
+ },
+ "hormone_cancer": {
+  "applications": 55,
+  "first_approval": "1977-12-30",
+  "from_class_members": true,
+  "years_marketed": 48.6
+ },
+ "hormone_sex": {
+  "applications": 1043,
+  "first_approval": "1943-06-25",
+  "from_class_members": true,
+  "years_marketed": 83.1
+ },
+ "hydrochlorothiazide": {
+  "applications": 376,
+  "first_approval": "1959-02-12",
+  "years_marketed": 67.5
+ },
+ "hydrocodone": {
+  "applications": 194,
+  "first_approval": "1943-03-23",
+  "years_marketed": 83.4
+ },
+ "hydrocortisone": {
+  "applications": 205,
+  "first_approval": "1951-12-21",
+  "years_marketed": 74.6
+ },
+ "hydroxychloroquine": {
+  "applications": 17,
+  "first_approval": "1955-04-18",
+  "years_marketed": 71.3
+ },
+ "hydroxyzine": {
+  "applications": 105,
+  "first_approval": "1956-04-12",
+  "years_marketed": 70.3
+ },
+ "hypnotic": {
+  "applications": 56,
+  "first_approval": "1992-12-16",
+  "from_class_members": true,
+  "years_marketed": 33.6
+ },
+ "ibrutinib": {
+  "applications": 5,
+  "first_approval": "2013-11-13",
+  "years_marketed": 12.7
+ },
+ "ibuprofen": {
+  "applications": 247,
+  "first_approval": "1974-09-19",
+  "years_marketed": 51.9
+ },
+ "imatinib": {
+  "applications": 19,
+  "first_approval": "2001-05-10",
+  "years_marketed": 25.2
+ },
+ "immunosuppressant": {
+  "applications": 139,
+  "first_approval": "1968-03-20",
+  "from_class_members": true,
+  "years_marketed": 58.4
+ },
+ "indapamide": {
+  "applications": 10,
+  "first_approval": "1983-07-06",
+  "years_marketed": 43.1
+ },
+ "indomethacin": {
+  "applications": 62,
+  "first_approval": "1965-06-10",
+  "years_marketed": 61.1
+ },
+ "infliximab": {
+  "applications": 6,
+  "first_approval": "1998-08-24",
+  "years_marketed": 27.9
+ },
+ "insulin": {
+  "applications": 33,
+  "first_approval": "1982-10-28",
+  "from_class_members": true,
+  "years_marketed": 43.8
+ },
+ "insulin aspart": {
+  "applications": 8,
+  "first_approval": "2000-06-07",
+  "years_marketed": 26.1
+ },
+ "insulin degludec": {
+  "applications": 3,
+  "first_approval": "2015-09-25",
+  "years_marketed": 10.8
+ },
+ "insulin glargine": {
+  "applications": 8,
+  "first_approval": "2000-04-20",
+  "years_marketed": 26.3
+ },
+ "insulin human": {
+  "applications": 8,
+  "first_approval": "1982-10-28",
+  "years_marketed": 43.8
+ },
+ "insulin lispro": {
+  "applications": 6,
+  "first_approval": "1996-06-14",
+  "years_marketed": 30.1
+ },
+ "interleukin": {
+  "applications": 23,
+  "first_approval": "2009-09-25",
+  "from_class_members": true,
+  "years_marketed": 16.8
+ },
+ "ipratropium": {
+  "applications": 45,
+  "first_approval": "1986-12-29",
+  "years_marketed": 39.6
+ },
+ "irbesartan": {
+  "applications": 40,
+  "first_approval": "1997-09-30",
+  "years_marketed": 28.8
+ },
+ "isoniazid": {
+  "applications": 35,
+  "first_approval": "1952-09-29",
+  "years_marketed": 73.8
+ },
+ "isosorbide mononitrate": {
+  "applications": 23,
+  "first_approval": "1991-12-30",
+  "years_marketed": 34.6
+ },
+ "itraconazole": {
+  "applications": 20,
+  "first_approval": "1992-09-11",
+  "years_marketed": 33.9
+ },
+ "jak_inhibitor": {
+  "applications": 35,
+  "first_approval": "2012-11-06",
+  "from_class_members": true,
+  "years_marketed": 13.7
+ },
+ "ketorolac": {
+  "applications": 64,
+  "first_approval": "1989-11-30",
+  "years_marketed": 36.7
+ },
+ "lamotrigine": {
+  "applications": 59,
+  "first_approval": "1994-12-27",
+  "years_marketed": 31.6
+ },
+ "lansoprazole": {
+  "applications": 41,
+  "first_approval": "1995-05-10",
+  "years_marketed": 31.2
+ },
+ "latanoprost": {
+  "applications": 16,
+  "first_approval": "1996-06-05",
+  "years_marketed": 30.1
+ },
+ "leflunomide": {
+  "applications": 13,
+  "first_approval": "1998-09-10",
+  "years_marketed": 27.9
+ },
+ "lenalidomide": {
+  "applications": 21,
+  "first_approval": "2005-12-27",
+  "years_marketed": 20.6
+ },
+ "letrozole": {
+  "applications": 21,
+  "first_approval": "1997-07-25",
+  "years_marketed": 29.0
+ },
+ "levetiracetam": {
+  "applications": 113,
+  "first_approval": "1999-11-30",
+  "years_marketed": 26.7
+ },
+ "levodopa": {
+  "applications": 54,
+  "first_approval": "1970-06-04",
+  "years_marketed": 56.2
+ },
+ "levofloxacin": {
+  "applications": 48,
+  "first_approval": "1996-12-20",
+  "years_marketed": 29.6
+ },
+ "levonorgestrel": {
+  "applications": 110,
+  "first_approval": "1979-07-26",
+  "years_marketed": 47.0
+ },
+ "levothyroxine": {
+  "applications": 34,
+  "first_approval": "2000-08-21",
+  "years_marketed": 25.9
+ },
+ "linagliptin": {
+  "applications": 17,
+  "first_approval": "2011-05-02",
+  "years_marketed": 15.2
+ },
+ "liraglutide": {
+  "applications": 14,
+  "first_approval": "2010-01-25",
+  "years_marketed": 16.5
+ },
+ "lisdexamfetamine": {
+  "applications": 25,
+  "first_approval": "2007-02-23",
+  "years_marketed": 19.4
+ },
+ "lisinopril": {
+  "applications": 38,
+  "first_approval": "1987-12-29",
+  "years_marketed": 38.6
+ },
+ "lithium": {
+  "applications": 38,
+  "first_approval": "1970-04-06",
+  "years_marketed": 56.3
+ },
+ "lixisenatide": {
+  "applications": 2,
+  "first_approval": "2016-07-27",
+  "years_marketed": 10.0
+ },
+ "loop_diuretic": {
+  "applications": 99,
+  "first_approval": "1966-07-01",
+  "from_class_members": true,
+  "years_marketed": 60.1
+ },
+ "loperamide": {
+  "applications": 46,
+  "first_approval": "1976-12-28",
+  "years_marketed": 49.6
+ },
+ "loratadine": {
+  "applications": 56,
+  "first_approval": "1993-04-12",
+  "years_marketed": 33.3
+ },
+ "lorazepam": {
+  "applications": 56,
+  "first_approval": "1977-09-30",
+  "years_marketed": 48.8
+ },
+ "losartan": {
+  "applications": 46,
+  "first_approval": "1995-04-14",
+  "years_marketed": 31.3
+ },
+ "lovastatin": {
+  "applications": 12,
+  "first_approval": "1987-08-31",
+  "years_marketed": 38.9
+ },
+ "lurasidone": {
+  "applications": 20,
+  "first_approval": "2010-10-28",
+  "years_marketed": 15.8
+ },
+ "magnesium oxide": {
+  "applications": 5,
+  "first_approval": "1982-06-22",
+  "years_marketed": 44.1
+ },
+ "medroxyprogesterone": {
+  "applications": 29,
+  "first_approval": "1959-06-18",
+  "years_marketed": 67.1
+ },
+ "meloxicam": {
+  "applications": 34,
+  "first_approval": "2000-04-13",
+  "years_marketed": 26.3
+ },
+ "memantine": {
+  "applications": 51,
+  "first_approval": "2003-10-16",
+  "years_marketed": 22.8
+ },
+ "mesalamine": {
+  "applications": 44,
+  "first_approval": "1987-12-24",
+  "years_marketed": 38.6
+ },
+ "metformin": {
+  "applications": 173,
+  "first_approval": "1995-03-03",
+  "years_marketed": 31.4
+ },
+ "methadone": {
+  "applications": 34,
+  "first_approval": "1947-08-13",
+  "years_marketed": 79.0
+ },
+ "methimazole": {
+  "applications": 12,
+  "first_approval": "1950-06-21",
+  "years_marketed": 76.1
+ },
+ "methotrexate": {
+  "applications": 51,
+  "first_approval": "1953-12-07",
+  "years_marketed": 72.6
+ },
+ "methylphenidate": {
+  "applications": 89,
+  "first_approval": "1955-12-05",
+  "years_marketed": 70.7
+ },
+ "methylprednisolone": {
+  "applications": 75,
+  "first_approval": "1957-10-24",
+  "years_marketed": 68.8
+ },
+ "metoclopramide": {
+  "applications": 47,
+  "first_approval": "1979-02-07",
+  "years_marketed": 47.5
+ },
+ "metoprolol": {
+  "applications": 73,
+  "first_approval": "1978-08-07",
+  "years_marketed": 48.0
+ },
+ "metronidazole": {
+  "applications": 87,
+  "first_approval": "1963-07-18",
+  "years_marketed": 63.0
+ },
+ "midazolam": {
+  "applications": 45,
+  "first_approval": "1985-12-20",
+  "years_marketed": 40.6
+ },
+ "minocycline": {
+  "applications": 39,
+  "first_approval": "1971-06-30",
+  "years_marketed": 55.1
+ },
+ "mirabegron": {
+  "applications": 12,
+  "first_approval": "2012-06-28",
+  "years_marketed": 14.1
+ },
+ "mirtazapine": {
+  "applications": 26,
+  "first_approval": "1996-06-14",
+  "years_marketed": 30.1
+ },
+ "montelukast": {
+  "applications": 52,
+  "first_approval": "1998-02-20",
+  "years_marketed": 28.4
+ },
+ "mood_stabilizer": {
+  "applications": 104,
+  "first_approval": "1970-04-06",
+  "from_class_members": true,
+  "years_marketed": 56.3
+ },
+ "morphine": {
+  "applications": 77,
+  "first_approval": "1984-09-18",
+  "years_marketed": 41.9
+ },
+ "moxifloxacin": {
+  "applications": 31,
+  "first_approval": "1999-12-10",
+  "years_marketed": 26.6
+ },
+ "mycophenolate": {
+  "applications": 68,
+  "first_approval": "1995-05-03",
+  "years_marketed": 31.2
+ },
+ "naproxen": {
+  "applications": 105,
+  "first_approval": "1976-03-11",
+  "years_marketed": 50.4
+ },
+ "nebivolol": {
+  "applications": 21,
+  "first_approval": "2007-12-17",
+  "years_marketed": 18.6
+ },
+ "niacin": {
+  "applications": 29,
+  "first_approval": "1957-07-24",
+  "years_marketed": 69.0
+ },
+ "nifedipine": {
+  "applications": 36,
+  "first_approval": "1981-12-31",
+  "years_marketed": 44.6
+ },
+ "nirmatrelvir": {
+  "applications": 1,
+  "first_approval": "2023-05-25",
+  "years_marketed": 3.2
+ },
+ "nitrate": {
+  "applications": 75,
+  "first_approval": "1981-05-28",
+  "from_class_members": true,
+  "years_marketed": 45.2
+ },
+ "nitrofurantoin": {
+  "applications": 42,
+  "first_approval": "1953-02-06",
+  "years_marketed": 73.5
+ },
+ "nitroglycerin": {
+  "applications": 52,
+  "first_approval": "1981-05-28",
+  "years_marketed": 45.2
+ },
+ "nivolumab": {
+  "applications": 5,
+  "first_approval": "2014-12-22",
+  "years_marketed": 11.6
+ },
+ "nortriptyline": {
+  "applications": 15,
+  "first_approval": "1964-11-06",
+  "years_marketed": 61.7
+ },
+ "nsaid": {
+  "applications": 643,
+  "first_approval": "1965-06-10",
+  "from_class_members": true,
+  "years_marketed": 61.1
+ },
+ "olanzapine": {
+  "applications": 56,
+  "first_approval": "1996-09-30",
+  "years_marketed": 29.8
+ },
+ "olmesartan": {
+  "applications": 66,
+  "first_approval": "2002-04-25",
+  "years_marketed": 24.3
+ },
+ "omalizumab": {
+  "applications": 2,
+  "first_approval": "2003-06-20",
+  "years_marketed": 23.1
+ },
+ "omeprazole": {
+  "applications": 63,
+  "first_approval": "1989-09-14",
+  "years_marketed": 36.9
+ },
+ "oncology_cytotoxic": {
+  "applications": 253,
+  "first_approval": "1959-11-16",
+  "from_class_members": true,
+  "years_marketed": 66.7
+ },
+ "oncology_immuno": {
+  "applications": 10,
+  "first_approval": "2014-09-04",
+  "from_class_members": true,
+  "years_marketed": 11.9
+ },
+ "oncology_kinase": {
+  "applications": 28,
+  "first_approval": "2001-05-10",
+  "from_class_members": true,
+  "years_marketed": 25.2
+ },
+ "oncology_targeted": {
+  "applications": 75,
+  "first_approval": "1997-11-26",
+  "from_class_members": true,
+  "years_marketed": 28.7
+ },
+ "ondansetron": {
+  "applications": 82,
+  "first_approval": "1991-01-04",
+  "years_marketed": 35.6
+ },
+ "ophthalmic": {
+  "applications": 120,
+  "first_approval": "1978-08-17",
+  "from_class_members": true,
+  "years_marketed": 48.0
+ },
+ "opioid": {
+  "applications": 739,
+  "first_approval": "1943-03-23",
+  "from_class_members": true,
+  "years_marketed": 83.4
+ },
+ "oseltamivir": {
+  "applications": 39,
+  "first_approval": "1999-10-27",
+  "years_marketed": 26.8
+ },
+ "osimertinib": {
+  "applications": 1,
+  "first_approval": "2015-11-13",
+  "years_marketed": 10.7
+ },
+ "oxcarbazepine": {
+  "applications": 35,
+  "first_approval": "2000-01-14",
+  "years_marketed": 26.5
+ },
+ "oxybutynin": {
+  "applications": 40,
+  "first_approval": "1975-07-16",
+  "years_marketed": 51.0
+ },
+ "oxycodone": {
+  "applications": 135,
+  "first_approval": "1950-04-12",
+  "years_marketed": 76.3
+ },
+ "p2y12": {
+  "applications": 59,
+  "first_approval": "1997-11-17",
+  "from_class_members": true,
+  "years_marketed": 28.7
+ },
+ "paclitaxel": {
+  "applications": 24,
+  "first_approval": "1992-12-29",
+  "years_marketed": 33.6
+ },
+ "palbociclib": {
+  "applications": 3,
+  "first_approval": "2015-02-03",
+  "years_marketed": 11.5
+ },
+ "paliperidone": {
+  "applications": 20,
+  "first_approval": "2006-12-19",
+  "years_marketed": 19.6
+ },
+ "pantoprazole": {
+  "applications": 47,
+  "first_approval": "2000-02-02",
+  "years_marketed": 26.5
+ },
+ "parkinson": {
+  "applications": 110,
+  "first_approval": "1970-06-04",
+  "from_class_members": true,
+  "years_marketed": 56.2
+ },
+ "paroxetine": {
+  "applications": 35,
+  "first_approval": "1992-12-29",
+  "years_marketed": 33.6
+ },
+ "pembrolizumab": {
+  "applications": 2,
+  "first_approval": "2014-09-04",
+  "years_marketed": 11.9
+ },
+ "penicillin": {
+  "applications": 43,
+  "first_approval": "1947-02-06",
+  "years_marketed": 79.5
+ },
+ "perindopril": {
+  "applications": 7,
+  "first_approval": "1993-12-30",
+  "years_marketed": 32.6
+ },
+ "phenobarbital": {
+  "applications": 1,
+  "first_approval": "2022-11-17",
+  "years_marketed": 3.7
+ },
+ "phenytoin": {
+  "applications": 37,
+  "first_approval": "1953-01-06",
+  "years_marketed": 73.6
+ },
+ "pioglitazone": {
+  "applications": 27,
+  "first_approval": "1999-07-15",
+  "years_marketed": 27.0
+ },
+ "pitavastatin": {
+  "applications": 11,
+  "first_approval": "2009-08-03",
+  "years_marketed": 17.0
+ },
+ "polyethylene glycol": {
+  "applications": 50,
+  "first_approval": "1984-07-13",
+  "years_marketed": 42.0
+ },
+ "potassium chloride": {
+  "applications": 253,
+  "first_approval": "1965-12-16",
+  "years_marketed": 60.6
+ },
+ "ppi": {
+  "applications": 235,
+  "first_approval": "1989-09-14",
+  "from_class_members": true,
+  "years_marketed": 36.9
+ },
+ "pramipexole": {
+  "applications": 33,
+  "first_approval": "1997-07-01",
+  "years_marketed": 29.1
+ },
+ "prasugrel": {
+  "applications": 11,
+  "first_approval": "2009-07-10",
+  "years_marketed": 17.1
+ },
+ "pravastatin": {
+  "applications": 18,
+  "first_approval": "1991-10-31",
+  "years_marketed": 34.7
+ },
+ "prazosin": {
+  "applications": 24,
+  "first_approval": "1976-06-23",
+  "years_marketed": 50.1
+ },
+ "prednisolone": {
+  "applications": 100,
+  "first_approval": "1955-05-22",
+  "years_marketed": 71.2
+ },
+ "prednisone": {
+  "applications": 77,
+  "first_approval": "1955-02-21",
+  "years_marketed": 71.4
+ },
+ "pregabalin": {
+  "applications": 57,
+  "first_approval": "2004-12-30",
+  "years_marketed": 21.6
+ },
+ "propranolol": {
+  "applications": 99,
+  "first_approval": "1967-11-13",
+  "years_marketed": 58.7
+ },
+ "quetiapine": {
+  "applications": 41,
+  "first_approval": "1997-09-26",
+  "years_marketed": 28.8
+ },
+ "rabeprazole": {
+  "applications": 13,
+  "first_approval": "1999-08-19",
+  "years_marketed": 26.9
+ },
+ "ramipril": {
+  "applications": 20,
+  "first_approval": "1991-01-28",
+  "years_marketed": 35.5
+ },
+ "ranibizumab": {
+  "applications": 6,
+  "first_approval": "2006-06-30",
+  "years_marketed": 20.1
+ },
+ "ranitidine": {
+  "applications": 85,
+  "first_approval": "1983-06-09",
+  "years_marketed": 43.1
+ },
+ "remdesivir": {
+  "applications": 1,
+  "first_approval": "2020-10-22",
+  "years_marketed": 5.8
+ },
+ "respiratory": {
+  "applications": 238,
+  "first_approval": "1981-05-01",
+  "from_class_members": true,
+  "years_marketed": 45.2
+ },
+ "rifampicin": {
+  "applications": 18,
+  "first_approval": "1971-05-21",
+  "years_marketed": 55.2
+ },
+ "risedronate": {
+  "applications": 17,
+  "first_approval": "1998-03-27",
+  "years_marketed": 28.3
+ },
+ "risperidone": {
+  "applications": 56,
+  "first_approval": "1993-12-29",
+  "years_marketed": 32.6
+ },
+ "rituximab": {
+  "applications": 6,
+  "first_approval": "1997-11-26",
+  "years_marketed": 28.7
+ },
+ "rivaroxaban": {
+  "applications": 27,
+  "first_approval": "2011-07-01",
+  "years_marketed": 15.1
+ },
+ "rivastigmine": {
+  "applications": 19,
+  "first_approval": "2000-04-21",
+  "years_marketed": 26.3
+ },
+ "rizatriptan": {
+  "applications": 29,
+  "first_approval": "1998-06-29",
+  "years_marketed": 28.1
+ },
+ "ropinirole": {
+  "applications": 23,
+  "first_approval": "1997-09-19",
+  "years_marketed": 28.9
+ },
+ "rosiglitazone": {
+  "applications": 6,
+  "first_approval": "1999-05-25",
+  "years_marketed": 27.2
+ },
+ "rosuvastatin": {
+  "applications": 32,
+  "first_approval": "2003-08-12",
+  "years_marketed": 23.0
+ },
+ "salmeterol": {
+  "applications": 10,
+  "first_approval": "1994-02-04",
+  "years_marketed": 32.5
+ },
+ "secukinumab": {
+  "applications": 2,
+  "first_approval": "2015-01-21",
+  "years_marketed": 11.5
+ },
+ "semaglutide": {
+  "applications": 5,
+  "first_approval": "2017-12-05",
+  "years_marketed": 8.6
+ },
+ "sertraline": {
+  "applications": 37,
+  "first_approval": "1991-12-30",
+  "years_marketed": 34.6
+ },
+ "sglt2": {
+  "applications": 43,
+  "first_approval": "2013-03-29",
+  "from_class_members": true,
+  "years_marketed": 13.3
+ },
+ "sildenafil": {
+  "applications": 55,
+  "first_approval": "1998-03-27",
+  "years_marketed": 28.3
+ },
+ "simvastatin": {
+  "applications": 30,
+  "first_approval": "1991-12-23",
+  "years_marketed": 34.6
+ },
+ "sitagliptin": {
+  "applications": 15,
+  "first_approval": "2006-10-16",
+  "years_marketed": 19.8
+ },
+ "solifenacin": {
+  "applications": 28,
+  "first_approval": "2004-11-19",
+  "years_marketed": 21.7
+ },
+ "sotalol": {
+  "applications": 21,
+  "first_approval": "1992-10-30",
+  "years_marketed": 33.7
+ },
+ "spironolactone": {
+  "applications": 31,
+  "first_approval": "1960-01-21",
+  "years_marketed": 66.5
+ },
+ "ssri": {
+  "applications": 245,
+  "first_approval": "1987-12-29",
+  "from_class_members": true,
+  "years_marketed": 38.6
+ },
+ "statin": {
+  "applications": 154,
+  "first_approval": "1987-08-31",
+  "from_class_members": true,
+  "years_marketed": 38.9
+ },
+ "stimulant": {
+  "applications": 216,
+  "first_approval": "1955-09-09",
+  "from_class_members": true,
+  "years_marketed": 70.9
+ },
+ "sulfasalazine": {
+  "applications": 14,
+  "first_approval": "1950-06-20",
+  "years_marketed": 76.1
+ },
+ "sulfonylurea": {
+  "applications": 78,
+  "first_approval": "1984-05-01",
+  "from_class_members": true,
+  "years_marketed": 42.2
+ },
+ "sumatriptan": {
+  "applications": 53,
+  "first_approval": "1992-12-28",
+  "years_marketed": 33.6
+ },
+ "supplement": {
+  "applications": 389,
+  "first_approval": "1941-01-11",
+  "from_class_members": true,
+  "years_marketed": 85.5
+ },
+ "tacrolimus": {
+  "applications": 26,
+  "first_approval": "1994-04-08",
+  "years_marketed": 32.3
+ },
+ "tadalafil": {
+  "applications": 52,
+  "first_approval": "2003-11-21",
+  "years_marketed": 22.7
+ },
+ "tamoxifen": {
+  "applications": 14,
+  "first_approval": "1977-12-30",
+  "years_marketed": 48.6
+ },
+ "tamsulosin": {
+  "applications": 21,
+  "first_approval": "1997-04-15",
+  "years_marketed": 29.3
+ },
+ "tapentadol": {
+  "applications": 7,
+  "first_approval": "2008-11-20",
+  "years_marketed": 17.7
+ },
+ "telmisartan": {
+  "applications": 36,
+  "first_approval": "1998-11-10",
+  "years_marketed": 27.7
+ },
+ "temazepam": {
+  "applications": 18,
+  "first_approval": "1981-02-27",
+  "years_marketed": 45.4
+ },
+ "tenofovir": {
+  "applications": 65,
+  "first_approval": "2001-10-26",
+  "years_marketed": 24.8
+ },
+ "terbinafine": {
+  "applications": 21,
+  "first_approval": "1992-12-30",
+  "years_marketed": 33.6
+ },
+ "teriparatide": {
+  "applications": 6,
+  "first_approval": "2002-11-26",
+  "years_marketed": 23.7
+ },
+ "testosterone": {
+  "applications": 73,
+  "first_approval": "1953-12-24",
+  "years_marketed": 72.6
+ },
+ "tetracycline": {
+  "applications": 174,
+  "first_approval": "1967-12-05",
+  "from_class_members": true,
+  "years_marketed": 58.7
+ },
+ "thiazide": {
+  "applications": 455,
+  "first_approval": "1959-02-12",
+  "from_class_members": true,
+  "years_marketed": 67.5
+ },
+ "thiazolidinedione": {
+  "applications": 33,
+  "first_approval": "1999-05-25",
+  "from_class_members": true,
+  "years_marketed": 27.2
+ },
+ "ticagrelor": {
+  "applications": 22,
+  "first_approval": "2011-07-20",
+  "years_marketed": 15.0
+ },
+ "timolol": {
+  "applications": 89,
+  "first_approval": "1978-08-17",
+  "years_marketed": 48.0
+ },
+ "tiotropium": {
+  "applications": 5,
+  "first_approval": "2004-01-30",
+  "years_marketed": 22.5
+ },
+ "tirzepatide": {
+  "applications": 2,
+  "first_approval": "2022-05-13",
+  "years_marketed": 4.2
+ },
+ "tizanidine": {
+  "applications": 32,
+  "first_approval": "1996-11-27",
+  "years_marketed": 29.7
+ },
+ "tnf_blocker": {
+  "applications": 24,
+  "first_approval": "1998-08-24",
+  "from_class_members": true,
+  "years_marketed": 27.9
+ },
+ "tocilizumab": {
+  "applications": 7,
+  "first_approval": "2010-01-08",
+  "years_marketed": 16.6
+ },
+ "tofacitinib": {
+  "applications": 30,
+  "first_approval": "2012-11-06",
+  "years_marketed": 13.7
+ },
+ "topiramate": {
+  "applications": 59,
+  "first_approval": "1996-12-24",
+  "years_marketed": 29.6
+ },
+ "torsemide": {
+  "applications": 15,
+  "first_approval": "1993-08-23",
+  "years_marketed": 32.9
+ },
+ "tramadol": {
+  "applications": 54,
+  "first_approval": "1995-03-03",
+  "years_marketed": 31.4
+ },
+ "trastuzumab": {
+  "applications": 11,
+  "first_approval": "1998-09-25",
+  "years_marketed": 27.8
+ },
+ "trazodone": {
+  "applications": 28,
+  "first_approval": "1981-12-24",
+  "years_marketed": 44.6
+ },
+ "triamcinolone": {
+  "applications": 174,
+  "first_approval": "1957-12-03",
+  "years_marketed": 68.7
+ },
+ "trimethoprim": {
+  "applications": 69,
+  "first_approval": "1965-07-01",
+  "years_marketed": 61.1
+ },
+ "triptan": {
+  "applications": 82,
+  "first_approval": "1992-12-28",
+  "from_class_members": true,
+  "years_marketed": 33.6
+ },
+ "upadacitinib": {
+  "applications": 2,
+  "first_approval": "2019-08-16",
+  "years_marketed": 7.0
+ },
+ "urology_other": {
+  "applications": 239,
+  "first_approval": "1975-07-16",
+  "from_class_members": true,
+  "years_marketed": 51.0
+ },
+ "ustekinumab": {
+  "applications": 12,
+  "first_approval": "2009-09-25",
+  "years_marketed": 16.8
+ },
+ "valacyclovir": {
+  "applications": 18,
+  "first_approval": "1995-06-23",
+  "years_marketed": 31.1
+ },
+ "valproate": {
+  "applications": 66,
+  "first_approval": "1978-02-28",
+  "years_marketed": 48.4
+ },
+ "valsartan": {
+  "applications": 78,
+  "first_approval": "1996-12-23",
+  "years_marketed": 29.6
+ },
+ "vancomycin": {
+  "applications": 66,
+  "first_approval": "1964-11-06",
+  "years_marketed": 61.7
+ },
+ "vedolizumab": {
+  "applications": 3,
+  "first_approval": "2014-05-20",
+  "years_marketed": 12.2
+ },
+ "venlafaxine": {
+  "applications": 49,
+  "first_approval": "1993-12-28",
+  "years_marketed": 32.6
+ },
+ "verapamil": {
+  "applications": 73,
+  "first_approval": "1981-08-12",
+  "years_marketed": 45.0
+ },
+ "warfarin": {
+  "applications": 12,
+  "first_approval": "1954-06-08",
+  "years_marketed": 72.1
+ },
+ "xanthine_oxidase": {
+  "applications": 79,
+  "first_approval": "1961-07-27",
+  "from_class_members": true,
+  "years_marketed": 65.0
+ },
+ "ziprasidone": {
+  "applications": 15,
+  "first_approval": "2001-02-05",
+  "years_marketed": 25.5
+ },
+ "zoledronic acid": {
+  "applications": 43,
+  "first_approval": "2001-08-20",
+  "years_marketed": 24.9
+ },
+ "zolpidem": {
+  "applications": 41,
+  "first_approval": "1992-12-16",
+  "years_marketed": 33.6
+ },
+ "zopiclone": {
+  "applications": 15,
+  "first_approval": "2004-12-15",
+  "years_marketed": 21.6
+ }
+}
