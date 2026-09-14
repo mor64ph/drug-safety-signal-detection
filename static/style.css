@@ -14,16 +14,47 @@
    no gradients, no drop shadows, no pill badges, no icon set, no colour that
    makes a claim the statistics cannot support.
 
-   Fonts are the OS stack. The Content-Security-Policy names cdn.jsdelivr.net
-   and nothing else, and no webfont is worth widening it.
+   Type is Inter, self-hosted. The earlier note here said the OS stack was
+   preferred because a webfont would mean widening the CSP -- that was wrong on
+   the facts: the policy is default-src 'self' with no font-src directive, so a
+   font served from /static is already allowed and nothing changed. The reason
+   to make the swap is the figures. Every rule below that asks for tabular
+   numerals was already written, and on the OS stack it was silently doing
+   nothing on most machines, because the fallback faces do not all carry a tnum
+   table. The ROR column did not line up. It does now.
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Face
+
+   One variable file, 46 KB, covering 100-900, preloaded in the page shell.
+
+   No unicode-range on purpose. That property exists to stop a browser
+   downloading the Cyrillic slice of a multi-file family, and there is only one
+   file here, so it buys nothing -- while getting it wrong is expensive: the
+   interface uses U+2192 and U+2195, which the usual "latin" range omits, and a
+   character claimed by the range but absent from the file renders as tofu
+   rather than falling back. With the property absent the browser substitutes
+   per glyph, so a character Inter lacks quietly comes from the next face in
+   the stack.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Inter var";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/inter-var-latin.woff2") format("woff2");
+}
 
 /* --------------------------------------------------------------------------
    1. Tokens
    -------------------------------------------------------------------------- */
 
 :root {
-  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  /* The OS stack stays behind Inter, so the page is readable in the swap
+     window and on the rare client that refuses the font. */
+  --font-ui: "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
              "Helvetica Neue", Arial, sans-serif;
 
   /* Ink. Never pure black: #000 on white is harsher than any printed page and
@@ -198,6 +229,30 @@ a:hover {
   border-radius: 2px;
 }
 
+/* Skip link. The masthead carries two navs and, signed in, six links before
+   the first heading, so a keyboard or screen-reader user otherwise tabs
+   through the whole chrome on every page. Off-screen rather than
+   display:none, because a hidden element is not focusable and the link would
+   never appear. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  left: 0;
+  color: #fff;
+}
+
 hr {
   border: 0;
   border-top: 1px solid var(--rule);
@@ -289,14 +344,24 @@ hr {
 
 .wordmark:hover { color: var(--ink); text-decoration: none; }
 
-.wordmark-rule {
+/* The mark, from templates/_mark.html.
+
+   What was here before was a 0.6rem x 2px horizontal rule set before the
+   wordmark. At the intended size it did not read as a device at all -- it read
+   as a stray hyphen, as though the name had been typed with a dash in front of
+   it. Sized in em so one rule serves the masthead at 1rem and the standalone
+   screens at 1.5rem. */
+.mark {
   display: inline-block;
-  width: 0.6rem;
-  height: 0;
-  margin-right: 0.45rem;
-  vertical-align: 0.2em;
-  border-top: 2px solid var(--tier-strong);
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.5rem;
+  vertical-align: -0.22em;
+  flex: none;
 }
+
+.mark-tile { fill: var(--accent); }
+.mark-bars rect { fill: var(--surface); }
 
 .wordmark-sub {
   margin-left: 0.6rem;
@@ -1223,6 +1288,50 @@ tr.signal-row > * { background-color: var(--tier-wash); }
 
 .hero-statement .disclaimer { margin-bottom: 0; }
 
+/* The statement column is much shorter than the panel of entry points beside
+   it, which left about 500px of empty page below it and read as unfinished.
+   Sticky rather than padded out with filler: the panel is long enough to
+   scroll, and what stays in view while it does is the paragraph saying what
+   this cannot measure, which is where that sentence belongs.
+
+   Gated on viewport height as well as width. On a short window the column is
+   taller than the viewport, and a sticky element taller than its scrollport
+   never fully scrolls into view -- the bottom of the disclaimer would be
+   unreachable. */
+@media (min-width: 56rem) and (min-height: 45rem) {
+  .hero-statement {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+/* Corpus size. Figures the reader can check the tool against, in the column
+   that otherwise ended early. */
+.scale-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2.25rem;
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+
+.scale-strip dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.1rem;
+}
+
+.scale-strip dd {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .hero h1 {
   font-size: 2.5rem;
   margin-bottom: 0.4rem;
@@ -1849,3 +1958,41 @@ footer strong { color: var(--ink-muted); font-weight: 600; }
   .page,
   .page-mid { max-width: 100%; padding: 0; }
 }
+
+/* --------------------------------------------------------------------------
+   26. Motion
+
+   There is one transition in this stylesheet and one more added with the
+   pending state, but vestibular disorders are triggered by movement
+   regardless of how little of it there is, and the query costs three lines.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   27. Pending state
+
+   A drug lookup scans a 33,852-row table and a cold instance has to wake up
+   first, so there is a real pause between the click and the new page. With no
+   acknowledgement the button reads as broken and gets pressed again. The
+   button is never disabled -- a disabled submit does not send its own name and
+   value, which would silently change what the form means.
+   -------------------------------------------------------------------------- */
+
+form[aria-busy="true"] button[type="submit"],
+form[aria-busy="true"] input[type="submit"] {
+  cursor: progress;
+  opacity: 0.72;
+  transition: opacity 0.12s ease-out;
+}
+
+form[aria-busy="true"] .search-hint { visibility: hidden; }
