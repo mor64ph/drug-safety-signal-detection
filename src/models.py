@@ -328,6 +328,26 @@ def database_url() -> str:
     """
     url = _setting("DATABASE_URL", _DEFAULT_URL).strip() or _DEFAULT_URL
 
+    # Providers offer the connection string as a ready-to-run shell command, so
+    # what gets pasted is often `psql 'postgresql://...'` rather than the URL.
+    # Both wrappers are stripped here because the alternative is an
+    # "unparseable URL" error that names the URL and not the quoting.
+    for lead in ("psql ", "pgcli ", "psql\t"):
+        if url.lower().startswith(lead):
+            url = url[len(lead):].strip()
+    if len(url) > 1 and url[0] == url[-1] and url[0] in "\"'":
+        url = url[1:-1].strip()
+    # A value pasted into a multi-line textarea can arrive with the newline in
+    # it, which parses as a host containing whitespace.
+    url = "".join(url.split())
+
+    if not url.startswith(("postgres://", "postgresql://", "postgresql+", "sqlite:")):
+        raise ValueError(
+            "DATABASE_URL does not look like a connection string. It should "
+            "begin with postgresql:// or sqlite:. Paste the plain URI form "
+            f"rather than a shell command; got {url[:12]!r}..."
+        )
+
     if url.startswith("postgres://"):
         url = "postgresql://" + url[len("postgres://"):]
     if url.startswith("postgresql://"):
