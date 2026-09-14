@@ -13,6 +13,11 @@ data/results/*
 # well inside Git's comfortable range.
 !data/results/scored_pairs.parquet
 
+# Also committed, and for the same reason: the worksheet loads it at import and
+# the image builds from this repository. 2.5 MB. The 4.8 MB of raw label prose
+# it is derived from stays out -- data/raw/ is ignored above.
+!data/results/label_interaction_pairs.json
+
 # Any SQLite database and its WAL/SHM sidecars. Globbed rather than named:
 # the accounts store holds real user data, and the sidecars from a throwaway
 # test database were picked up by an exact-name rule that did not match them.

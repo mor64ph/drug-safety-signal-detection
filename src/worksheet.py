@@ -39,12 +39,17 @@ rate limiter.
 
 from __future__ import annotations
 
+import json
 import logging
+from pathlib import Path
 
 import pandas as pd
 from flask import Blueprint, render_template, request
 
 log = logging.getLogger("rxsignal.worksheet")
+
+_INTERACTION_PAIRS = (Path(__file__).resolve().parent.parent
+                      / "data" / "results" / "label_interaction_pairs.json")
 
 bp = Blueprint("worksheet", __name__)
 
@@ -77,6 +82,77 @@ def _app():
     from src import app as app_module
 
     return app_module
+
+
+_interaction_cache: dict | None = None
+
+
+def _interaction_index() -> dict:
+    """Precomputed label interactions: {drug: {other drug: {term, quote}}}.
+
+    Built offline by scripts/fetch_label_interactions.py. Loaded once and held,
+    like the scored table -- nothing on the request path calls an API.
+
+    Missing file is survivable and silent to the reader: the section simply
+    does not appear. It is logged once, because "no interactions found" and
+    "the index never got built" look identical on the page and only one of
+    them is a fact about the medicines.
+    """
+    global _interaction_cache
+    if _interaction_cache is None:
+        try:
+            _interaction_cache = json.loads(
+                _INTERACTION_PAIRS.read_text(encoding="utf-8"))
+            log.info("label interactions: %s drugs name at least one other",
+                     f"{len(_interaction_cache):,}")
+        except (OSError, json.JSONDecodeError) as exc:
+            _interaction_cache = {}
+            log.warning(
+                "no label interaction index (%s): the worksheet will show no "
+                "interaction section at all. Run "
+                "scripts/fetch_label_interactions.py.", exc)
+    return _interaction_cache
+
+
+def _interactions(names: list[str]) -> list[dict]:
+    """Pairs on this list whose official labels name each other.
+
+    One entry per unordered pair, carrying whichever directions were found.
+    The two directions are not redundant -- a statin label naming
+    clarithromycin and a clarithromycin label naming statins are two documents
+    agreeing, and either alone is worth showing -- but they are one finding to
+    a reader, not two.
+
+    This says nothing about which medicine caused anything. It reports that a
+    regulator-approved document tells the prescriber to take care combining
+    them, which is a checkable fact and the reason this belongs on a page
+    someone carries into an appointment.
+    """
+    index = _interaction_index()
+    if not index:
+        return []
+
+    found: dict[tuple[str, str], dict] = {}
+    for a in names:
+        mentions = index.get(a) or {}
+        for b in names:
+            if a == b:
+                continue
+            hit = mentions.get(b)
+            if not hit:
+                continue
+            key = tuple(sorted((a, b)))
+            entry = found.setdefault(key, {"a": key[0], "b": key[1],
+                                           "mentions": []})
+            entry["mentions"].append(
+                {"source": a, "names": b,
+                 "term": hit.get("term", ""), "quote": hit.get("quote", "")})
+
+    # Entered order, so the page does not imply a ranking here either.
+    position = {name: i for i, name in enumerate(names)}
+    return sorted(found.values(),
+                  key=lambda e: (position.get(e["a"], 99),
+                                 position.get(e["b"], 99)))
 
 
 def _entries(raw: str, limit: int, label: str) -> tuple[list[str], list[str]]:
@@ -318,6 +394,7 @@ def worksheet():
             blocks=[],
             notes=[],
             error=None,
+            interactions=[],
             catalogue=_app()._catalogue(),
             symptom_options=COMMON_SYMPTOMS,
             max_medicines=MAX_MEDICINES,
@@ -354,6 +431,11 @@ def worksheet():
 
     blocks = [] if error else _sheet(names, symptoms)
 
+    # Independent of the symptoms: a labelled interaction is a property of the
+    # combination, and stays worth showing even when nothing the reader typed
+    # is a term this database scores.
+    interactions = _interactions(names) if names else []
+
     # Deliberately nothing recorded: no analytics.record_search, no counter, no
     # row. The only trace this request leaves is the rendered page.
     return render_template(
@@ -362,6 +444,7 @@ def worksheet():
         symptoms_raw=symptoms_raw,
         names=names,
         blocks=blocks,
+        interactions=interactions,
         notes=notes,
         error=error,
         catalogue=_app()._catalogue(),

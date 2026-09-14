@@ -144,6 +144,72 @@
       </div>
     </div>
 
+    {% if interactions %}
+
+    <div class="section-rule"></div>
+
+{# A Jinja comment, not an HTML one: this paragraph mentions an if-tag, and
+   inside <!-- --> Jinja would still parse it and fail to compile the page.
+
+   Deliberately above the symptom blocks and outside their own if-block. A
+   labelled interaction is a property of the combination, so it holds whether
+   or not the symptoms typed are terms this database scores, and it is the most
+   actionable thing on the page.
+
+   It is also the only part of this site not computed from FAERS. Nothing here
+   is a disproportionality or an inference -- it is the text of the
+   regulator-approved label, quoted. The statistical route was built and
+   withheld after scoring 0/12 against pairs with known interactions; this
+   lookup finds 13/13 of them with no false positives on its controls. #}
+    <section class="card mb-4 ws-ix">
+      <div class="card-header card-header-plain">
+        Taken together &mdash; what the official labels say
+      </div>
+      <div class="card-body">
+
+        <p class="form-text mb-3">
+          The FDA-approved label for a medicine has a Drug Interactions section.
+          For the combinations below, one label names the other medicine. That is
+          a fact about the documents, quoted directly &mdash; <strong>not a
+          finding about you, and not a statement that anything has gone
+          wrong.</strong> It is worth asking your prescriber or pharmacist about.
+        </p>
+
+        {% for ix in interactions %}
+        <div class="ws-ix-pair">
+          <p class="ws-ix-names">{{ ix.a }} + {{ ix.b }}</p>
+          {% for m in ix.mentions %}
+          <blockquote class="ws-ix-quote">
+            <p>{{ m.quote }}</p>
+            <footer class="ws-ix-source">
+              from the <strong>{{ m.source }}</strong> label, which mentions
+              &ldquo;{{ m.term }}&rdquo;
+            </footer>
+          </blockquote>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="ws-common mt-3">
+          <p class="ws-common-label">Read this the right way round</p>
+          <p>
+            A combination appearing here does not mean it is wrong to take them
+            together &mdash; prescribers combine interacting medicines on purpose
+            every day, with the dose or the timing adjusted. And a combination
+            <em>not</em> appearing here is not clearance: labels vary between
+            manufacturers, this matches text rather than pharmacology, and only
+            the {{ names | length }} medicine{{ '' if names | length == 1 else 's' }}
+            you entered {{ 'was' if names | length == 1 else 'were' }} compared.
+            <strong>Do not stop a prescribed medicine on the strength of this
+            page.</strong> If you have new or severe symptoms after a change to
+            your medicines, seek medical care now rather than reading further.
+          </p>
+        </div>
+
+      </div>
+    </section>
+    {% endif %}
+
     {% if blocks %}
 
     <div class="section-rule"></div>

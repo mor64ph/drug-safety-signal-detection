@@ -1,0 +1,82 @@
+{
+  "_note": "How drug labels actually name a class, mapped from its formal EPC string. Labels are written by clinicians for clinicians and use the abbreviation: lisinopril's interaction section says 'NSAID' three times and 'nonsteroidal' not once, so matching only the EPC phrase 'Nonsteroidal Anti-inflammatory Drug' missed lisinopril + ibuprofen entirely. Every entry here was added to close a measured miss, not from imagination. Terms are matched case-insensitively at word boundaries with an optional trailing 's', so the singular covers the plural; do not add both. Keep them long enough to be unambiguous: 'PPI' would be a false positive generator, 'proton pump inhibitor' is not.",
+
+  "Nonsteroidal Anti-inflammatory Drug [EPC]": [
+    "NSAID", "NSAIDs", "non-steroidal anti-inflammatory",
+    "nonsteroidal antiinflammatory", "nonsteroidal anti-inflammatory agent"
+  ],
+  "Angiotensin Converting Enzyme Inhibitor [EPC]": [
+    "ACE inhibitor", "ACE-inhibitor", "angiotensin-converting enzyme inhibitor"
+  ],
+  "Angiotensin 2 Receptor Blocker [EPC]": [
+    "ARB", "angiotensin II receptor blocker", "angiotensin receptor blocker",
+    "angiotensin II receptor antagonist"
+  ],
+  "Serotonin Reuptake Inhibitor [EPC]": [
+    "SSRI", "SSRIs", "selective serotonin reuptake inhibitor",
+    "serotonin reuptake inhibitor", "SNRI"
+  ],
+  "HMG-CoA Reductase Inhibitor [EPC]": [
+    "statin", "statins", "HMG-CoA reductase inhibitor"
+  ],
+  "Proton Pump Inhibitor [EPC]": ["proton pump inhibitor"],
+  "Benzodiazepine [EPC]": ["benzodiazepine"],
+  "Opioid Agonist [EPC]": ["opioid", "opiate", "opioid analgesic"],
+  "Monoamine Oxidase Inhibitor [EPC]": ["MAOI", "monoamine oxidase inhibitor"],
+  "beta-Adrenergic Blocker [EPC]": [
+    "beta blocker", "beta-blocker", "beta-adrenergic blocker"
+  ],
+  "alpha-Adrenergic Blocker [EPC]": ["alpha blocker", "alpha-blocker"],
+  "Dihydropyridine Calcium Channel Blocker [EPC]": [
+    "calcium channel blocker", "dihydropyridine"
+  ],
+  "Sodium-Glucose Cotransporter 2 Inhibitor [EPC]": [
+    "SGLT2 inhibitor", "SGLT-2 inhibitor", "sodium-glucose cotransporter 2"
+  ],
+  "Dipeptidyl Peptidase 4 Inhibitor [EPC]": [
+    "DPP-4 inhibitor", "DPP4 inhibitor", "dipeptidyl peptidase-4"
+  ],
+  "GLP-1 Receptor Agonist [EPC]": [
+    "GLP-1 receptor agonist", "GLP-1 agonist", "glucagon-like peptide-1"
+  ],
+  "Fluoroquinolone Antibacterial [EPC]": ["fluoroquinolone", "quinolone"],
+  "Tetracycline-class Drug [EPC]": ["tetracycline"],
+  "Azole Antifungal [EPC]": ["azole antifungal", "azole"],
+  "Loop Diuretic [EPC]": ["loop diuretic"],
+  "Thiazide Diuretic [EPC]": ["thiazide"],
+  "Aldosterone Antagonist [EPC]": [
+    "potassium-sparing diuretic", "aldosterone antagonist"
+  ],
+  "Factor Xa Inhibitor [EPC]": [
+    "factor Xa inhibitor", "anticoagulant", "direct oral anticoagulant"
+  ],
+  "P2Y12 Platelet Inhibitor [EPC]": [
+    "P2Y12", "antiplatelet", "platelet inhibitor"
+  ],
+  "Corticosteroid [EPC]": ["corticosteroid", "glucocorticoid"],
+  "Atypical Antipsychotic [EPC]": ["antipsychotic"],
+  "Anti-epileptic Agent [EPC]": ["antiepileptic", "anticonvulsant"],
+  "Tumor Necrosis Factor Blocker [EPC]": ["TNF blocker", "TNF inhibitor"],
+  "Janus Kinase Inhibitor [EPC]": ["JAK inhibitor", "Janus kinase inhibitor"],
+  "Calcineurin Inhibitor Immunosuppressant [EPC]": [
+    "calcineurin inhibitor", "immunosuppressant"
+  ],
+  "Central Nervous System Stimulant [EPC]": ["CNS stimulant", "psychostimulant"],
+  "Histamine-2 Receptor Antagonist [EPC]": [
+    "H2 blocker", "histamine-2 receptor antagonist", "H2-receptor antagonist"
+  ],
+  "Histamine-1 Receptor Antagonist [EPC]": ["antihistamine"],
+  "Xanthine Oxidase Inhibitor [EPC]": ["xanthine oxidase inhibitor"],
+  "Nitrate Vasodilator [EPC]": ["nitrate", "nitroglycerin"],
+  "Sulfonylurea [EPC]": ["sulfonylurea"],
+  "Thiazolidinedione [EPC]": ["thiazolidinedione"],
+  "Insulin Analog [EPC]": ["insulin"],
+  "Leukotriene Receptor Antagonist [EPC]": ["leukotriene"],
+  "Serotonin-1b and Serotonin-1d Receptor Agonist [EPC]": ["triptan"],
+  "Mood Stabilizer [EPC]": ["mood stabilizer"],
+  "Antiarrhythmic [EPC]": ["antiarrhythmic"],
+  "Aromatase Inhibitor [EPC]": ["aromatase inhibitor"],
+  "Platinum-based Drug [EPC]": ["platinum", "platinum-based"],
+  "Kinase Inhibitor [EPC]": ["kinase inhibitor", "tyrosine kinase inhibitor"],
+  "Antirheumatic Agent [EPC]": ["DMARD", "antirheumatic"]
+}
