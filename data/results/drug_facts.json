@@ -8,26 +8,75 @@
  "acetaminophen": {
   "applications": 499,
   "first_approval": "1968-11-07",
+  "marketed_now": true,
+  "ndc_products": 4177,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251226",
+   "reason": "CGMP Deviations: Insanitary conditions including rodent exposure/activity in their distribution center."
+  },
+  "recalls_class_i": 5,
+  "recalls_open": 27,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/03/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 57.7
  },
  "acyclovir": {
   "applications": 97,
   "first_approval": "1982-03-29",
+  "marketed_now": true,
+  "ndc_products": 230,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260205",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
   "years_marketed": 44.3
  },
  "adalimumab": {
   "applications": 11,
   "first_approval": "2002-12-31",
+  "marketed_now": true,
+  "ndc_products": 146,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251010",
+   "reason": "Lack of Assurance of Sterility."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Equivalent Sandoz format is available.",
+   "since": "01/13/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 23.6
  },
  "aflibercept": {
   "applications": 9,
   "first_approval": "2011-11-18",
+  "marketed_now": true,
+  "ndc_products": 22,
+  "recalls_open": 0,
   "years_marketed": 14.7
  },
  "albuterol": {
   "applications": 101,
   "first_approval": "1981-05-01",
+  "marketed_now": true,
+  "ndc_products": 175,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260317",
+   "reason": "Labelling: Illegible label"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 45.2
  },
  "aldosterone": {
@@ -39,16 +88,36 @@
  "alendronate": {
   "applications": 21,
   "first_approval": "1995-09-29",
+  "marketed_now": true,
+  "ndc_products": 57,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260407",
+   "reason": "This recall is being conducted due to out of specification assay results in a limited number of bottles that were stored on side."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 30.8
  },
  "alirocumab": {
   "applications": 1,
   "first_approval": "2015-07-24",
+  "marketed_now": true,
+  "ndc_products": 5,
+  "recalls_open": 0,
   "years_marketed": 11.0
  },
  "allopurinol": {
   "applications": 30,
   "first_approval": "1966-08-19",
+  "marketed_now": true,
+  "ndc_products": 188,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "02/19/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 59.9
  },
  "alpha_blocker": {
@@ -60,36 +129,92 @@
  "alprazolam": {
   "applications": 39,
   "first_approval": "1981-10-16",
+  "marketed_now": true,
+  "ndc_products": 167,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260317",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 44.8
  },
  "amiodarone": {
   "applications": 35,
   "first_approval": "1985-12-24",
+  "marketed_now": true,
+  "ndc_products": 78,
+  "recalls_open": 0,
   "years_marketed": 40.6
  },
  "amitriptyline": {
   "applications": 115,
   "first_approval": "1961-04-07",
+  "marketed_now": true,
+  "ndc_products": 234,
+  "recalls_open": 0,
   "years_marketed": 65.3
  },
  "amlodipine": {
   "applications": 115,
   "first_approval": "1992-07-31",
+  "marketed_now": true,
+  "ndc_products": 607,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260708",
+   "reason": "Failed Dissolution Specifications; Olmesartan Medoxomil content below specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 32,
   "years_marketed": 34.0
  },
  "amoxicillin": {
   "applications": 114,
   "first_approval": "1974-01-18",
+  "marketed_now": true,
+  "ndc_products": 515,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251013",
+   "reason": "Subpotent drug; Clavulanate Potassium component"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 52.5
  },
  "amphetamine": {
   "applications": 102,
   "first_approval": "1955-09-09",
+  "marketed_now": true,
+  "ndc_products": 413,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260626",
+   "reason": "Labeling: Label Mix-up: Capsules contain only immediate-release (IR) pellets while labeled as ER capsules."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 7,
+  "shortage": {
+   "reason": "",
+   "since": "10/12/2022",
+   "status": "Current"
+  },
   "years_marketed": 70.9
  },
  "anastrozole": {
   "applications": 20,
   "first_approval": "1995-12-27",
+  "marketed_now": true,
+  "ndc_products": 63,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260126",
+   "reason": "Presence of Foreign substance - potential presence of metal particulate matter"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 30.6
  },
  "antiarrhythmic": {
@@ -125,6 +250,9 @@
  "apixaban": {
   "applications": 15,
   "first_approval": "2012-12-28",
+  "marketed_now": true,
+  "ndc_products": 68,
+  "recalls_open": 0,
   "years_marketed": 13.6
  },
  "arb": {
@@ -136,26 +264,64 @@
  "aripiprazole": {
   "applications": 48,
   "first_approval": "2002-11-15",
+  "marketed_now": true,
+  "ndc_products": 351,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260527",
+   "reason": "Product Mix-Up:  A bottle containing Voriconazole Tablets 50 mg was labelled and distributed as Aripiprazole Tablets USP 30 mg."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 7,
   "years_marketed": 23.7
  },
  "aspirin": {
   "applications": 91,
   "first_approval": "1950-04-12",
+  "marketed_now": true,
+  "ndc_products": 868,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251017",
+   "reason": "Labeling: Label Mix-up. This issue affects the outer box labeling only. The box incorrectly states the ingredients Acetaminophen 500mg and Caffeine 65mg. The inner pouch correctly states the ingredien"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 5,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "07/23/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 76.3
  },
  "atenolol": {
   "applications": 40,
   "first_approval": "1981-08-19",
+  "marketed_now": true,
+  "ndc_products": 155,
+  "recalls_open": 0,
   "years_marketed": 44.9
  },
  "atezolizumab": {
   "applications": 3,
   "first_approval": "2016-05-18",
+  "marketed_now": true,
+  "ndc_products": 4,
+  "recalls_open": 0,
   "years_marketed": 10.2
  },
  "atorvastatin": {
   "applications": 43,
   "first_approval": "1996-12-17",
+  "marketed_now": true,
+  "ndc_products": 515,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250919",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 8,
   "years_marketed": 29.6
  },
  "atypical_antipsychotic": {
@@ -167,21 +333,44 @@
  "azathioprine": {
   "applications": 8,
   "first_approval": "1968-03-20",
+  "marketed_now": true,
+  "ndc_products": 45,
+  "recalls_open": 0,
   "years_marketed": 58.4
  },
  "azithromycin": {
   "applications": 73,
   "first_approval": "1991-11-01",
+  "marketed_now": true,
+  "ndc_products": 233,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "04/09/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 34.7
  },
  "baclofen": {
   "applications": 47,
   "first_approval": "1977-11-22",
+  "marketed_now": true,
+  "ndc_products": 276,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251126",
+   "reason": "Presence of Foreign Tablets/Capsules"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 48.7
  },
  "baricitinib": {
   "applications": 3,
   "first_approval": "2018-05-31",
+  "marketed_now": true,
+  "ndc_products": 12,
+  "recalls_open": 0,
   "years_marketed": 8.2
  },
  "benzodiazepine": {
@@ -199,11 +388,29 @@
  "bevacizumab": {
   "applications": 8,
   "first_approval": "2004-02-26",
+  "marketed_now": true,
+  "ndc_products": 24,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250829",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 22.4
  },
  "bisoprolol": {
   "applications": 30,
   "first_approval": "1992-07-31",
+  "marketed_now": true,
+  "ndc_products": 108,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260121",
+   "reason": "cGMP Deviations: recall due to not meeting the N-Nitroso Bisoprolol impurity specification limits."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 34.0
  },
  "bone": {
@@ -215,66 +422,167 @@
  "bortezomib": {
   "applications": 29,
   "first_approval": "2003-05-13",
+  "marketed_now": true,
+  "ndc_products": 55,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260624",
+   "reason": "Lack of Sterility Assurance"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 23.2
  },
  "budesonide": {
   "applications": 38,
   "first_approval": "1994-02-14",
+  "marketed_now": true,
+  "ndc_products": 135,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260529",
+   "reason": "Presence of Foreign Substance:This recall has been initiated in response to a product quality complaint reported for black/brown specs and particles within the ampoule solution"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 32.5
  },
  "bumetanide": {
   "applications": 26,
   "first_approval": "1983-02-28",
+  "marketed_now": true,
+  "ndc_products": 142,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Check wholesalers for inventory",
+   "since": "01/31/2018",
+   "status": "Current"
+  },
   "years_marketed": 43.4
  },
  "buprenorphine": {
   "applications": 52,
   "first_approval": "1981-12-29",
+  "marketed_now": true,
+  "ndc_products": 255,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260612",
+   "reason": "Crystallization; identified as Buprenorphine free base"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 44.6
  },
  "bupropion": {
   "applications": 72,
   "first_approval": "1985-12-30",
+  "marketed_now": true,
+  "ndc_products": 399,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250915",
+   "reason": "Failed Tablet/Capsule Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
   "years_marketed": 40.6
  },
  "calcium carbonate": {
   "applications": 4,
   "first_approval": "2000-10-16",
+  "marketed_now": true,
+  "ndc_products": 1261,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260528",
+   "reason": "Presence of foreign substance: small metallic particles in chewable tablets."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 24,
   "years_marketed": 25.8
  },
  "canagliflozin": {
   "applications": 5,
   "first_approval": "2013-03-29",
+  "marketed_now": true,
+  "ndc_products": 38,
+  "recalls_open": 0,
   "years_marketed": 13.3
  },
  "candesartan": {
   "applications": 15,
   "first_approval": "1998-06-04",
+  "marketed_now": true,
+  "ndc_products": 68,
+  "recalls_open": 0,
   "years_marketed": 28.2
  },
  "capecitabine": {
   "applications": 15,
   "first_approval": "1998-04-30",
+  "marketed_now": true,
+  "ndc_products": 54,
+  "recalls_open": 0,
   "years_marketed": 28.2
  },
  "captopril": {
   "applications": 32,
   "first_approval": "1981-04-06",
+  "marketed_now": true,
+  "ndc_products": 55,
+  "recalls_open": 0,
   "years_marketed": 45.3
  },
  "carbamazepine": {
   "applications": 49,
   "first_approval": "1968-03-11",
+  "marketed_now": true,
+  "ndc_products": 174,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260807",
+   "reason": "CGMP deviations: tablets with black specks."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "12/19/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 58.4
+ },
+ "carbimazole": {
+  "marketed_now": true,
+  "ndc_products": 1,
+  "recalls_open": 0
  },
  "carboplatin": {
   "applications": 37,
   "first_approval": "1989-03-03",
+  "marketed_now": true,
+  "ndc_products": 48,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Estimated recovery: TBD; NDC is non-exempt",
+   "since": "04/28/2023",
+   "status": "Current"
+  },
   "years_marketed": 37.4
  },
  "carvedilol": {
   "applications": 21,
   "first_approval": "1995-09-14",
+  "marketed_now": true,
+  "ndc_products": 244,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250820",
+   "reason": "CGMP Deviations: Results for N-Nitroso Carvedilol Impurity-1 (NNCI) impurity observed to be above the FDA-recommended limit of NMT 4.0 ppm"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 13,
   "years_marketed": 30.9
  },
  "ccb": {
@@ -286,101 +594,255 @@
  "ceftriaxone": {
   "applications": 41,
   "first_approval": "1984-12-21",
+  "marketed_now": true,
+  "ndc_products": 66,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20140515",
+   "reason": "Lack of Assurance of Sterility; All lots of sterile products compounded by the pharmacy within expiry are subject to this recall. This recall is initiated due to concerns associated with quality contr"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
   "years_marketed": 41.6
  },
  "celecoxib": {
   "applications": 32,
   "first_approval": "1998-12-31",
+  "marketed_now": true,
+  "ndc_products": 265,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250513",
+   "reason": "Presence of Foreign Tablets/Capsules: manufacturer recalled because one tadalafil 5mg tablet was found in 500 count bottle of Celecoxib 200 mg capsules"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 27.6
  },
  "cephalexin": {
   "applications": 48,
   "first_approval": "1971-01-04",
+  "marketed_now": true,
+  "ndc_products": 195,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250523",
+   "reason": "Failed Impurities/Degradation Specifications An out-of-specification result was observed in the related substance test at the sixth month of stability analysis.    The individual impurity was identifi"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 8,
   "years_marketed": 55.6
  },
  "cerivastatin": {
   "applications": 1,
   "first_approval": "1997-06-26",
+  "marketed_now": false,
+  "ndc_products": 0,
+  "recalls_open": 0,
   "years_marketed": 29.1
  },
  "certolizumab": {
   "applications": 1,
   "first_approval": "2008-04-22",
+  "marketed_now": true,
+  "ndc_products": 7,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260508",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 18.3
  },
  "cetirizine": {
   "applications": 78,
   "first_approval": "1995-12-08",
+  "marketed_now": true,
+  "ndc_products": 500,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260624",
+   "reason": "Cross Contamination with Other Products: Customer complaints for appearance of  discolored tablets and red dots observed on Cetirizine Hydrochloride Tablets USP 5 mg. Determined to be Ranitidine."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 5,
   "years_marketed": 30.6
  },
  "chlorpromazine": {
   "applications": 66,
   "first_approval": "1957-09-18",
+  "marketed_now": true,
+  "ndc_products": 139,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250912",
+   "reason": "CGMP Deviations: Presence of N-Nitroso Desmethyl Chlorpromazine above the recommended intake limit"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 31,
   "years_marketed": 68.9
  },
  "chlorthalidone": {
   "applications": 69,
   "first_approval": "1960-04-07",
+  "marketed_now": true,
+  "ndc_products": 141,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260605",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 66.3
  },
  "cholecalciferol": {
   "applications": 26,
   "first_approval": "1941-01-11",
+  "marketed_now": true,
+  "ndc_products": 183,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250730",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 8,
   "years_marketed": 85.5
  },
  "ciclosporin": {
   "applications": 37,
   "first_approval": "1983-11-14",
+  "marketed_now": true,
+  "ndc_products": 75,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20251020",
+   "reason": "Subpotent Drug"
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 4,
   "years_marketed": 42.7
  },
  "ciprofloxacin": {
   "applications": 65,
   "first_approval": "1987-10-22",
+  "marketed_now": true,
+  "ndc_products": 250,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250813",
+   "reason": "Temperature Abuse"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 38.8
  },
  "cisplatin": {
   "applications": 10,
   "first_approval": "1978-12-19",
+  "marketed_now": true,
+  "ndc_products": 25,
+  "recalls_open": 0,
   "years_marketed": 47.6
  },
  "citalopram": {
   "applications": 37,
   "first_approval": "1998-07-17",
+  "marketed_now": true,
+  "ndc_products": 148,
+  "recalls_open": 0,
   "years_marketed": 28.0
  },
  "clarithromycin": {
   "applications": 33,
   "first_approval": "1991-10-31",
+  "marketed_now": true,
+  "ndc_products": 69,
+  "recalls_open": 0,
   "years_marketed": 34.7
  },
  "clindamycin": {
   "applications": 128,
   "first_approval": "1970-02-22",
+  "marketed_now": true,
+  "ndc_products": 293,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260730",
+   "reason": "Presence of Foreign Substance: presence of particles and white flakes in the reconstituted bottles."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 8,
+  "shortage": {
+   "reason": "",
+   "since": "03/21/2023",
+   "status": "Current"
+  },
   "years_marketed": 56.4
  },
  "clonazepam": {
   "applications": 19,
   "first_approval": "1975-06-04",
+  "marketed_now": true,
+  "ndc_products": 153,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20241118",
+   "reason": "Labeling: Label Error on Declared Strength; Some cartons were incorrectly labeled. The blister strips inside the product carton reflect the correct strength."
+  },
+  "recalls_class_i": 4,
+  "recalls_open": 4,
+  "shortage": {
+   "reason": "",
+   "since": "03/10/2023",
+   "status": "Current"
+  },
   "years_marketed": 51.2
  },
  "clopidogrel": {
   "applications": 26,
   "first_approval": "1997-11-17",
+  "marketed_now": true,
+  "ndc_products": 95,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230323",
+   "reason": "cGMP Deviations for the manufacturing Firm (Accord Healthcare) after their inspection."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 28.7
  },
  "clozapine": {
   "applications": 16,
   "first_approval": "1989-09-26",
+  "marketed_now": true,
+  "ndc_products": 61,
+  "recalls_open": 0,
   "years_marketed": 36.8
  },
  "codeine": {
   "applications": 152,
   "first_approval": "1952-01-21",
+  "marketed_now": true,
+  "ndc_products": 126,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230426",
+   "reason": "CGMP Deviations: Firm went out of business and could no longer continue stability studies."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
   "years_marketed": 74.5
  },
  "colchicine": {
   "applications": 33,
   "first_approval": "1961-07-27",
+  "marketed_now": true,
+  "ndc_products": 72,
+  "recalls_open": 0,
   "years_marketed": 65.0
  },
  "corticosteroid": {
@@ -392,66 +854,174 @@
  "cyanocobalamin": {
   "applications": 48,
   "first_approval": "1947-07-28",
+  "marketed_now": true,
+  "ndc_products": 188,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260724",
+   "reason": "Presence of Particulate Matter: Product contaminated with particulate matter identified as hair, glass and/or paraformaldehyde"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 20,
   "years_marketed": 79.0
  },
  "cyclobenzaprine": {
   "applications": 26,
   "first_approval": "1977-08-26",
+  "marketed_now": true,
+  "ndc_products": 267,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20250827",
+   "reason": "Labeling: Label Mix Up; Bottles of Meloxicam USP, 7.5mg, 90-count tablets (yellow in color), were labeled as Cyclobenzaprine Hydrochloride Tablets USP, 10 mg 90-count tablets (blue in color)."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 1,
   "years_marketed": 48.9
  },
  "cyclophosphamide": {
   "applications": 31,
   "first_approval": "1959-11-16",
+  "marketed_now": true,
+  "ndc_products": 108,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260717",
+   "reason": "Presence of Particulate Matter; identified as stainless steel"
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 3,
   "years_marketed": 66.7
  },
  "dabigatran": {
   "applications": 11,
   "first_approval": "2010-10-19",
+  "marketed_now": true,
+  "ndc_products": 77,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260716",
+   "reason": "Failed impurity/degradation specification: an OOS result observed in Related substance test analysis w.r.t Impurity II, Impurity III and Total impurities for 12-month stability"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 9,
   "years_marketed": 15.8
  },
  "dapagliflozin": {
   "applications": 31,
   "first_approval": "2014-01-08",
+  "marketed_now": true,
+  "ndc_products": 136,
+  "recalls_open": 0,
   "years_marketed": 12.6
  },
  "denosumab": {
   "applications": 12,
   "first_approval": "2010-06-01",
+  "marketed_now": true,
+  "ndc_products": 27,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250421",
+   "reason": "CGMP Deviations; potential temperature excursions due to transit delays"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 16.2
  },
  "desvenlafaxine": {
   "applications": 16,
   "first_approval": "2008-02-29",
+  "marketed_now": true,
+  "ndc_products": 87,
+  "recalls_open": 0,
   "years_marketed": 18.4
  },
  "dexamethasone": {
   "applications": 124,
   "first_approval": "1958-10-30",
+  "marketed_now": true,
+  "ndc_products": 362,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260204",
+   "reason": "Failed Impurities/Degradation Specifications - OOS impurities result observed during long term stability testing at product expiry (24 months) were above specs for these impurities: Dexamethasone Sodi"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 11,
+  "shortage": {
+   "reason": "",
+   "since": "02/08/2019",
+   "status": "Current"
+  },
   "years_marketed": 67.7
  },
  "diazepam": {
   "applications": 69,
   "first_approval": "1963-11-15",
+  "marketed_now": true,
+  "ndc_products": 141,
+  "recalls_open": 0,
   "years_marketed": 62.7
  },
  "diclofenac": {
   "applications": 99,
   "first_approval": "1988-07-28",
+  "marketed_now": true,
+  "ndc_products": 545,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260127",
+   "reason": "Failed Viscosity Specifications: Out of Specification (OOS) [slightly lower than the limit] result in viscosity for Diclofenac Sodium Gel, 3%."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "08/13/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 38.0
  },
  "digoxin": {
   "applications": 19,
   "first_approval": "1954-11-16",
+  "marketed_now": true,
+  "ndc_products": 75,
+  "recalls_open": 0,
   "years_marketed": 71.7
  },
  "diltiazem": {
   "applications": 71,
   "first_approval": "1982-11-05",
+  "marketed_now": true,
+  "ndc_products": 324,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250313",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 9,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "01/05/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 43.7
  },
  "diphenhydramine": {
   "applications": 71,
   "first_approval": "1946-03-04",
+  "marketed_now": true,
+  "ndc_products": 1304,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251226",
+   "reason": "CGMP Deviations: Insanitary conditions including rodent exposure/activity in their distribution center."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 10,
   "years_marketed": 80.4
  },
  "dmard": {
@@ -463,31 +1033,88 @@
  "docetaxel": {
   "applications": 31,
   "first_approval": "1996-05-14",
+  "marketed_now": true,
+  "ndc_products": 89,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20240528",
+   "reason": "Presence of Particulate Matter: Presence of particulate matter from the stopper in the drug product."
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "02/20/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 30.2
  },
  "dolutegravir": {
   "applications": 6,
   "first_approval": "2013-08-12",
+  "marketed_now": true,
+  "ndc_products": 29,
+  "recalls_open": 0,
   "years_marketed": 13.0
  },
  "donepezil": {
   "applications": 57,
   "first_approval": "1996-11-25",
+  "marketed_now": true,
+  "ndc_products": 120,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "06/15/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 29.7
  },
  "doxazosin": {
   "applications": 21,
   "first_approval": "1990-11-02",
+  "marketed_now": true,
+  "ndc_products": 145,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260121",
+   "reason": "Tablets/Capsules Imprinted with Wrong ID"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 35.7
  },
  "doxorubicin": {
   "applications": 30,
   "first_approval": "1974-08-07",
+  "marketed_now": true,
+  "ndc_products": 72,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260512",
+   "reason": "Presence of Particulate matter: Particulate matter identified as glass."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 1,
   "years_marketed": 52.0
  },
  "doxycycline": {
   "applications": 135,
   "first_approval": "1967-12-05",
+  "marketed_now": true,
+  "ndc_products": 356,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250929",
+   "reason": "Failed dissolution specifications: Stability testing found that the lot did not meet dissolution specifications."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "01/12/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 58.7
  },
  "dpp4": {
@@ -499,96 +1126,206 @@
  "dulaglutide": {
   "applications": 1,
   "first_approval": "2014-09-18",
+  "marketed_now": true,
+  "ndc_products": 20,
+  "recalls_open": 0,
   "years_marketed": 11.9
  },
  "duloxetine": {
   "applications": 29,
   "first_approval": "2004-08-03",
+  "marketed_now": true,
+  "ndc_products": 242,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260622",
+   "reason": "CGMP Deviations: Presence of N-nitroso-duloxetine impurity above FDA recommended interim limit"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 44,
   "years_marketed": 22.0
  },
  "dupilumab": {
   "applications": 1,
   "first_approval": "2017-03-28",
+  "marketed_now": true,
+  "ndc_products": 8,
+  "recalls_open": 0,
   "years_marketed": 9.3
  },
  "dutasteride": {
   "applications": 25,
   "first_approval": "2001-11-20",
+  "marketed_now": true,
+  "ndc_products": 55,
+  "recalls_open": 0,
   "years_marketed": 24.7
  },
  "edoxaban": {
   "applications": 1,
   "first_approval": "2015-01-08",
+  "marketed_now": true,
+  "ndc_products": 18,
+  "recalls_open": 0,
   "years_marketed": 11.6
  },
  "efavirenz": {
   "applications": 26,
   "first_approval": "1998-09-17",
+  "marketed_now": true,
+  "ndc_products": 42,
+  "recalls_open": 0,
   "years_marketed": 27.9
  },
  "empagliflozin": {
   "applications": 7,
   "first_approval": "2014-08-01",
+  "marketed_now": true,
+  "ndc_products": 75,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260612",
+   "reason": "CGMP Deviations: An incorrect detergent was used and the required swab sampling was not performed on a production hopper that had previously been used for a different product."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 12.0
  },
  "emtricitabine": {
   "applications": 41,
   "first_approval": "2003-07-02",
+  "marketed_now": true,
+  "ndc_products": 120,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Product expected to be available until March 2027",
+   "since": "06/17/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 23.1
  },
  "enalapril": {
   "applications": 37,
   "first_approval": "1985-12-24",
+  "marketed_now": true,
+  "ndc_products": 123,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260423",
+   "reason": "Failed Impurities/Degradation Specifications:Out of specification result occurred in Organic Impurities Test"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 40.6
  },
  "enoxaparin": {
   "applications": 13,
   "first_approval": "1993-03-29",
+  "marketed_now": true,
+  "ndc_products": 173,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250805",
+   "reason": "Correct Labeled Product Mispack: Bags labeled for Enoxaparin Sodium Injection, 80 mg/0.8 mL, contained Enoxaparin Sodium Injection, 30 mg/0.3 mL"
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 3,
   "years_marketed": 33.3
  },
  "eplerenone": {
   "applications": 10,
   "first_approval": "2002-09-27",
+  "marketed_now": true,
+  "ndc_products": 33,
+  "recalls_open": 0,
   "years_marketed": 23.8
  },
  "escitalopram": {
   "applications": 29,
   "first_approval": "2002-08-14",
+  "marketed_now": true,
+  "ndc_products": 175,
+  "recalls_open": 0,
   "years_marketed": 24.0
  },
  "esomeprazole": {
   "applications": 71,
   "first_approval": "2001-02-20",
+  "marketed_now": true,
+  "ndc_products": 345,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250513",
+   "reason": "Failed Impurities/Degradation Specifications: Out-of-Specification test results obtained for any individual unknown degradation product during Related Compounds testing during long term stability."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 25.4
  },
  "estradiol": {
   "applications": 466,
   "first_approval": "1943-06-25",
+  "marketed_now": true,
+  "ndc_products": 737,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260527",
+   "reason": "Failed Impurities/Degradation Specifications: This recall is being initiated due to out-of-specification results total impurities."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 23,
   "years_marketed": 83.1
  },
  "etanercept": {
   "applications": 3,
   "first_approval": "1998-11-02",
+  "marketed_now": true,
+  "ndc_products": 6,
+  "recalls_open": 0,
   "years_marketed": 27.7
  },
  "ethinylestradiol": {
   "applications": 365,
   "first_approval": "1943-06-25",
+  "marketed_now": true,
+  "ndc_products": 339,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260527",
+   "reason": "Failed Impurities/Degradation Specifications: This recall is being initiated due to out-of-specification results total impurities."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 83.1
  },
  "evolocumab": {
   "applications": 1,
   "first_approval": "2015-08-27",
+  "marketed_now": true,
+  "ndc_products": 7,
+  "recalls_open": 0,
   "years_marketed": 10.9
  },
  "exenatide": {
   "applications": 5,
   "first_approval": "2005-04-28",
+  "marketed_now": true,
+  "ndc_products": 13,
+  "recalls_open": 0,
   "years_marketed": 21.3
  },
  "ezetimibe": {
   "applications": 31,
   "first_approval": "2002-10-25",
+  "marketed_now": true,
+  "ndc_products": 104,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20250519",
+   "reason": "Failed Impurities/Degradation Specifications: Out of Specification (OOS) for related substances test for Anhydro Simvastatin at the 06-month time point during long-term stability study."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 23.8
  },
  "factor_xa": {
@@ -600,51 +1337,128 @@
  "famotidine": {
   "applications": 109,
   "first_approval": "1986-10-15",
+  "marketed_now": true,
+  "ndc_products": 466,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251226",
+   "reason": "CGMP Deviations: Insanitary conditions including rodent exposure/activity in their distribution center."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 4,
   "years_marketed": 39.8
  },
  "febuxostat": {
   "applications": 16,
   "first_approval": "2009-02-13",
+  "marketed_now": true,
+  "ndc_products": 68,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20240304",
+   "reason": "CGMP Deviations: Microbial contamination was reported in stagnant water in the duct of the manufacturing equipment."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 17.5
  },
  "felodipine": {
   "applications": 15,
   "first_approval": "1991-07-25",
+  "marketed_now": true,
+  "ndc_products": 64,
+  "recalls_open": 0,
   "years_marketed": 35.0
  },
  "fenofibrate": {
   "applications": 68,
   "first_approval": "1993-12-31",
+  "marketed_now": true,
+  "ndc_products": 238,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260528",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 32.6
  },
  "fentanyl": {
   "applications": 34,
   "first_approval": "1968-02-19",
+  "marketed_now": true,
+  "ndc_products": 84,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260512",
+   "reason": "Subpotent Drug"
+  },
+  "recalls_class_i": 3,
+  "recalls_open": 21,
+  "shortage": {
+   "reason": "Check wholesalers for inventory",
+   "since": "01/01/2012",
+   "status": "Current"
+  },
   "years_marketed": 58.4
  },
  "ferrous sulfate": {
   "applications": 1,
   "first_approval": "1946-08-13",
+  "marketed_now": true,
+  "ndc_products": 19,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250217",
+   "reason": "Defective Delivery System: Leakage observed after oral solution was repackaged into unit-dose syringes."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 80.0
  },
  "fexofenadine": {
   "applications": 36,
   "first_approval": "1996-07-25",
+  "marketed_now": true,
+  "ndc_products": 288,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260601",
+   "reason": "Failed Impurities/Degradation Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 30.0
  },
  "finasteride": {
   "applications": 27,
   "first_approval": "1992-06-19",
+  "marketed_now": true,
+  "ndc_products": 102,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250207",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 34.1
  },
  "flecainide": {
   "applications": 11,
   "first_approval": "1985-10-31",
+  "marketed_now": true,
+  "ndc_products": 68,
+  "recalls_open": 0,
   "years_marketed": 40.7
  },
  "fluconazole": {
   "applications": 41,
   "first_approval": "1990-01-29",
+  "marketed_now": true,
+  "ndc_products": 185,
+  "recalls_open": 0,
   "years_marketed": 36.5
  },
  "fluoroquinolone": {
@@ -656,61 +1470,153 @@
  "fluorouracil": {
   "applications": 41,
   "first_approval": "1962-04-25",
+  "marketed_now": true,
+  "ndc_products": 64,
+  "recalls_open": 0,
   "years_marketed": 64.3
  },
  "fluoxetine": {
   "applications": 80,
   "first_approval": "1987-12-29",
+  "marketed_now": true,
+  "ndc_products": 280,
+  "recalls_open": 0,
   "years_marketed": 38.6
  },
  "fluticasone": {
   "applications": 52,
   "first_approval": "1990-12-14",
+  "marketed_now": true,
+  "ndc_products": 280,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20240214",
+   "reason": "CGMP Deviations:Suspected potential presence of Burkholderia cepacia complex"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "The anticipated date that GSK will cease distribution of the presentation is approximately December 31, 2026.  The 120 dose presentation of this product will st",
+   "since": "07/27/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 35.6
  },
  "fluvastatin": {
   "applications": 7,
   "first_approval": "1993-12-31",
+  "marketed_now": true,
+  "ndc_products": 21,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "01/27/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 32.6
  },
  "fluvoxamine": {
   "applications": 27,
   "first_approval": "1994-12-05",
+  "marketed_now": true,
+  "ndc_products": 54,
+  "recalls_open": 0,
   "years_marketed": 31.6
  },
  "folic acid": {
   "applications": 52,
   "first_approval": "1946-08-13",
+  "marketed_now": true,
+  "ndc_products": 236,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260501",
+   "reason": "Presence of a Foreign Substance; black particles observed in liquid"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 10,
   "years_marketed": 80.0
  },
  "formoterol": {
   "applications": 23,
   "first_approval": "2001-02-16",
+  "marketed_now": true,
+  "ndc_products": 67,
+  "recalls_open": 0,
   "years_marketed": 25.4
  },
  "furosemide": {
   "applications": 58,
   "first_approval": "1966-07-01",
+  "marketed_now": true,
+  "ndc_products": 246,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260320",
+   "reason": "CGMP Deviations; presence of N-nitroso-Furosemide (NNF) above the recommended intake limit."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Estimated recovery: End October 2026; Manufacturing delay",
+   "since": "04/07/2020",
+   "status": "Current"
+  },
   "years_marketed": 60.1
  },
  "gabapentin": {
   "applications": 79,
   "first_approval": "1993-12-30",
+  "marketed_now": true,
+  "ndc_products": 643,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251010",
+   "reason": "Failed Impurities/Degradation Specifications: an out of specification result obtained during routine stability testing for Highest Unknown Impurity ."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 7,
   "years_marketed": 32.6
  },
  "gemcitabine": {
   "applications": 34,
   "first_approval": "1996-05-15",
+  "marketed_now": true,
+  "ndc_products": 60,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260610",
+   "reason": "Temperature Abuse: Product was stored incorrectly in a controlled room temperature environment instead of a refrigerated environment."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 30.2
  },
  "gemfibrozil": {
   "applications": 18,
   "first_approval": "1981-12-21",
+  "marketed_now": true,
+  "ndc_products": 48,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug.",
+   "since": "02/10/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 44.6
  },
  "gentamicin": {
   "applications": 47,
   "first_approval": "1966-03-15",
+  "marketed_now": true,
+  "ndc_products": 55,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250529",
+   "reason": "Failed Stability Specifications:  Out of specification results for the Color Absorbance test during 12 Month sample analysis."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 60.4
  },
  "gi_other": {
@@ -719,14 +1625,31 @@
   "from_class_members": true,
   "years_marketed": 49.6
  },
+ "gliclazide": {
+  "marketed_now": true,
+  "ndc_products": 1,
+  "recalls_open": 0
+ },
  "glimepiride": {
   "applications": 21,
   "first_approval": "1995-11-30",
+  "marketed_now": true,
+  "ndc_products": 124,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20240118",
+   "reason": "Misprint on tablet"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 30.7
  },
  "glipizide": {
   "applications": 30,
   "first_approval": "1984-05-08",
+  "marketed_now": true,
+  "ndc_products": 184,
+  "recalls_open": 0,
   "years_marketed": 42.2
  },
  "glp1": {
@@ -738,16 +1661,30 @@
  "glyburide": {
   "applications": 27,
   "first_approval": "1984-05-01",
+  "marketed_now": true,
+  "ndc_products": 100,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "08/10/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 42.2
  },
  "golimumab": {
   "applications": 3,
   "first_approval": "2009-04-24",
+  "marketed_now": true,
+  "ndc_products": 4,
+  "recalls_open": 0,
   "years_marketed": 17.3
  },
  "guselkumab": {
   "applications": 1,
   "first_approval": "2017-07-13",
+  "marketed_now": true,
+  "ndc_products": 4,
+  "recalls_open": 0,
   "years_marketed": 9.0
  },
  "h2ra": {
@@ -759,11 +1696,39 @@
  "haloperidol": {
   "applications": 83,
   "first_approval": "1967-04-12",
+  "marketed_now": true,
+  "ndc_products": 242,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251010",
+   "reason": "Labeling: Not Elsewhere Classified:Incorrect RFID tag labels applied to product by repackaging firm."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 9,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "01/09/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 59.3
  },
  "heparin": {
   "applications": 59,
   "first_approval": "1939-02-09",
+  "marketed_now": true,
+  "ndc_products": 184,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20240801",
+   "reason": "Microbial Contamination of Sterile Products; out of limit results obtained for endotoxin testing."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "",
+   "since": "11/14/2017",
+   "status": "Current"
+  },
   "years_marketed": 87.5
  },
  "hormone_cancer": {
@@ -781,26 +1746,80 @@
  "hydrochlorothiazide": {
   "applications": 376,
   "first_approval": "1959-02-12",
+  "marketed_now": true,
+  "ndc_products": 954,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260121",
+   "reason": "cGMP Deviations: recall due to not meeting the N-Nitroso Bisoprolol impurity specification limits."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 47,
+  "shortage": {
+   "reason": "",
+   "since": "01/19/2023",
+   "status": "Current"
+  },
   "years_marketed": 67.5
  },
  "hydrocodone": {
   "applications": 194,
   "first_approval": "1943-03-23",
+  "marketed_now": true,
+  "ndc_products": 263,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20120910",
+   "reason": "Superpotent (Multiple Ingredient) Drug: Confirmed customer complaints of oversized tablets resulting in superpotent assays of both the hydrocodone and acetaminophen components."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 1,
   "years_marketed": 83.4
  },
  "hydrocortisone": {
   "applications": 205,
   "first_approval": "1951-12-21",
+  "marketed_now": true,
+  "ndc_products": 780,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260602",
+   "reason": "CGMP Deviations; deficiencies observed during FDA inspection"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "07/23/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 74.6
  },
  "hydroxychloroquine": {
   "applications": 17,
   "first_approval": "1955-04-18",
+  "marketed_now": true,
+  "ndc_products": 72,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "01/05/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 71.3
  },
  "hydroxyzine": {
   "applications": 105,
   "first_approval": "1956-04-12",
+  "marketed_now": true,
+  "ndc_products": 314,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260602",
+   "reason": "Presence of foreign substance"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 70.3
  },
  "hypnotic": {
@@ -812,16 +1831,31 @@
  "ibrutinib": {
   "applications": 5,
   "first_approval": "2013-11-13",
+  "marketed_now": true,
+  "ndc_products": 35,
+  "recalls_open": 0,
   "years_marketed": 12.7
  },
  "ibuprofen": {
   "applications": 247,
   "first_approval": "1974-09-19",
+  "marketed_now": true,
+  "ndc_products": 1495,
+  "recall_latest": {
+   "classification": "Not Yet Classified",
+   "initiated": "20260814",
+   "reason": "Cross Contamination with Other Products"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 17,
   "years_marketed": 51.9
  },
  "imatinib": {
   "applications": 19,
   "first_approval": "2001-05-10",
+  "marketed_now": true,
+  "ndc_products": 70,
+  "recalls_open": 0,
   "years_marketed": 25.2
  },
  "immunosuppressant": {
@@ -833,16 +1867,37 @@
  "indapamide": {
   "applications": 10,
   "first_approval": "1983-07-06",
+  "marketed_now": true,
+  "ndc_products": 27,
+  "recalls_open": 0,
   "years_marketed": 43.1
  },
  "indomethacin": {
   "applications": 62,
   "first_approval": "1965-06-10",
+  "marketed_now": true,
+  "ndc_products": 94,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250515",
+   "reason": "cGMP deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 61.1
  },
  "infliximab": {
   "applications": 6,
   "first_approval": "1998-08-24",
+  "marketed_now": true,
+  "ndc_products": 22,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250117",
+   "reason": "cGMP Deviations: Product intended for quarantine was inadvertently distributed."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 27.9
  },
  "insulin": {
@@ -854,26 +1909,57 @@
  "insulin aspart": {
   "applications": 8,
   "first_approval": "2000-06-07",
+  "marketed_now": true,
+  "ndc_products": 42,
+  "recalls_open": 0,
   "years_marketed": 26.1
  },
  "insulin degludec": {
   "applications": 3,
   "first_approval": "2015-09-25",
+  "marketed_now": true,
+  "ndc_products": 14,
+  "recalls_open": 0,
   "years_marketed": 10.8
  },
  "insulin glargine": {
   "applications": 8,
   "first_approval": "2000-04-20",
+  "marketed_now": true,
+  "ndc_products": 30,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug. Distribution projected to end June 2027. If patients or prescribers have any questions, the",
+   "since": "09/01/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 26.3
  },
  "insulin human": {
   "applications": 8,
   "first_approval": "1982-10-28",
+  "marketed_now": true,
+  "ndc_products": 106,
+  "recalls_open": 0,
   "years_marketed": 43.8
  },
  "insulin lispro": {
   "applications": 6,
   "first_approval": "1996-06-14",
+  "marketed_now": true,
+  "ndc_products": 54,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230411",
+   "reason": "Lack of Assurance of Sterility: Malformed crimped collar seal"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "10/24/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 30.1
  },
  "interleukin": {
@@ -885,26 +1971,52 @@
  "ipratropium": {
   "applications": 45,
   "first_approval": "1986-12-29",
+  "marketed_now": true,
+  "ndc_products": 68,
+  "recalls_open": 0,
   "years_marketed": 39.6
  },
  "irbesartan": {
   "applications": 40,
   "first_approval": "1997-09-30",
+  "marketed_now": true,
+  "ndc_products": 140,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250121",
+   "reason": "Out of Specification for Dissolution"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 28.8
  },
  "isoniazid": {
   "applications": 35,
   "first_approval": "1952-09-29",
+  "marketed_now": true,
+  "ndc_products": 35,
+  "recalls_open": 0,
   "years_marketed": 73.8
  },
  "isosorbide mononitrate": {
   "applications": 23,
   "first_approval": "1991-12-30",
+  "marketed_now": true,
+  "ndc_products": 67,
+  "recalls_open": 0,
   "years_marketed": 34.6
  },
  "itraconazole": {
   "applications": 20,
   "first_approval": "1992-09-11",
+  "marketed_now": true,
+  "ndc_products": 36,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "02/27/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 33.9
  },
  "jak_inhibitor": {
@@ -916,91 +2028,242 @@
  "ketorolac": {
   "applications": 64,
   "first_approval": "1989-11-30",
+  "marketed_now": true,
+  "ndc_products": 216,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251218",
+   "reason": "Presence of particulate matter - Glass like particles."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 13,
+  "shortage": {
+   "reason": "",
+   "since": "03/23/2018",
+   "status": "Current"
+  },
   "years_marketed": 36.7
  },
  "lamotrigine": {
   "applications": 59,
   "first_approval": "1994-12-27",
+  "marketed_now": true,
+  "ndc_products": 340,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "04/29/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 31.6
  },
  "lansoprazole": {
   "applications": 41,
   "first_approval": "1995-05-10",
+  "marketed_now": true,
+  "ndc_products": 157,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20220623",
+   "reason": "CGMP Deviations: product held outside appropriate storage temperature conditions."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 31.2
  },
  "latanoprost": {
   "applications": 16,
   "first_approval": "1996-06-05",
+  "marketed_now": true,
+  "ndc_products": 46,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250207",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 30.1
  },
  "leflunomide": {
   "applications": 13,
   "first_approval": "1998-09-10",
+  "marketed_now": true,
+  "ndc_products": 50,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "06/08/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 27.9
  },
  "lenalidomide": {
   "applications": 21,
   "first_approval": "2005-12-27",
+  "marketed_now": true,
+  "ndc_products": 135,
+  "recalls_open": 0,
   "years_marketed": 20.6
  },
  "letrozole": {
   "applications": 21,
   "first_approval": "1997-07-25",
+  "marketed_now": true,
+  "ndc_products": 36,
+  "recalls_open": 0,
   "years_marketed": 29.0
  },
  "levetiracetam": {
   "applications": 113,
   "first_approval": "1999-11-30",
+  "marketed_now": true,
+  "ndc_products": 351,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20250313",
+   "reason": "LABELING: LABEL MIX-UP: The infusion bag is incorrectly labeled as Levetiracetam in 0.82% Sodium Chloride Injection 500 mg/100 mL, while the aluminum overwrap packaging correctly identifies the produc"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 2,
   "years_marketed": 26.7
  },
  "levodopa": {
   "applications": 54,
   "first_approval": "1970-06-04",
+  "marketed_now": true,
+  "ndc_products": 213,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251007",
+   "reason": "Product mix up:  complaint received that sealed medication bottle contained Carbidopa, Levodopa, and Entacapone film-coated tablets (37.5 mg/150 mg/200 mg) instead of labelled lower strength Carbidopa"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 56.2
  },
  "levofloxacin": {
   "applications": 48,
   "first_approval": "1996-12-20",
+  "marketed_now": true,
+  "ndc_products": 145,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230426",
+   "reason": "CGMP Deviations: Firm went out of business and could no longer continue stability studies."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 29.6
  },
  "levonorgestrel": {
   "applications": 110,
   "first_approval": "1979-07-26",
+  "marketed_now": true,
+  "ndc_products": 149,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20220623",
+   "reason": "CGMP Deviations: product held outside appropriate storage temperature conditions."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 47.0
  },
  "levothyroxine": {
   "applications": 34,
   "first_approval": "2000-08-21",
+  "marketed_now": true,
+  "ndc_products": 695,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260806",
+   "reason": "Subpotent Drug"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 61,
   "years_marketed": 25.9
  },
  "linagliptin": {
   "applications": 17,
   "first_approval": "2011-05-02",
+  "marketed_now": true,
+  "ndc_products": 40,
+  "recalls_open": 0,
   "years_marketed": 15.2
  },
  "liraglutide": {
   "applications": 14,
   "first_approval": "2010-01-25",
+  "marketed_now": true,
+  "ndc_products": 62,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260424",
+   "reason": "Presence of particulate matter: a white thread-like structure in the cartridge"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "",
+   "since": "07/18/2023",
+   "status": "Current"
+  },
   "years_marketed": 16.5
  },
  "lisdexamfetamine": {
   "applications": 25,
   "first_approval": "2007-02-23",
+  "marketed_now": true,
+  "ndc_products": 198,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251028",
+   "reason": "Failed Dissolution Specifications: An out of specification results observed in dissolution test during analysis at 12-month long term stability station (25\u00bfC, 60%RH) for Lisdexamfetamine dimesylate ca"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 8,
+  "shortage": {
+   "reason": "",
+   "since": "07/14/2023",
+   "status": "Current"
+  },
   "years_marketed": 19.4
  },
  "lisinopril": {
   "applications": 38,
   "first_approval": "1987-12-29",
+  "marketed_now": true,
+  "ndc_products": 397,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250620",
+   "reason": "Product Mix Up: This product is being recalled because of a complaint received that a sealed bottle of lisinopril and hydrochlorothiazide tablets 20mg/12.5 mg had a foreign tablet identified as atazan"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 38.6
  },
  "lithium": {
   "applications": 38,
   "first_approval": "1970-04-06",
+  "marketed_now": true,
+  "ndc_products": 247,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20161117",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 56.3
  },
  "lixisenatide": {
   "applications": 2,
   "first_approval": "2016-07-27",
+  "marketed_now": true,
+  "ndc_products": 1,
+  "recalls_open": 0,
   "years_marketed": 10.0
  },
  "loop_diuretic": {
@@ -1012,126 +2275,370 @@
  "loperamide": {
   "applications": 46,
   "first_approval": "1976-12-28",
+  "marketed_now": true,
+  "ndc_products": 259,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20220623",
+   "reason": "CGMP Deviations: product held outside appropriate storage temperature conditions."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 49.6
  },
  "loratadine": {
   "applications": 56,
   "first_approval": "1993-04-12",
+  "marketed_now": true,
+  "ndc_products": 455,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251226",
+   "reason": "CGMP Deviations: Insanitary conditions including rodent exposure/activity in their distribution center."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 33.3
  },
  "lorazepam": {
   "applications": 56,
   "first_approval": "1977-09-30",
+  "marketed_now": true,
+  "ndc_products": 159,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250722",
+   "reason": "Failed Impurities/Degradation Specifications: An out-of-Specification for total related compounds"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 7,
+  "shortage": {
+   "reason": "Estimated recovery: TBD",
+   "since": "09/05/2018",
+   "status": "Current"
+  },
   "years_marketed": 48.8
  },
  "losartan": {
   "applications": 46,
   "first_approval": "1995-04-14",
+  "marketed_now": true,
+  "ndc_products": 349,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20240507",
+   "reason": "Presence of foreign substance: plastic-like substance."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 37,
   "years_marketed": 31.3
  },
  "lovastatin": {
   "applications": 12,
   "first_approval": "1987-08-31",
+  "marketed_now": true,
+  "ndc_products": 82,
+  "recalls_open": 0,
   "years_marketed": 38.9
  },
  "lurasidone": {
   "applications": 20,
   "first_approval": "2010-10-28",
+  "marketed_now": true,
+  "ndc_products": 176,
+  "recalls_open": 0,
   "years_marketed": 15.8
  },
  "magnesium oxide": {
   "applications": 5,
   "first_approval": "1982-06-22",
+  "marketed_now": true,
+  "ndc_products": 91,
+  "recalls_open": 0,
   "years_marketed": 44.1
  },
  "medroxyprogesterone": {
   "applications": 29,
   "first_approval": "1959-06-18",
+  "marketed_now": true,
+  "ndc_products": 72,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250425",
+   "reason": "Severe thunderstorms caused transit delays of certain cold chain products that were shipped on 02-Apr-2025 and delivered after the 48-hours specified delivery time, on 07-Apr-2025 and 08-Apr-2025.   T"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug; Withdrawal from sale expected September 2026.",
+   "since": "08/31/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 67.1
  },
  "meloxicam": {
   "applications": 34,
   "first_approval": "2000-04-13",
+  "marketed_now": true,
+  "ndc_products": 177,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20130529",
+   "reason": "Lack of Assurance of Sterility: FDA inspection findings resulted in concerns regarding quality control processes"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 26.3
  },
  "memantine": {
   "applications": 51,
   "first_approval": "2003-10-16",
+  "marketed_now": true,
+  "ndc_products": 176,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260324",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "06/15/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 22.8
  },
  "mesalamine": {
   "applications": 44,
   "first_approval": "1987-12-24",
+  "marketed_now": true,
+  "ndc_products": 113,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20240205",
+   "reason": "Failed Dissolution Specifications: Out of specification for dissolution."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "08/25/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 38.6
  },
  "metformin": {
   "applications": 173,
   "first_approval": "1995-03-03",
+  "marketed_now": true,
+  "ndc_products": 743,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260612",
+   "reason": "CGMP Deviations: An incorrect detergent was used and the required swab sampling was not performed on a production hopper that had previously been used for a different product."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 23,
   "years_marketed": 31.4
  },
  "methadone": {
   "applications": 34,
   "first_approval": "1947-08-13",
+  "marketed_now": true,
+  "ndc_products": 62,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20241219",
+   "reason": "Failed Tablet/Capsule Specifications: Illegible product identification for the unit dose configuration only."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 79.0
  },
  "methimazole": {
   "applications": 12,
   "first_approval": "1950-06-21",
+  "marketed_now": true,
+  "ndc_products": 61,
+  "recalls_open": 0,
   "years_marketed": 76.1
  },
  "methotrexate": {
   "applications": 51,
   "first_approval": "1953-12-07",
+  "marketed_now": true,
+  "ndc_products": 92,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20230922",
+   "reason": "Failed Tablet/Capsule Specifications: Tablets were observed to have an unsmooth surface with two tablets demonstrating illegible tablet identification and scoring."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Estimated recovery: October 2026",
+   "since": "03/13/2023",
+   "status": "Current"
+  },
   "years_marketed": 72.6
  },
  "methylphenidate": {
   "applications": 89,
   "first_approval": "1955-12-05",
+  "marketed_now": true,
+  "ndc_products": 305,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230310",
+   "reason": "Defective Delivery System: Out of specification for shear."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 10,
+  "shortage": {
+   "reason": "",
+   "since": "07/26/2023",
+   "status": "Current"
+  },
   "years_marketed": 70.7
  },
  "methylprednisolone": {
   "applications": 75,
   "first_approval": "1957-10-24",
+  "marketed_now": true,
+  "ndc_products": 186,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260115",
+   "reason": "Labeling: Not Elsewhere Classified. Incorrect orientation of the blister foil applied to the blister cavities, which results in incorrect dosing information when following the directions on the foil."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
+  "shortage": {
+   "reason": "",
+   "since": "12/15/2021",
+   "status": "Current"
+  },
   "years_marketed": 68.8
  },
  "metoclopramide": {
   "applications": 47,
   "first_approval": "1979-02-07",
+  "marketed_now": true,
+  "ndc_products": 89,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250523",
+   "reason": "Presence of foreign tablets/capsules."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 47.5
  },
  "metoprolol": {
   "applications": 73,
   "first_approval": "1978-08-07",
+  "marketed_now": true,
+  "ndc_products": 565,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260427",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 9,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "08/31/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 48.0
  },
  "metronidazole": {
   "applications": 87,
   "first_approval": "1963-07-18",
+  "marketed_now": true,
+  "ndc_products": 205,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Labeler: Hospira Inc.",
+   "since": "01/13/2022",
+   "status": "Current"
+  },
   "years_marketed": 63.0
  },
  "midazolam": {
   "applications": 45,
   "first_approval": "1985-12-20",
+  "marketed_now": true,
+  "ndc_products": 110,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20231018",
+   "reason": "Presence of Particulate Matter: Silicone"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Additional lots are scheduled to be manufactured.  Product will be made available as it is released.",
+   "since": "04/02/2020",
+   "status": "Current"
+  },
   "years_marketed": 40.6
  },
  "minocycline": {
   "applications": 39,
   "first_approval": "1971-06-30",
+  "marketed_now": true,
+  "ndc_products": 155,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260601",
+   "reason": "Failed Dissolution Specifications: An out-of-specification (OOS) result was observed during the 9th month of dissolution test analysis"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 55.1
  },
  "mirabegron": {
   "applications": 12,
   "first_approval": "2012-06-28",
+  "marketed_now": true,
+  "ndc_products": 47,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260805",
+   "reason": "CGMP: Due to Out of Specification (OOS) result for N-Nitroso Mirabegron impurity."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 14.1
  },
  "mirtazapine": {
   "applications": 26,
   "first_approval": "1996-06-14",
+  "marketed_now": true,
+  "ndc_products": 166,
+  "recalls_open": 0,
   "years_marketed": 30.1
  },
  "montelukast": {
   "applications": 52,
   "first_approval": "1998-02-20",
+  "marketed_now": true,
+  "ndc_products": 117,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230323",
+   "reason": "cGMP Deviations for the manufacturing Firm (Accord Healthcare) after their inspection."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/17/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 28.4
  },
  "mood_stabilizer": {
@@ -1143,41 +2650,116 @@
  "morphine": {
   "applications": 77,
   "first_approval": "1984-09-18",
+  "marketed_now": true,
+  "ndc_products": 168,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260804",
+   "reason": "Labeling: Label Mixup: MicroVault labeled as Morphine 2 mg/1 mL, contains a Prefilled Syringe of Dilaudid 0.5 mg/0.5 mL."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 7,
+  "shortage": {
+   "reason": "Additional lots will be available in the October 2026 timeframe.  Product will be made available as it is released.",
+   "since": "11/03/2017",
+   "status": "Current"
+  },
   "years_marketed": 41.9
  },
  "moxifloxacin": {
   "applications": 31,
   "first_approval": "1999-12-10",
+  "marketed_now": true,
+  "ndc_products": 79,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251218",
+   "reason": "Presence of particulate matter - Glass like particles."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 14,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "10/29/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 26.6
  },
  "mycophenolate": {
   "applications": 68,
   "first_approval": "1995-05-03",
+  "marketed_now": true,
+  "ndc_products": 137,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260702",
+   "reason": "Presence of precipitate"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 31.2
  },
  "naproxen": {
   "applications": 105,
   "first_approval": "1976-03-11",
+  "marketed_now": true,
+  "ndc_products": 580,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260420",
+   "reason": "Chemical contamination; presence of lead and lithium above specification"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 50.4
  },
  "nebivolol": {
   "applications": 21,
   "first_approval": "2007-12-17",
+  "marketed_now": true,
+  "ndc_products": 110,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20251118",
+   "reason": "Cross Contamination with Other Products"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "03/25/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 18.6
  },
  "niacin": {
   "applications": 29,
   "first_approval": "1957-07-24",
+  "marketed_now": true,
+  "ndc_products": 71,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260529",
+   "reason": "Failed Dissolution Specifications: During 12-month long-term stability testing, subject lot was out of specification (low) for stage 3 dissolution at the 24-hour timepoint."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 69.0
  },
  "nifedipine": {
   "applications": 36,
   "first_approval": "1981-12-31",
+  "marketed_now": true,
+  "ndc_products": 157,
+  "recalls_open": 0,
   "years_marketed": 44.6
  },
  "nirmatrelvir": {
   "applications": 1,
   "first_approval": "2023-05-25",
+  "marketed_now": true,
+  "ndc_products": 12,
+  "recalls_open": 0,
   "years_marketed": 3.2
  },
  "nitrate": {
@@ -1189,21 +2771,61 @@
  "nitrofurantoin": {
   "applications": 42,
   "first_approval": "1953-02-06",
+  "marketed_now": true,
+  "ndc_products": 171,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20241204",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "04/10/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 73.5
  },
  "nitroglycerin": {
   "applications": 52,
   "first_approval": "1981-05-28",
+  "marketed_now": true,
+  "ndc_products": 208,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260724",
+   "reason": "Presence of Particulate Matter: Product contaminated with particulate matter identified as hair, glass and/or paraformaldehyde"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "04/14/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 45.2
  },
  "nivolumab": {
   "applications": 5,
   "first_approval": "2014-12-22",
+  "marketed_now": true,
+  "ndc_products": 12,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251021",
+   "reason": "Lack of Assurance of Sterility."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 11.6
  },
  "nortriptyline": {
   "applications": 15,
   "first_approval": "1964-11-06",
+  "marketed_now": true,
+  "ndc_products": 94,
+  "recalls_open": 0,
   "years_marketed": 61.7
  },
  "nsaid": {
@@ -1215,21 +2837,62 @@
  "olanzapine": {
   "applications": 56,
   "first_approval": "1996-09-30",
+  "marketed_now": true,
+  "ndc_products": 289,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20241125",
+   "reason": "Failed Impurities/Degradation Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 29.8
  },
  "olmesartan": {
   "applications": 66,
   "first_approval": "2002-04-25",
+  "marketed_now": true,
+  "ndc_products": 334,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260708",
+   "reason": "Failed Dissolution Specifications; Olmesartan Medoxomil content below specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
   "years_marketed": 24.3
  },
  "omalizumab": {
   "applications": 2,
   "first_approval": "2003-06-20",
+  "marketed_now": true,
+  "ndc_products": 14,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250730",
+   "reason": "CGMP Deviations - Product was exposed to temperatures outside the product's labeled storage requirements."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 23.1
  },
  "omeprazole": {
   "applications": 63,
   "first_approval": "1989-09-14",
+  "marketed_now": true,
+  "ndc_products": 464,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250630",
+   "reason": "Presence of foreign tablets/capsules: presence of foreign Divalproex Sodium Extended-Release 250mg tablet in a bottle of omeprazole capsules."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "10/09/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 36.9
  },
  "oncology_cytotoxic": {
@@ -1259,6 +2922,15 @@
  "ondansetron": {
   "applications": 82,
   "first_approval": "1991-01-04",
+  "marketed_now": true,
+  "ndc_products": 317,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251230",
+   "reason": "Defective container: Preferred Pharmaceuticals received a letter from the manufacturer Glenmark, that the blister packs are not fully sealed and tablets falling out. Preferred Pharmaceuticals purchase"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 35.6
  },
  "ophthalmic": {
@@ -1276,26 +2948,63 @@
  "oseltamivir": {
   "applications": 39,
   "first_approval": "1999-10-27",
+  "marketed_now": true,
+  "ndc_products": 150,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "09/30/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 26.8
  },
  "osimertinib": {
   "applications": 1,
   "first_approval": "2015-11-13",
+  "marketed_now": true,
+  "ndc_products": 14,
+  "recalls_open": 0,
   "years_marketed": 10.7
  },
  "oxcarbazepine": {
   "applications": 35,
   "first_approval": "2000-01-14",
+  "marketed_now": true,
+  "ndc_products": 158,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230426",
+   "reason": "CGMP Deviations: Firm went out of business and could no longer continue stability studies."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 26.5
  },
  "oxybutynin": {
   "applications": 40,
   "first_approval": "1975-07-16",
+  "marketed_now": true,
+  "ndc_products": 130,
+  "recalls_open": 0,
   "years_marketed": 51.0
  },
  "oxycodone": {
   "applications": 135,
   "first_approval": "1950-04-12",
+  "marketed_now": true,
+  "ndc_products": 313,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260114",
+   "reason": "Defective container: card seal defects (weak/non-existent seals), leading to the tablets falling out of their cavities."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/03/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 76.3
  },
  "p2y12": {
@@ -1307,21 +3016,44 @@
  "paclitaxel": {
   "applications": 24,
   "first_approval": "1992-12-29",
+  "marketed_now": true,
+  "ndc_products": 66,
+  "recalls_open": 0,
   "years_marketed": 33.6
  },
  "palbociclib": {
   "applications": 3,
   "first_approval": "2015-02-03",
+  "marketed_now": true,
+  "ndc_products": 25,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Discontinuation of the manufacturing of the capsule presentation. 75 mg Tablet \nNDC 0069-0284-03 will continue to be manufactured.",
+   "since": "04/22/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 11.5
  },
  "paliperidone": {
   "applications": 20,
   "first_approval": "2006-12-19",
+  "marketed_now": true,
+  "ndc_products": 123,
+  "recalls_open": 0,
   "years_marketed": 19.6
  },
  "pantoprazole": {
   "applications": 47,
   "first_approval": "2000-02-02",
+  "marketed_now": true,
+  "ndc_products": 201,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260326",
+   "reason": "Discoloration: Firm received five (5) complaints stating that, \"Tablets discolored darker than normal and have lighter-colored spots.\""
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 26.5
  },
  "parkinson": {
@@ -1333,51 +3065,137 @@
  "paroxetine": {
   "applications": 35,
   "first_approval": "1992-12-29",
+  "marketed_now": true,
+  "ndc_products": 197,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260813",
+   "reason": "Failed Dissolution Specifications; product failed to meet 24-month stability testing acceptance criteria"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 33.6
  },
  "pembrolizumab": {
   "applications": 2,
   "first_approval": "2014-09-04",
+  "marketed_now": true,
+  "ndc_products": 10,
+  "recalls_open": 0,
   "years_marketed": 11.9
  },
  "penicillin": {
   "applications": 43,
   "first_approval": "1947-02-06",
+  "marketed_now": true,
+  "ndc_products": 127,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250710",
+   "reason": "CGMP Deviations; particulates identified during visual inspection"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 4,
+  "shortage": {
+   "reason": "Limited Supply Available. Next Delivery: October 2026; Estimated Recovery: December 2027; Shortage per Manufacturer: Manufacturing Delay",
+   "since": "04/26/2023",
+   "status": "Current"
+  },
   "years_marketed": 79.5
  },
  "perindopril": {
   "applications": 7,
   "first_approval": "1993-12-30",
+  "marketed_now": true,
+  "ndc_products": 13,
+  "recalls_open": 0,
   "years_marketed": 32.6
  },
  "phenobarbital": {
   "applications": 1,
   "first_approval": "2022-11-17",
+  "marketed_now": true,
+  "ndc_products": 208,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20130529",
+   "reason": "Lack of Assurance of Sterility: FDA inspection findings resulted in concerns regarding quality control processes"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "10/31/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 3.7
  },
  "phenytoin": {
   "applications": 37,
   "first_approval": "1953-01-06",
+  "marketed_now": true,
+  "ndc_products": 73,
+  "recalls_open": 0,
   "years_marketed": 73.6
  },
  "pioglitazone": {
   "applications": 27,
   "first_approval": "1999-07-15",
+  "marketed_now": true,
+  "ndc_products": 134,
+  "recalls_open": 0,
   "years_marketed": 27.0
  },
  "pitavastatin": {
   "applications": 11,
   "first_approval": "2009-08-03",
+  "marketed_now": true,
+  "ndc_products": 50,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260203",
+   "reason": "Presence of foreign tablets/capsules: one Pitavastatin tablet 1mg found in bottle of Pitavastatin tablets 2mg"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 17.0
  },
  "polyethylene glycol": {
   "applications": 50,
   "first_approval": "1984-07-13",
+  "marketed_now": true,
+  "ndc_products": 297,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260325",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 6,
+  "recalls_open": 16,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "08/13/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 42.0
  },
  "potassium chloride": {
   "applications": 253,
   "first_approval": "1965-12-16",
+  "marketed_now": true,
+  "ndc_products": 669,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260812",
+   "reason": "Presence of Particulate matter."
+  },
+  "recalls_class_i": 10,
+  "recalls_open": 15,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/21/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 60.6
  },
  "ppi": {
@@ -1389,71 +3207,165 @@
  "pramipexole": {
   "applications": 33,
   "first_approval": "1997-07-01",
+  "marketed_now": true,
+  "ndc_products": 153,
+  "recalls_open": 0,
   "years_marketed": 29.1
  },
  "prasugrel": {
   "applications": 11,
   "first_approval": "2009-07-10",
+  "marketed_now": true,
+  "ndc_products": 31,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250305",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 17.1
  },
  "pravastatin": {
   "applications": 18,
   "first_approval": "1991-10-31",
+  "marketed_now": true,
+  "ndc_products": 195,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250313",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 34.7
  },
  "prazosin": {
   "applications": 24,
   "first_approval": "1976-06-23",
+  "marketed_now": true,
+  "ndc_products": 123,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260327",
+   "reason": "cGMP deviation: detection of Nitrosamine Drug Substance-Related Impurities, N-nitroso-prazosin impurity C (NNP) above acceptable limits."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 9,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug. Supply expected to exhaust in August 2023",
+   "since": "04/28/2023",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 50.1
  },
  "prednisolone": {
   "applications": 100,
   "first_approval": "1955-05-22",
+  "marketed_now": true,
+  "ndc_products": 106,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260604",
+   "reason": "Presence of Foreign Substance"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 71.2
  },
  "prednisone": {
   "applications": 77,
   "first_approval": "1955-02-21",
+  "marketed_now": true,
+  "ndc_products": 325,
+  "recalls_open": 0,
   "years_marketed": 71.4
  },
  "pregabalin": {
   "applications": 57,
   "first_approval": "2004-12-30",
+  "marketed_now": true,
+  "ndc_products": 590,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20240516",
+   "reason": "Presence of Foreign Tablets/Capsules: Complaint received from a re-packager, American Health Packaging (AHP), where a foreign tablet was discovered in one of the bottles during packaging set up. Table"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 21.6
  },
  "propranolol": {
   "applications": 99,
   "first_approval": "1967-11-13",
+  "marketed_now": true,
+  "ndc_products": 242,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "Check wholesalers for inventory",
+   "since": "10/31/2023",
+   "status": "Current"
+  },
   "years_marketed": 58.7
  },
  "quetiapine": {
   "applications": 41,
   "first_approval": "1997-09-26",
+  "marketed_now": true,
+  "ndc_products": 418,
+  "recalls_open": 0,
   "years_marketed": 28.8
  },
  "rabeprazole": {
   "applications": 13,
   "first_approval": "1999-08-19",
+  "marketed_now": true,
+  "ndc_products": 52,
+  "recalls_open": 0,
   "years_marketed": 26.9
  },
  "ramipril": {
   "applications": 20,
   "first_approval": "1991-01-28",
+  "marketed_now": true,
+  "ndc_products": 82,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260824",
+   "reason": "Failed Impurities/Degradation Specifications: OOS result obtained for a process impurity, dicyclohexylurea (DCU)."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 35.5
  },
  "ranibizumab": {
   "applications": 6,
   "first_approval": "2006-06-30",
+  "marketed_now": true,
+  "ndc_products": 18,
+  "recalls_open": 0,
   "years_marketed": 20.1
  },
  "ranitidine": {
   "applications": 85,
   "first_approval": "1983-06-09",
+  "marketed_now": true,
+  "ndc_products": 31,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20191217",
+   "reason": "CGMP Deviations: Presence of NDMA impurity detected in product."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 30,
   "years_marketed": 43.1
  },
  "remdesivir": {
   "applications": 1,
   "first_approval": "2020-10-22",
+  "marketed_now": true,
+  "ndc_products": 8,
+  "recalls_open": 0,
   "years_marketed": 5.8
  },
  "respiratory": {
@@ -1465,71 +3377,158 @@
  "rifampicin": {
   "applications": 18,
   "first_approval": "1971-05-21",
+  "marketed_now": true,
+  "ndc_products": 32,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230426",
+   "reason": "CGMP Deviations: Firm went out of business and could no longer continue stability studies."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
+  "shortage": {
+   "reason": "",
+   "since": "12/22/2021",
+   "status": "Current"
+  },
   "years_marketed": 55.2
  },
  "risedronate": {
   "applications": 17,
   "first_approval": "1998-03-27",
+  "marketed_now": true,
+  "ndc_products": 43,
+  "recalls_open": 0,
   "years_marketed": 28.3
  },
  "risperidone": {
   "applications": 56,
   "first_approval": "1993-12-29",
+  "marketed_now": true,
+  "ndc_products": 224,
+  "recalls_open": 0,
   "years_marketed": 32.6
  },
  "rituximab": {
   "applications": 6,
   "first_approval": "1997-11-26",
+  "marketed_now": true,
+  "ndc_products": 22,
+  "recalls_open": 0,
   "years_marketed": 28.7
  },
  "rivaroxaban": {
   "applications": 27,
   "first_approval": "2011-07-01",
+  "marketed_now": true,
+  "ndc_products": 89,
+  "recalls_open": 0,
   "years_marketed": 15.1
  },
  "rivastigmine": {
   "applications": 19,
   "first_approval": "2000-04-21",
+  "marketed_now": true,
+  "ndc_products": 93,
+  "recalls_open": 0,
   "years_marketed": 26.3
  },
  "rizatriptan": {
   "applications": 29,
   "first_approval": "1998-06-29",
+  "marketed_now": true,
+  "ndc_products": 93,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250709",
+   "reason": "CGMP Deviations: detection of N-nitroso-dimethyl-rizatriptan impurity, above the FDA recommended acceptable intake limit."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 28.1
  },
  "ropinirole": {
   "applications": 23,
   "first_approval": "1997-09-19",
+  "marketed_now": true,
+  "ndc_products": 158,
+  "recalls_open": 0,
   "years_marketed": 28.9
  },
  "rosiglitazone": {
   "applications": 6,
   "first_approval": "1999-05-25",
+  "marketed_now": true,
+  "ndc_products": 2,
+  "recalls_open": 0,
   "years_marketed": 27.2
  },
  "rosuvastatin": {
   "applications": 32,
   "first_approval": "2003-08-12",
+  "marketed_now": true,
+  "ndc_products": 318,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251231",
+   "reason": "Out of specification for dissolution."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 4,
   "years_marketed": 23.0
  },
  "salmeterol": {
   "applications": 10,
   "first_approval": "1994-02-04",
+  "marketed_now": true,
+  "ndc_products": 74,
+  "recalls_open": 0,
+  "shortage": {
+   "reason": "The anticipated date that GSK will cease distribution of the presentation is approximately December 31, 2026.  The 120 dose presentation of this product will st",
+   "since": "07/27/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 32.5
  },
  "secukinumab": {
   "applications": 2,
   "first_approval": "2015-01-21",
+  "marketed_now": true,
+  "ndc_products": 6,
+  "recalls_open": 0,
   "years_marketed": 11.5
  },
  "semaglutide": {
   "applications": 5,
   "first_approval": "2017-12-05",
+  "marketed_now": true,
+  "ndc_products": 136,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260729",
+   "reason": "Presence of Particulate Matter; identified as a nylon/polyamide and silk/proteinaceous-type material"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 47,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug. These products will be replaced by Ozempic (semaglutide) tablets.",
+   "since": "06/04/2026",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 8.6
  },
  "sertraline": {
   "applications": 37,
   "first_approval": "1991-12-30",
+  "marketed_now": true,
+  "ndc_products": 258,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20251105",
+   "reason": "Defective container - seal not adhering to bottles"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 34.6
  },
  "sglt2": {
@@ -1541,31 +3540,78 @@
  "sildenafil": {
   "applications": 55,
   "first_approval": "1998-03-27",
+  "marketed_now": true,
+  "ndc_products": 270,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260803",
+   "reason": "CGMP Deviations:Noted during FDA inspection"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 28.3
  },
  "simvastatin": {
   "applications": 30,
   "first_approval": "1991-12-23",
+  "marketed_now": true,
+  "ndc_products": 218,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20250519",
+   "reason": "Failed Impurities/Degradation Specifications: Out of Specification (OOS) for related substances test for Anhydro Simvastatin at the 06-month time point during long-term stability study."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 5,
   "years_marketed": 34.6
  },
  "sitagliptin": {
   "applications": 15,
   "first_approval": "2006-10-16",
+  "marketed_now": true,
+  "ndc_products": 149,
+  "recalls_open": 0,
   "years_marketed": 19.8
  },
  "solifenacin": {
   "applications": 28,
   "first_approval": "2004-11-19",
+  "marketed_now": true,
+  "ndc_products": 65,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250313",
+   "reason": "CGMP Deviations"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 21.7
  },
  "sotalol": {
   "applications": 21,
   "first_approval": "1992-10-30",
+  "marketed_now": true,
+  "ndc_products": 83,
+  "recalls_open": 0,
   "years_marketed": 33.7
  },
  "spironolactone": {
   "applications": 31,
   "first_approval": "1960-01-21",
+  "marketed_now": true,
+  "ndc_products": 207,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250805",
+   "reason": "Presence of foreign substance: identified as aluminum."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug.",
+   "since": "12/10/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 66.5
  },
  "ssri": {
@@ -1589,6 +3635,9 @@
  "sulfasalazine": {
   "applications": 14,
   "first_approval": "1950-06-20",
+  "marketed_now": true,
+  "ndc_products": 24,
+  "recalls_open": 0,
   "years_marketed": 76.1
  },
  "sulfonylurea": {
@@ -1600,6 +3649,9 @@
  "sumatriptan": {
   "applications": 53,
   "first_approval": "1992-12-28",
+  "marketed_now": true,
+  "ndc_products": 164,
+  "recalls_open": 0,
   "years_marketed": 33.6
  },
  "supplement": {
@@ -1611,56 +3663,113 @@
  "tacrolimus": {
   "applications": 26,
   "first_approval": "1994-04-08",
+  "marketed_now": true,
+  "ndc_products": 140,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20241223",
+   "reason": "Failed Tablet/Capsule Specifications: Bottles shipped to the USA may contain empty capsules"
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 5,
   "years_marketed": 32.3
  },
  "tadalafil": {
   "applications": 52,
   "first_approval": "2003-11-21",
+  "marketed_now": true,
+  "ndc_products": 309,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260803",
+   "reason": "CGMP Deviations:Noted during FDA inspection"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 6,
   "years_marketed": 22.7
  },
  "tamoxifen": {
   "applications": 14,
   "first_approval": "1977-12-30",
+  "marketed_now": true,
+  "ndc_products": 29,
+  "recalls_open": 0,
   "years_marketed": 48.6
  },
  "tamsulosin": {
   "applications": 21,
   "first_approval": "1997-04-15",
+  "marketed_now": true,
+  "ndc_products": 81,
+  "recalls_open": 0,
   "years_marketed": 29.3
  },
  "tapentadol": {
   "applications": 7,
   "first_approval": "2008-11-20",
+  "marketed_now": true,
+  "ndc_products": 29,
+  "recalls_open": 0,
   "years_marketed": 17.7
  },
  "telmisartan": {
   "applications": 36,
   "first_approval": "1998-11-10",
+  "marketed_now": true,
+  "ndc_products": 152,
+  "recalls_open": 0,
   "years_marketed": 27.7
  },
  "temazepam": {
   "applications": 18,
   "first_approval": "1981-02-27",
+  "marketed_now": true,
+  "ndc_products": 92,
+  "recalls_open": 0,
   "years_marketed": 45.4
  },
  "tenofovir": {
   "applications": 65,
   "first_approval": "2001-10-26",
+  "marketed_now": true,
+  "ndc_products": 171,
+  "recalls_open": 0,
   "years_marketed": 24.8
  },
  "terbinafine": {
   "applications": 21,
   "first_approval": "1992-12-30",
+  "marketed_now": true,
+  "ndc_products": 108,
+  "recalls_open": 0,
   "years_marketed": 33.6
  },
  "teriparatide": {
   "applications": 6,
   "first_approval": "2002-11-26",
+  "marketed_now": true,
+  "ndc_products": 24,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20220307",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 23.7
  },
  "testosterone": {
   "applications": 73,
   "first_approval": "1953-12-24",
+  "marketed_now": true,
+  "ndc_products": 280,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260126",
+   "reason": "Presence of Foreign substance - potential presence of metal particulate matter"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 69,
   "years_marketed": 72.6
  },
  "tetracycline": {
@@ -1684,26 +3793,59 @@
  "ticagrelor": {
   "applications": 22,
   "first_approval": "2011-07-20",
+  "marketed_now": true,
+  "ndc_products": 85,
+  "recalls_open": 0,
   "years_marketed": 15.0
  },
  "timolol": {
   "applications": 89,
   "first_approval": "1978-08-17",
+  "marketed_now": true,
+  "ndc_products": 137,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260722",
+   "reason": "Defective Container: Firm received multiple complaints of broken cap spikes and undeliverable drops."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 14,
   "years_marketed": 48.0
  },
  "tiotropium": {
   "applications": 5,
   "first_approval": "2004-01-30",
+  "marketed_now": true,
+  "ndc_products": 17,
+  "recalls_open": 0,
   "years_marketed": 22.5
  },
  "tirzepatide": {
   "applications": 2,
   "first_approval": "2022-05-13",
+  "marketed_now": true,
+  "ndc_products": 167,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260226",
+   "reason": "Lack of Assurance of Sterility"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 21,
   "years_marketed": 4.2
  },
  "tizanidine": {
   "applications": 32,
   "first_approval": "1996-11-27",
+  "marketed_now": true,
+  "ndc_products": 212,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20230626",
+   "reason": "Failed Stability Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 29.7
  },
  "tnf_blocker": {
@@ -1715,46 +3857,114 @@
  "tocilizumab": {
   "applications": 7,
   "first_approval": "2010-01-08",
+  "marketed_now": true,
+  "ndc_products": 33,
+  "recall_latest": {
+   "classification": "Class I",
+   "initiated": "20260810",
+   "reason": "Presence of particulate matter:An internal investigation at the firm found the product to contain glass particles."
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 1,
   "years_marketed": 16.6
  },
  "tofacitinib": {
   "applications": 30,
   "first_approval": "2012-11-06",
+  "marketed_now": true,
+  "ndc_products": 83,
+  "recalls_open": 0,
   "years_marketed": 13.7
  },
  "topiramate": {
   "applications": 59,
   "first_approval": "1996-12-24",
+  "marketed_now": true,
+  "ndc_products": 372,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260706",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 29.6
  },
  "torsemide": {
   "applications": 15,
   "first_approval": "1993-08-23",
+  "marketed_now": true,
+  "ndc_products": 78,
+  "recalls_open": 0,
   "years_marketed": 32.9
  },
  "tramadol": {
   "applications": 54,
   "first_approval": "1995-03-03",
+  "marketed_now": true,
+  "ndc_products": 165,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260319",
+   "reason": "Failed Impurities/Degradation Specifications: N-nitroso-desmethyl-tramadol impurity (NDSRI) was found out of the specification at 24-month stability interval during Long term stability (25\u00bfC/60%RH)."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 31.4
  },
  "trastuzumab": {
   "applications": 11,
   "first_approval": "1998-09-25",
+  "marketed_now": true,
+  "ndc_products": 36,
+  "recalls_open": 0,
   "years_marketed": 27.8
  },
  "trazodone": {
   "applications": 28,
   "first_approval": "1981-12-24",
+  "marketed_now": true,
+  "ndc_products": 182,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260126",
+   "reason": "Presence of Foreign Tablets/Capsules"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
   "years_marketed": 44.6
  },
  "triamcinolone": {
   "applications": 174,
   "first_approval": "1957-12-03",
+  "marketed_now": true,
+  "ndc_products": 363,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20260715",
+   "reason": "Labeling: Not Elsewhere Classified: The label wrap covers the barcode, making it hard to scan"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 17,
+  "shortage": {
+   "reason": "",
+   "since": "05/04/2021",
+   "status": "Current"
+  },
   "years_marketed": 68.7
  },
  "trimethoprim": {
   "applications": 69,
   "first_approval": "1965-07-01",
+  "marketed_now": true,
+  "ndc_products": 141,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20250902",
+   "reason": "Presence of a Foreign Substance: A specific lot of auxiliary polyester coil, used in product packaging by manufacturer (Amneal Pharmaceuticals LLC) was detected with presence of a micro-organism. No m"
+  },
+  "recalls_class_i": 1,
+  "recalls_open": 6,
   "years_marketed": 61.1
  },
  "triptan": {
@@ -1766,6 +3976,9 @@
  "upadacitinib": {
   "applications": 2,
   "first_approval": "2019-08-16",
+  "marketed_now": true,
+  "ndc_products": 17,
+  "recalls_open": 0,
   "years_marketed": 7.0
  },
  "urology_other": {
@@ -1777,46 +3990,128 @@
  "ustekinumab": {
   "applications": 12,
   "first_approval": "2009-09-25",
+  "marketed_now": true,
+  "ndc_products": 58,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260610",
+   "reason": "Lack of assurance of Sterility:"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 16.8
  },
  "valacyclovir": {
   "applications": 18,
   "first_approval": "1995-06-23",
+  "marketed_now": true,
+  "ndc_products": 126,
+  "recalls_open": 0,
   "years_marketed": 31.1
  },
  "valproate": {
   "applications": 66,
   "first_approval": "1978-02-28",
+  "marketed_now": true,
+  "ndc_products": 262,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260626",
+   "reason": "Presence of Foreign Tablets/Capsules"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 2,
+  "shortage": {
+   "reason": "Additional lots will be available.  Product will be made available as it is released.",
+   "since": "12/30/2020",
+   "status": "Current"
+  },
   "years_marketed": 48.4
  },
  "valsartan": {
   "applications": 78,
   "first_approval": "1996-12-23",
+  "marketed_now": true,
+  "ndc_products": 475,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260804",
+   "reason": "Failed Dissolution Specifications"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 83,
+  "shortage": {
+   "reason": "A business decision was made to discontinue manufacture of the drug.",
+   "since": "11/19/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 29.6
  },
  "vancomycin": {
   "applications": 66,
   "first_approval": "1964-11-06",
+  "marketed_now": true,
+  "ndc_products": 185,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20260320",
+   "reason": "Lack of Assurance of Sterility; blue Break-Off-Part could detach from the administration port"
+  },
+  "recalls_class_i": 2,
+  "recalls_open": 22,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/14/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 61.7
  },
  "vedolizumab": {
   "applications": 3,
   "first_approval": "2014-05-20",
+  "marketed_now": true,
+  "ndc_products": 10,
+  "recalls_open": 0,
   "years_marketed": 12.2
  },
  "venlafaxine": {
   "applications": 49,
   "first_approval": "1993-12-28",
+  "marketed_now": true,
+  "ndc_products": 368,
+  "recalls_open": 0,
   "years_marketed": 32.6
  },
  "verapamil": {
   "applications": 73,
   "first_approval": "1981-08-12",
+  "marketed_now": true,
+  "ndc_products": 164,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20240702",
+   "reason": "Cross contamination with other products."
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 3,
+  "shortage": {
+   "reason": "Discontinuation of the manufacture of the drug",
+   "since": "11/21/2025",
+   "status": "To Be Discontinued"
+  },
   "years_marketed": 45.0
+ },
+ "vildagliptin": {
+  "marketed_now": true,
+  "ndc_products": 6,
+  "recalls_open": 0
  },
  "warfarin": {
   "applications": 12,
   "first_approval": "1954-06-08",
+  "marketed_now": true,
+  "ndc_products": 150,
+  "recalls_open": 0,
   "years_marketed": 72.1
  },
  "xanthine_oxidase": {
@@ -1828,21 +4123,45 @@
  "ziprasidone": {
   "applications": 15,
   "first_approval": "2001-02-05",
+  "marketed_now": true,
+  "ndc_products": 108,
+  "recalls_open": 0,
   "years_marketed": 25.5
  },
  "zoledronic acid": {
   "applications": 43,
   "first_approval": "2001-08-20",
+  "marketed_now": true,
+  "ndc_products": 50,
+  "recall_latest": {
+   "classification": "Class II",
+   "initiated": "20240523",
+   "reason": "Lack of Assurance of Sterility: Leaking vials"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 24.9
  },
  "zolpidem": {
   "applications": 41,
   "first_approval": "1992-12-16",
+  "marketed_now": true,
+  "ndc_products": 160,
+  "recalls_open": 0,
   "years_marketed": 33.6
  },
  "zopiclone": {
   "applications": 15,
   "first_approval": "2004-12-15",
+  "marketed_now": true,
+  "ndc_products": 115,
+  "recall_latest": {
+   "classification": "Class III",
+   "initiated": "20240604",
+   "reason": "Failed Impurities/Degradation Specifications: Related Substances"
+  },
+  "recalls_class_i": 0,
+  "recalls_open": 1,
   "years_marketed": 21.6
  }
 }

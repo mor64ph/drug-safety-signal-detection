@@ -35,7 +35,8 @@ sys.path.insert(0, str(ROOT))
 
 import pandas as pd  # noqa: E402
 
-BULK = ROOT / "data" / "raw" / "bulk" / "drugsfda.json.zip"
+BULK_DIR = ROOT / "data" / "raw" / "bulk"
+BULK = BULK_DIR / "drugsfda.json.zip"
 OUT = ROOT / "data" / "results" / "drug_facts.json"
 TARGETS = ROOT / "config" / "targets.json"
 SCORED = ROOT / "data" / "results" / "scored_pairs.parquet"
@@ -132,6 +133,138 @@ def _original_approval(record: dict) -> str | None:
     return min(dates) if dates else None
 
 
+def _load_bulk(name: str) -> list[dict]:
+    path = BULK_DIR / f"{name}.json.zip"
+    if not path.exists():
+        raise SystemExit(f"{path.relative_to(ROOT)} is missing. Run: "
+                         f"python scripts/fetch_bulk.py {name}")
+    with zipfile.ZipFile(path) as zf:
+        with zf.open(zf.namelist()[0]) as fh:
+            return json.load(fh)["results"]
+
+
+def _matchers(molecules: dict[str, dict]) -> dict[str, re.Pattern]:
+    """One pattern per molecule, covering its key and every variant.
+
+    Same construction as the approval match, and for the same reason: this
+    catalogue keys several molecules on the INN while the bulk files use the
+    US-adopted name.
+    """
+    out: dict[str, re.Pattern] = {}
+    for name, meta in molecules.items():
+        forms = {name.replace("_", " ")}
+        forms.update(v.strip().lower() for v in meta.get("variants") or [])
+        forms = {f for f in forms if len(f) >= 5}
+        out[name] = re.compile(
+            "|".join(r"\b" + re.escape(f) + r"\b"
+                     for f in sorted(forms, key=len, reverse=True)))
+    return out
+
+
+def add_marketing(facts: dict, patterns: dict[str, re.Pattern]) -> None:
+    """Whether each molecule is still on the US market, from the NDC directory.
+
+    Absence from NDC is the withdrawal signal, not packaging.marketing_end_date.
+    Only 4,098 of 137,841 NDC products carry an end date at all, and the ones
+    that do are mostly in the *future* -- a package listing expiry, not a
+    withdrawal. Cerivastatin, pulled from the world market in 2001, is simply
+    not in the directory, which is the shape this actually takes.
+    """
+    records = _load_bulk("ndc")
+    hits: dict[str, int] = {}
+    for record in records:
+        names = {str(record.get("generic_name") or "").lower(),
+                 str(record.get("brand_name") or "").lower()}
+        for ing in record.get("active_ingredients") or []:
+            if ing.get("name"):
+                names.add(str(ing["name"]).lower())
+        haystack = " | ".join(n for n in names if n)
+        if not haystack:
+            continue
+        for name, pattern in patterns.items():
+            if pattern.search(haystack):
+                hits[name] = hits.get(name, 0) + 1
+
+    for name in patterns:
+        entry = facts.setdefault(name, {})
+        entry["ndc_products"] = hits.get(name, 0)
+        entry["marketed_now"] = hits.get(name, 0) > 0
+    print(f"  NDC: {sum(1 for v in hits.values() if v)} molecules currently "
+          f"listed, from {len(records):,} products")
+
+
+def add_recalls(facts: dict, patterns: dict[str, re.Pattern]) -> None:
+    """Open recalls per molecule, from the enforcement reports.
+
+    Matched on product_description, because only 3,261 of 17,938 records carry
+    a populated openfda block -- 18%. Free text is worse than a structured
+    field and it is what there is; the count is therefore a floor, and the
+    wording is kept so a reader can judge it.
+    """
+    records = _load_bulk("enforcement")
+    for name in patterns:
+        facts.setdefault(name, {})["recalls_open"] = 0
+
+    open_hits: dict[str, list[dict]] = {}
+    for record in records:
+        if record.get("status") != "Ongoing":
+            continue
+        openfda = record.get("openfda") or {}
+        parts = [str(record.get("product_description") or "")]
+        for key in ("generic_name", "brand_name", "substance_name"):
+            parts.extend(str(v) for v in openfda.get(key) or [])
+        haystack = " | ".join(parts).lower()
+        if not haystack.strip():
+            continue
+        for name, pattern in patterns.items():
+            if pattern.search(haystack):
+                open_hits.setdefault(name, []).append({
+                    "classification": record.get("classification"),
+                    "reason": (record.get("reason_for_recall") or "")[:200],
+                    "initiated": record.get("recall_initiation_date"),
+                })
+
+    for name, items in open_hits.items():
+        entry = facts.setdefault(name, {})
+        entry["recalls_open"] = len(items)
+        # Class I is "reasonable probability of serious harm or death", so it
+        # is the one worth surfacing on its own rather than as a count.
+        entry["recalls_class_i"] = sum(
+            1 for i in items if i["classification"] == "Class I")
+        entry["recall_latest"] = max(items, key=lambda i: i["initiated"] or "")
+    print(f"  recalls: {len(open_hits)} molecules with an open recall, from "
+          f"{sum(1 for r in records if r.get('status') == 'Ongoing'):,} ongoing")
+
+
+def add_shortages(facts: dict, patterns: dict[str, re.Pattern]) -> None:
+    """Current shortages and planned discontinuations."""
+    records = _load_bulk("shortages")
+    found: dict[str, dict] = {}
+    for record in records:
+        status = record.get("status")
+        if status not in ("Current", "To Be Discontinued"):
+            continue
+        haystack = " | ".join([
+            str(record.get("generic_name") or ""),
+            str(record.get("presentation") or ""),
+        ]).lower()
+        for name, pattern in patterns.items():
+            if pattern.search(haystack):
+                # "Current" outranks a planned discontinuation for display.
+                existing = found.get(name)
+                if existing and existing["status"] == "Current":
+                    continue
+                found[name] = {
+                    "status": status,
+                    "since": record.get("initial_posting_date"),
+                    "reason": (record.get("related_info") or "")[:160],
+                }
+    for name, info in found.items():
+        facts.setdefault(name, {})["shortage"] = info
+    print(f"  shortages: {len(found)} molecules affected, from "
+          f"{len(records):,} entries")
+
+
 def main() -> int:
     if not BULK.exists():
         raise SystemExit(f"{BULK.relative_to(ROOT)} is missing. Run: "
@@ -213,6 +346,15 @@ def main() -> int:
     print(f"resolved an approval date for {len(facts)}/{len(entries)} "
           f"catalogue drugs ({len(facts) / len(entries):.0%})")
 
+    # The remaining three sources describe the product rather than the
+    # molecule's history, so they are added per molecule only. A pharmacologic
+    # class is not something that can be recalled or run short.
+    matchers = _matchers(molecules)
+    print("\nsupply and safety status:")
+    add_marketing(facts, matchers)
+    add_recalls(facts, matchers)
+    add_shortages(facts, matchers)
+
     unresolved = {d for d in entries if d not in facts}
     unexpected = unresolved - NO_US_APPROVAL
     if unexpected:
@@ -239,6 +381,18 @@ def main() -> int:
     print(f"  {len(KNOWN) - wrong}/{len(KNOWN)} within "
           f"{TOLERANCE_YEARS} year")
 
+    # Withdrawal control. Cerivastatin was pulled from the world market in
+    # 2001 and must not read as currently marketed; atorvastatin must. This is
+    # the pair that makes the NDC-absence test meaningful rather than assumed.
+    print("\nwithdrawal control (NDC listing):")
+    for name, expect_marketed in (("cerivastatin", False), ("atorvastatin", True)):
+        got = facts.get(name, {}).get("marketed_now")
+        ok = got is expect_marketed
+        wrong += not ok
+        print(f"  {'ok  ' if ok else 'FAIL'}  {name:<14} marketed_now={got} "
+              f"(expected {expect_marketed}), "
+              f"{facts.get(name, {}).get('ndc_products', 0)} NDC products")
+
     if len(facts) / len(entries) < 0.5:
         print("\n  WARNING: under half the catalogue resolved. Check the "
               "matching before shipping -- a missing date reads downstream as "
@@ -254,9 +408,23 @@ def main() -> int:
     print(f"\nwrote {OUT.relative_to(ROOT)} "
           f"({OUT.stat().st_size / 1e3:.0f} KB)")
 
-    ages = sorted(v["years_marketed"] for v in facts.values())
-    print(f"  years marketed: min {ages[0]}, median "
-          f"{ages[len(ages) // 2]}, max {ages[-1]}")
+    # Not every entry has an approval date: the supply passes add a record for
+    # molecules that Drugs@FDA has no US approval for, which is itself a fact
+    # worth keeping rather than a reason to drop the row.
+    ages = sorted(v["years_marketed"] for v in facts.values()
+                  if "years_marketed" in v)
+    print(f"  {len(ages)} with an approval date -- years marketed: "
+          f"min {ages[0]}, median {ages[len(ages) // 2]}, max {ages[-1]}")
+    print(f"  {sum(1 for v in facts.values() if v.get('marketed_now'))} "
+          f"currently listed in NDC, "
+          f"{sum(1 for v in facts.values() if v.get('marketed_now') is False)} "
+          f"not")
+    print(f"  {sum(1 for v in facts.values() if v.get('recalls_open'))} with an "
+          f"open recall, "
+          f"{sum(1 for v in facts.values() if v.get('recalls_class_i'))} of "
+          f"them Class I")
+    print(f"  {sum(1 for v in facts.values() if v.get('shortage'))} in "
+          f"shortage or being discontinued")
     return 0
 
 
