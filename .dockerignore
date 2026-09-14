@@ -3,15 +3,23 @@
 .env.*
 !.env.example
 
-# Build inputs, not runtime inputs. data/raw/ is the API response cache and
-# 35 MB of label text; only data/results/scored_pairs.parquet is copied in,
+# Build inputs, not runtime inputs. data/raw/ is the API response cache plus
+# 4.8 MB of raw label prose; only the two files named below are copied in,
 # explicitly, by the Dockerfile.
+#
+# Every runtime artifact needs a line here AND a COPY in the Dockerfile AND an
+# exception in .gitignore. Three separate mechanisms, and missing any one of
+# them fails differently: git silently omits the file from the commit, this
+# file silently omits it from the build context (COPY then fails with "not
+# found" for a path that plainly exists), and a missing COPY fails only at
+# runtime. scripts/preflight.py now checks all three.
 data/raw/
 data/flat/
 data/outbox/
 data/*.db
 data/results/*
 !data/results/scored_pairs.parquet
+!data/results/label_interaction_pairs.json
 
 # CA bundle exported from the Windows trust store; the Linux image has its own.
 winca.pem

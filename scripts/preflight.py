@@ -90,6 +90,69 @@ def check_docker_inputs() -> None:
             record(FAIL, f"COPY source is git-ignored: {path}",
                    "present locally, absent in the repo the host builds from")
 
+    # And the same question for .dockerignore, which is a separate mechanism
+    # with separate rules. This check exists because it was missed: the git
+    # exception for label_interaction_pairs.json was added and the docker one
+    # was not, so the file was committed, the Dockerfile copied it, and the
+    # build failed with
+    #   "/data/results/label_interaction_pairs.json": not found
+    # for a path that was right there in the commit.
+    for path in copied:
+        full = ROOT / path
+        if not full.exists() or not full.is_file():
+            continue
+        if _docker_excluded(path):
+            record(FAIL, f"COPY source is docker-ignored: {path}",
+                   "add an exception to .dockerignore, or COPY will not find it")
+
+
+def _docker_pattern(pattern: str) -> re.Pattern:
+    """A .dockerignore pattern as a regex.
+
+    Not fnmatch: Docker matches path segments, so `*` must not cross a `/`.
+    fnmatch's `*` does cross it, which would make `data/*` swallow
+    `data/results/x.json` and report an exclusion that Docker does not apply.
+    """
+    pattern = pattern.strip().rstrip("/")
+    out, i = [], 0
+    while i < len(pattern):
+        char = pattern[i]
+        if pattern.startswith("**", i):
+            out.append(".*")
+            i += 2
+        elif char == "*":
+            out.append("[^/]*")
+            i += 1
+        elif char == "?":
+            out.append("[^/]")
+            i += 1
+        else:
+            out.append(re.escape(char))
+            i += 1
+    # A directory pattern excludes everything beneath it.
+    return re.compile("^" + "".join(out) + "(/.*)?$")
+
+
+def _docker_excluded(path: str) -> bool:
+    """Whether .dockerignore keeps `path` out of the build context.
+
+    Last matching rule wins, which is Docker's own precedence and the reason
+    an exception has to come after the pattern that excluded it.
+    """
+    ignore = ROOT / ".dockerignore"
+    if not ignore.exists():
+        return False
+    posix = path.replace("\\", "/")
+    excluded = False
+    for raw in ignore.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        negated = line.startswith("!")
+        if _docker_pattern(line[1:] if negated else line).match(posix):
+            excluded = not negated
+    return excluded
+
 
 def check_data() -> None:
     try:
