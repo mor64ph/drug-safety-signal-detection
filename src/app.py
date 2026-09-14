@@ -378,7 +378,16 @@ def _search_results(drug_query: str) -> tuple[pd.DataFrame, str, int]:
         filtered = df[mask_exact].copy()
         matched_name = df[mask_exact]["drug"].iloc[0]
     else:
-        mask_sub = df["drug"].str.lower().str.contains(query_lower, na=False)
+        # regex=False is load-bearing, not a micro-optimisation. str.contains
+        # defaults to regex=True, which compiled the query as a pattern, and
+        # _SAFE_QUERY admits '.', '+' and 64 characters -- everything needed for
+        # catastrophic backtracking. Measured on this table: ".+" x 10 + "zz",
+        # 22 characters, took 31.3s, and cost doubles roughly every 4 more.
+        # Python's re holds the GIL for the whole scan, so one request blocked
+        # all eight Waitress threads including /healthz, and /list multiplies it
+        # by MAX_LIST_DRUGS. This is a substring search and never needed regex.
+        mask_sub = df["drug"].str.lower().str.contains(
+            query_lower, regex=False, na=False)
         if not mask_sub.any():
             return pd.DataFrame(), drug_query, 0
         filtered = df[mask_sub].copy()
@@ -463,6 +472,60 @@ def _inject_data_vintage():
     return {"data_as_of": DATA_AS_OF,
             "data_total": f"{DATA_TOTAL_REPORTS:,}",
             "column_help": COLUMN_HELP}
+
+
+@app.context_processor
+def _inject_canonical():
+    """Absolute URLs for <link rel=canonical> and the Open Graph tags.
+
+    A social card cannot resolve a relative image path, so these have to be
+    absolute. APP_BASE_URL is preferred over request.url_root for the same
+    reason the sitemap prefers it: url_root is built from the Host header, so
+    a request carrying a forged Host would otherwise mint canonical and og:url
+    values pointing at someone else's domain. The fallback only matters in
+    local development, where the header is trustworthy.
+
+    The query string is rebuilt from an allowlist rather than passed through or
+    dropped. Dropping it is wrong: /search?drug=ozempic is the page a reader
+    arrives on, and canonicalising it to a bare /search would tell Google every
+    drug is the same page and collapse the whole reference set into one entry.
+    Passing it through is worse: request.args also carries admin_code, reset
+    tokens and ?next=, and a canonical tag is rendered into the HTML, so a
+    pass-through would print a secret into the page that leaked it.
+    """
+    base = _setting("APP_BASE_URL", "").rstrip("/") or request.url_root.rstrip("/")
+
+    keep = [(k, v) for k in ("drug", "q", "a", "b")
+            for v in request.args.getlist(k) if v]
+    qs = urllib.parse.urlencode(keep)
+
+    # The page shell renders <meta name="robots"> from this, so the tag and the
+    # X-Robots-Tag header are decided by one function instead of by a flag set
+    # by hand in each template. Adding a path to _NEVER_INDEX is then enough.
+    return {"canonical_base": base,
+            "canonical_url": base + request.path + (f"?{qs}" if qs else ""),
+            "indexable": _indexable(request.path)}
+
+
+_scale_cache: dict[str, str] | None = None
+
+
+@app.context_processor
+def _inject_corpus_scale():
+    """Pre-formatted corpus size, for the page furniture.
+
+    Memoised rather than computed per request: nunique() over 33,852 rows on
+    every page view is pure waste, and the number cannot change without a
+    restart because the table is loaded once at module level.
+    """
+    global _scale_cache
+    if _scale_cache is None:
+        df = _load_results()
+        _scale_cache = {
+            "drugs_total": f"{df['drug'].nunique():,}" if not df.empty else "0",
+            "pairs_total": f"{len(df):,}",
+        }
+    return _scale_cache
 
 
 DISCLAIMER = (
@@ -1454,4 +1517,12 @@ app.before_request(_auth.csrf_protect)
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Development only, and opt-in. The Werkzeug debugger executes arbitrary
+    # code from the browser on any traceback, so debug=True is not something to
+    # leave standing in a file that is about to be public -- a reader cannot
+    # tell from this line alone that production runs serve.py instead, and the
+    # honest fix is to make it impossible rather than to explain it.
+    #
+    #   RXSIGNAL_DEBUG=1 python src/app.py
+    debug = _setting("RXSIGNAL_DEBUG", "0").lower() in ("1", "true", "yes", "on")
+    app.run(debug=debug, port=5000)
