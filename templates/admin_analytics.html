@@ -1,29 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
-  <title>reportscope &mdash; usage</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-        crossorigin="anonymous">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "_base.html" %}
+{%- set page_title = 'Usage' %}
+{%- set meta_description = 'Internal usage summary. Aggregates only.' %}
+{#- standalone: this page has its own masthead, marked "internal", and no
+    navigation into the public tools. Only the head is inherited. #}
+{%- set layout = 'standalone' %}
+
+{% block content %}
 
   <header class="masthead">
     <div class="masthead-inner">
       <div class="masthead-brand">
         <span class="wordmark">
-          <span class="wordmark-rule" aria-hidden="true"></span>reportscope
+          {%- include "_mark.html" -%}reportscope
         </span>
         <span class="wordmark-sub">internal</span>
       </div>
     </div>
   </header>
 
-  <main class="page">
+  <main class="page" id="main">
 
     <header class="page-head">
       <p class="kicker">Internal</p>
@@ -169,5 +164,4 @@
     </footer>
 
   </main>
-</body>
-</html>
+{% endblock %}

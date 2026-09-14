@@ -1,0 +1,132 @@
+{#
+  The single page shell.
+
+  Before this existed, all 17 templates carried their own doctype, head and
+  footer, and they had already drifted: six different wordings of the same data
+  vintage note, two different em-dash encodings in <title>, Bootstrap's JS on
+  six pages out of seventeen, and no page anywhere carrying a meta description
+  or a social card. One file owns the frame now, so a change lands everywhere
+  or nowhere.
+
+  A page configures itself with top-level {% set %} straight after
+  {% extends %} -- not with blocks, because the title and description are each
+  needed in three places (title, og:, twitter:) and a block cannot be rendered
+  more than once without being redeclared.
+
+    page_title        the part before "· reportscope". Omit on the home page,
+                      which gets the descriptive form instead.
+    meta_description  ~155 characters, written per page. Google composes its
+                      own snippet from body text when this is missing.
+    layout            "page" (default) gets the masthead, a <main> and the
+                      standard footer. "standalone" gets none of them and the
+                      page owns its own chrome -- the error and gate screens
+                      are single centred panels with no navigation, and the
+                      internal analytics page has its own masthead.
+    main_class        page | page-narrow | page-form | page-mid | page-wide
+
+  Blocks: content (required), head_extra, footer_extra, scripts.
+
+  There is deliberately no "robots" setting: the meta tag is rendered from the
+  same _indexable() the X-Robots-Tag header uses, so the two cannot disagree.
+#}
+{%- set _title = (page_title | default('')) | trim -%}
+{%- set _full_title = (_title ~ ' · reportscope') if _title
+                      else 'reportscope — FAERS disproportionality analysis' -%}
+{# One line on purpose: a folded string would carry its newlines and indentation
+   straight into the meta tag, and trim only strips the ends. #}
+{%- set _desc = (meta_description | default('Search 20.7 million FDA adverse event reports for the reactions reported disproportionately often with a drug, with the bias diagnostics that show which of those figures do not hold up.')) | trim -%}
+{%- set _standalone = (layout | default('page')) == 'standalone' -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#1c5468">
+
+  <title>{{ _full_title }}</title>
+  <meta name="description" content="{{ _desc }}">
+
+  {%- if indexable %}
+  {# Absolute, because a social card cannot resolve a relative URL.
+     canonical_base prefers APP_BASE_URL so the value never originates in the
+     Host header, and the query string is rebuilt from an allowlist so a reset
+     token or admin code can never be echoed into the page. #}
+  <link rel="canonical" href="{{ canonical_url }}">
+  {%- else %}
+  <meta name="robots" content="noindex, nofollow">
+  {%- endif %}
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="reportscope">
+  <meta property="og:title" content="{{ _full_title }}">
+  <meta property="og:description" content="{{ _desc }}">
+  <meta property="og:image" content="{{ canonical_base }}/static/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="reportscope — FAERS disproportionality analysis. 33,852 drug–reaction pairs across 361 drugs.">
+  {%- if indexable %}
+  <meta property="og:url" content="{{ canonical_url }}">
+  {%- endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ _full_title }}">
+  <meta name="twitter:description" content="{{ _desc }}">
+  <meta name="twitter:image" content="{{ canonical_base }}/static/og-image.png">
+
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" sizes="any">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+
+  {# Self-hosted, so default-src 'self' already covers it and the CSP did not
+     change. Preloaded because the figure columns are set in it and a late swap
+     reflows every table. #}
+  <link rel="preload" href="{{ url_for('static', filename='fonts/inter-var-latin.woff2') }}"
+        as="font" type="font/woff2" crossorigin>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  {#- The chrome is wrapped conditionally rather than the content duplicated
+      into two branches, so {% block content %} is declared exactly once. The
+      opening and closing tags landing in different if-blocks is deliberate. #}
+  {%- if not _standalone %}
+
+  {% include "_nav.html" %}
+
+  <main class="{{ main_class | default('page') }}" id="main">
+  {%- endif %}
+
+  {% block content %}{% endblock %}
+
+  {%- if not _standalone %}
+
+    <footer class="page-foot">
+      {%- block footer_extra %}{% endblock %}
+      Computed from <span class="num-inline">{{ data_total }}</span> FDA FAERS
+      reports, current to <strong>{{ data_as_of }}</strong>. FAERS is updated
+      quarterly; figures from a later extract will differ.
+      <br>
+      reportscope &mdash; reporting-pattern analysis &mdash; not a medical tool
+    </footer>
+
+  </main>
+  {%- endif %}
+
+  {# Loaded on every page, not on the six that happened to need it. The
+     collapse widget lives in the disclaimer and column-help partials, which
+     any page can include, so "this page needs no JS" kept expiring. #}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmLQLOFSZBYYHqX5OBGJqKdUNpU4"
+          crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

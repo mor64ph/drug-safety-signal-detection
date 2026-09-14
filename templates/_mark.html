@@ -1,0 +1,19 @@
+{# The app mark. Same four rectangles and the same geometry as
+   static/favicon.svg, so the tab icon, the touch icon, the social card and the
+   masthead are one mark rather than four near-misses.
+
+   Inline rather than an <img>: it costs no request, it scales with the type
+   around it because the box is sized in em, and it takes its colours from the
+   stylesheet's tokens instead of being baked in.
+
+   aria-hidden, because the word "reportscope" is always set next to it -- a
+   screen reader announcing "reportscope reportscope" is worse than silence. #}
+<svg class="mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <rect class="mark-tile" width="32" height="32" rx="6"/>
+  <g class="mark-bars">
+    <rect x="5"  y="18" width="4" height="9"  rx="1"/>
+    <rect x="11" y="15" width="4" height="12" rx="1"/>
+    <rect x="17" y="6"  width="4" height="21" rx="1"/>
+    <rect x="23" y="19" width="4" height="8"  rx="1"/>
+  </g>
+</svg>
