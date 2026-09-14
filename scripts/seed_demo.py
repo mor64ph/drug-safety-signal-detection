@@ -55,15 +55,15 @@ logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(m
 CONSENT_VERSION = "2026-09-14"
 
 DEMOS = [
-    ("demo.polypharmacy@rxsignal.test", ["atorvastatin", "metformin", "lisinopril"],
+    ("demo.polypharmacy@reportscope.test", ["atorvastatin", "metformin", "lisinopril"],
      ["lipitor", "metformin", "vitamin d"]),
-    ("demo.glp1@rxsignal.test", ["semaglutide"],
+    ("demo.glp1@reportscope.test", ["semaglutide"],
      ["ozempic", "wegovy", "semaglutide"]),
-    ("demo.psych@rxsignal.test", ["clozapine", "lorazepam"],
+    ("demo.psych@reportscope.test", ["clozapine", "lorazepam"],
      ["clozapine", "ativan"]),
-    ("demo.anticoag@rxsignal.test", ["warfarin", "ibuprofen"],
+    ("demo.anticoag@reportscope.test", ["warfarin", "ibuprofen"],
      ["warfarin", "ibuprofen", "coumadin"]),
-    ("demo.ssri@rxsignal.test", ["sertraline"],
+    ("demo.ssri@reportscope.test", ["sertraline"],
      ["zoloft", "sertraline"]),
 ]
 

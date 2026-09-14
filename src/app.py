@@ -20,6 +20,7 @@ import json
 import re
 import secrets
 import time
+import urllib.parse
 from collections import defaultdict, deque
 from datetime import timedelta
 from pathlib import Path
@@ -108,6 +109,13 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 _SAFE_QUERY = re.compile(r"^[A-Za-z0-9 ,.\-/+']{1,64}$")
 
 _RATE_LIMIT = int(_setting("RXSIGNAL_RATE_LIMIT", "60"))  # requests/min/IP
+
+# Public and findable by default. Set RXSIGNAL_ALLOW_INDEXING=0 to withdraw the
+# whole site from search; individual paths in _NEVER_INDEX are excluded either
+# way.
+INDEXING_ALLOWED = _setting("RXSIGNAL_ALLOW_INDEXING", "1").lower() not in (
+    "0", "false", "no", "off",
+)
 _hits: dict[str, deque] = defaultdict(deque)
 
 
@@ -132,7 +140,7 @@ def _guard():
 
     if GATE_ENABLED:
         from_query = (request.args.get("code") or "").strip()
-        supplied = from_query or request.cookies.get("rxsignal_code", "")
+        supplied = from_query or request.cookies.get("reportscope_code", "")
         if not _code_ok(supplied):
             return render_template("gate.html"), 401
         # Remember it, so reviewers are not re-entering a code on every page.
@@ -160,12 +168,14 @@ def _headers(resp):
     )
     if request.is_secure:
         resp.headers["Strict-Transport-Security"] = "max-age=31536000"
-    # robots.txt is advisory and only read at the site root; this header is
-    # honoured per-response and by crawlers that ignore the file.
-    if _setting("RXSIGNAL_ALLOW_INDEXING", "").lower() not in ("1", "true", "yes", "on"):
+    # robots.txt is advisory and read only at the site root. This header is
+    # honoured per-response, so it is what actually keeps a token-bearing URL
+    # out of an index even if a crawler ignores the file or follows a link
+    # straight to it.
+    if not _indexable(request.path):
         resp.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
     if getattr(g, "set_access_cookie", False):
-        resp.set_cookie("rxsignal_code", getattr(g, "access_value", ""),
+        resp.set_cookie("reportscope_code", getattr(g, "access_value", ""),
                         max_age=86400, httponly=True, samesite="Lax",
                         secure=request.is_secure)
     return resp
@@ -193,25 +203,77 @@ def _server_error(e):
     ), 500
 
 
+# Paths that must never be indexed, whatever the site-wide setting.
+#
+# Not a judgement about the content: these pages either carry a single-use
+# token, describe one account, or exist only to be submitted. A reset link in a
+# search index is a live credential, and an indexed account page is a privacy
+# failure that no disclaimer covers.
+_NEVER_INDEX = (
+    "/register", "/login", "/logout", "/forgot", "/reset", "/verify",
+    "/account", "/my", "/admin", "/api/", "/healthz", "/worksheet",
+)
+
+
+def _indexable(path: str) -> bool:
+    """Whether this particular path may be indexed."""
+    if not INDEXING_ALLOWED:
+        return False
+    return not any(path.startswith(p) for p in _NEVER_INDEX)
+
+
 @app.route("/robots.txt")
 def robots():
     """
-    Ask crawlers to stay out.
+    Crawl the reference pages; leave the rest alone.
 
-    Reachable-by-link and findable-by-search are different exposures. Someone
-    given the URL arrives knowing what this is and can be asked for feedback.
-    Someone who lands here from a search for their own symptoms arrives
-    frightened, reads the first number, and is not in anyone's feedback loop.
-    Indexing would also rank pages like "atorvastatin x TYPE 2 DIABETES
-    MELLITUS" against exactly the queries that should not find them.
+    The drug, reaction and comparison pages are the reference material and are
+    the reason to be findable at all. Everything in _NEVER_INDEX is excluded
+    regardless: auth flows carry single-use tokens, account pages describe one
+    person, and /worksheet only exists to receive a POST, so an indexed copy
+    would be an empty form ranking against symptom queries.
 
-    RXSIGNAL_ALLOW_INDEXING=1 lifts this when the tool is ready to be found.
+    Set RXSIGNAL_ALLOW_INDEXING=0 to withdraw the whole site again.
     """
-    if _setting("RXSIGNAL_ALLOW_INDEXING", "").lower() in ("1", "true", "yes", "on"):
-        body = "User-agent: *\nAllow: /\n"
-    else:
+    if not INDEXING_ALLOWED:
         body = "User-agent: *\nDisallow: /\n"
+    else:
+        lines = ["User-agent: *"]
+        lines += [f"Disallow: {p}" for p in _NEVER_INDEX]
+        lines += [
+            "Allow: /",
+            "",
+            # Crawlers enumerate query strings aggressively; 361 drugs times
+            # thousands of reactions is a large crawl of near-duplicate pages.
+            "Crawl-delay: 2",
+            "",
+            f"Sitemap: {_setting('APP_BASE_URL', '').rstrip('/')}/sitemap.xml",
+        ]
+        body = "\n".join(lines) + "\n"
     return body, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    """
+    The drug pages, so crawlers find the reference material without guessing.
+
+    Only drugs are listed. Reaction pages are derivable from the same data and
+    listing both would submit the same 33,852 pairs twice under different URLs,
+    which reads as duplicate content.
+    """
+    base = _setting("APP_BASE_URL", "").rstrip("/") or request.url_root.rstrip("/")
+    df = _load_results()
+    drugs = sorted(df["drug"].dropna().unique()) if not df.empty else []
+
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+             f"<url><loc>{escape(base)}/</loc><priority>1.0</priority></url>"]
+    for d in drugs:
+        loc = f"{base}/search?drug={urllib.parse.quote(str(d))}"
+        parts.append(f"<url><loc>{escape(loc)}</loc><priority>0.6</priority></url>")
+    parts.append("</urlset>")
+    return "\n".join(parts), 200, {"Content-Type": "application/xml; charset=utf-8"}
 
 
 @app.route("/healthz")

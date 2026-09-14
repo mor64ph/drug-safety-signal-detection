@@ -8,7 +8,7 @@
 
 services:
   - type: web
-    name: rxsignal
+    name: reportscope
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: starter          # free tier sleeps after inactivity; starter does not
@@ -22,7 +22,7 @@ services:
         value: 8000
       - key: DATABASE_URL
         fromDatabase:
-          name: rxsignal-db
+          name: reportscope-db
           property: connectionString
 
       # Generated once by Render and kept. A changing key signs every user out
@@ -34,7 +34,7 @@ services:
       - key: RXSIGNAL_COOKIE_SECURE
         value: "true"
       - key: APP_BASE_URL
-        value: https://rxsignal.onrender.com    # match your real hostname
+        value: https://reportscope.onrender.com    # match your real hostname
 
       - key: RXSIGNAL_RATE_LIMIT
         value: "60"
@@ -60,7 +60,7 @@ services:
         sync: false
 
 databases:
-  - name: rxsignal-db
+  - name: reportscope-db
     plan: basic-256mb
     region: oregon
     postgresMajorVersion: "16"

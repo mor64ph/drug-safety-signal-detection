@@ -1,4 +1,4 @@
-# rxsignal
+# reportscope
 
 A lookup tool over the FDA Adverse Event Reporting System (FAERS). Give it a drug
 and it returns the adverse events reported alongside that drug far more often than

@@ -1,5 +1,5 @@
 """
-rxsignal pipeline entrypoint.
+reportscope pipeline entrypoint.
 
 Usage:
   python run.py --score     # Score drugs, check labels, attach bias flags
@@ -284,7 +284,7 @@ def step_validate() -> None:
 def step_serve() -> None:
     """M9: Start the Flask application."""
     from src.app import app
-    print("[run] Starting rxsignal Flask app on http://127.0.0.1:5000")
+    print("[run] Starting reportscope Flask app on http://127.0.0.1:5000")
     print("[run] Press Ctrl+C to stop.")
     app.run(debug=False, host="127.0.0.1", port=5000)
 
@@ -295,7 +295,7 @@ def step_serve() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="rxsignal -- FAERS adverse event signal detection pipeline"
+        description="reportscope -- FAERS adverse event signal detection pipeline"
     )
     parser.add_argument(
         "--fetch",

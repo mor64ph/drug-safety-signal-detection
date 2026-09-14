@@ -55,7 +55,7 @@ def main() -> int:
 
     ok = send(
         recipient,
-        "rxsignal: test message",
+        "reportscope: test message",
         "If you are reading this, SMTP is configured correctly.\n\n"
         "Nothing else is implied -- this message was sent by a setup script, "
         "not by the application.\n",

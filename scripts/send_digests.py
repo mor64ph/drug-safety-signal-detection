@@ -48,7 +48,7 @@ from src.models import (  # noqa: E402
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-log = logging.getLogger("rxsignal.digests")
+log = logging.getLogger("reportscope.digests")
 
 
 def pending() -> dict[int, list[Notification]]:

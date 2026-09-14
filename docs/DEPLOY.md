@@ -1,4 +1,4 @@
-# Deploying rxsignal to Render
+# Deploying reportscope to Render
 
 Written for whoever is doing the deployment, not for users of the tool.
 
@@ -75,7 +75,7 @@ Dashboard > service > **Environment**. These are marked `sync: false` in
 | `RXSIGNAL_ACCESS_CODE_HASH` | from `make_access_code.py` |
 | `RXSIGNAL_ADMIN_CODE` | any long random string; guards `/admin/analytics` |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | from your provider |
-| `APP_BASE_URL` | your real URL, e.g. `https://rxsignal.onrender.com` |
+| `APP_BASE_URL` | your real URL, e.g. `https://reportscope.onrender.com` |
 
 `APP_BASE_URL` must be exact. It builds the links inside verification and
 password-reset emails, and a wrong value produces links that appear to work and

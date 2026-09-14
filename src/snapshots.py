@@ -40,7 +40,7 @@ from src.models import (
     utcnow,
 )
 
-log = logging.getLogger("rxsignal.snapshots")
+log = logging.getLogger("reportscope.snapshots")
 
 TIER_RANK = {"none": 0, "weak": 1, "moderate": 2, "strong": 3}
 

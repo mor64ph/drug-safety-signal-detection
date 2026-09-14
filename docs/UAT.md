@@ -1,4 +1,4 @@
-# rxsignal — tester guide
+# reportscope — tester guide
 
 Thank you for testing this. It should take about twenty minutes. You do not
 need any pharmacology or statistics to be useful here; the most valuable

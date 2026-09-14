@@ -53,7 +53,7 @@ def base_url() -> str:
 
 
 def _from_address() -> str:
-    return _setting("SMTP_FROM") or _setting("SMTP_USER") or "rxsignal@localhost"
+    return _setting("SMTP_FROM") or _setting("SMTP_USER") or "reportscope@localhost"
 
 
 def _build(to: str, subject: str, body_text: str, body_html: str | None) -> EmailMessage:
@@ -62,7 +62,7 @@ def _build(to: str, subject: str, body_text: str, body_html: str | None) -> Emai
     msg["To"] = to
     msg["Subject"] = subject
     msg["Date"] = formatdate(localtime=True)
-    msg["Message-ID"] = make_msgid(domain="rxsignal")
+    msg["Message-ID"] = make_msgid(domain="reportscope")
     msg["Auto-Submitted"] = "auto-generated"
     msg.set_content(body_text)
     if body_html:
@@ -144,7 +144,7 @@ def send(to: str, subject: str, body_text: str, body_html: str | None = None) ->
 # ---------------------------------------------------------------------------
 
 _FOOTER = (
-    "\n\n--\nrxsignal analyses reporting patterns in the FDA Adverse Event "
+    "\n\n--\nreportscope analyses reporting patterns in the FDA Adverse Event "
     "Reporting System. It does not measure risk, incidence or causation, and it "
     "is not medical advice. Do not change how you take a medicine because of "
     "anything in this message; speak to your prescriber.\n"
@@ -155,15 +155,15 @@ def send_verification(user, token: str) -> bool:
     """Confirm the address is real and reachable before anything is sent to it."""
     link = f"{base_url()}/verify/{token}"
     text = (
-        "Confirm your rxsignal address\n"
+        "Confirm your reportscope address\n"
         "==============================\n\n"
         "Open this link to finish setting up your account:\n\n"
         f"  {link}\n\n"
-        "If you did not create an rxsignal account, ignore this message. No "
+        "If you did not create an reportscope account, ignore this message. No "
         "account can be used until this link is opened."
         + _FOOTER
     )
-    ok = send(user.email, "Confirm your rxsignal address", text)
+    ok = send(user.email, "Confirm your reportscope address", text)
     log.info("verification email user_id=%s sent=%s", user.id, ok)
     return ok
 
@@ -171,7 +171,7 @@ def send_verification(user, token: str) -> bool:
 def send_password_reset(user, token: str) -> bool:
     link = f"{base_url()}/reset/{token}"
     text = (
-        "Reset your rxsignal password\n"
+        "Reset your reportscope password\n"
         "=============================\n\n"
         "Open this link within one hour to choose a new password:\n\n"
         f"  {link}\n\n"
@@ -179,7 +179,7 @@ def send_password_reset(user, token: str) -> bool:
         "this message. The link expires on its own."
         + _FOOTER
     )
-    ok = send(user.email, "Reset your rxsignal password", text)
+    ok = send(user.email, "Reset your reportscope password", text)
     log.info("password reset email user_id=%s sent=%s", user.id, ok)
     return ok
 
@@ -226,7 +226,7 @@ def send_notification_digest(user, notifications: list) -> bool:
     text = "\n".join(lines) + _FOOTER
 
     count = len(notifications)
-    subject = f"rxsignal: {count} change{'s' if count != 1 else ''} in drugs you track"
+    subject = f"reportscope: {count} change{'s' if count != 1 else ''} in drugs you track"
     ok = send(user.email, subject, text)
     log.info("digest user_id=%s items=%d sent=%s", user.id, count, ok)
     return ok

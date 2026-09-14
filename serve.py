@@ -38,7 +38,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
 )
-log = logging.getLogger("rxsignal")
+log = logging.getLogger("reportscope")
 
 
 def main() -> int:
@@ -90,7 +90,7 @@ def main() -> int:
     from src.app import app
     log.info("listening on 0.0.0.0:%d", port)
     serve(app, host="0.0.0.0", port=port, threads=8,
-          ident="rxsignal", max_request_body_size=16 * 1024)
+          ident="reportscope", max_request_body_size=16 * 1024)
     return 0
 
 

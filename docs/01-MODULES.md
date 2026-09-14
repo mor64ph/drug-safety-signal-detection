@@ -1,4 +1,4 @@
-# rxsignal — Module Plan
+# reportscope — Module Plan
 
 **What we are building:** a tool that takes a drug (or a personal medication list) and
 returns the adverse events reported alongside it *far more often than the FAERS
