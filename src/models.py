@@ -387,6 +387,21 @@ def get_engine() -> Engine:
         if url.startswith("sqlite"):
             # Waitress serves on eight threads and pools connections across them.
             kwargs["connect_args"] = {"check_same_thread": False, "timeout": 15}
+        elif "-pooler." in url:
+            # Behind a transaction-mode pooler (Neon and Supabase both front
+            # Postgres with PgBouncer, marked by "-pooler" in the host).
+            #
+            # psycopg starts issuing server-side prepared statements once it has
+            # seen the same query a few times. A transaction pooler hands the
+            # next statement to a different backend session, which has never
+            # seen that prepared statement -- so the failure appears only after
+            # a handful of identical queries, under load, as "prepared statement
+            # does not exist". Session lookups repeat on every request, so this
+            # would surface in testing rather than never.
+            kwargs["connect_args"] = {"prepare_threshold": None}
+            # The pooler closes idle connections itself; recycling first avoids
+            # handing out one it has already dropped.
+            kwargs["pool_recycle"] = 280
         engine = create_engine(url, **kwargs)
         if engine.dialect.name == "sqlite":
             event.listen(engine, "connect", _sqlite_pragmas)
