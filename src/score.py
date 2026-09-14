@@ -24,7 +24,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.special import digamma, polygamma
+from scipy.optimize import minimize
+from scipy.special import digamma, gammaln, polygamma
+from scipy.stats import gamma as gamma_dist
 import pandas as pd
 
 from src.client import total as api_total
@@ -203,6 +205,141 @@ def bcpnn(a, b, c, d):
     return mean, lower, upper
 
 
+def _nb_logpmf(n, alpha, beta, expected):
+    """log P(n | lambda ~ Gamma(alpha, beta), n ~ Poisson(lambda * expected)).
+
+    Integrating a Poisson over a gamma prior gives a negative binomial, which
+    is what makes the mixture likelihood tractable in closed form.
+    """
+    p = beta / (beta + expected)
+    return (gammaln(alpha + n) - gammaln(alpha) - gammaln(n + 1)
+            + alpha * np.log(p) + n * np.log1p(-p))
+
+
+def fit_mgps(a, expected, seed=(0.2, 0.1, 2.0, 4.0, 1 / 3)):
+    """Fit the five MGPS hyperparameters by maximum likelihood.
+
+    The model is DuMouchel (1999): each cell's relative reporting ratio lambda
+    is drawn from a mixture of two gamma distributions, and the observed count
+    is Poisson with mean lambda * expected. The mixture is what does the work --
+    one component describes the bulk of cells where nothing is happening, the
+    other the tail where something is -- and because the hyperparameters are
+    estimated from *all* 33,852 cells at once, the prior is empirical rather
+    than assumed. That is the difference between MGPS and BCPNN, which fixes
+    its prior a priori.
+
+    Returns (alpha1, beta1, alpha2, beta2, pi).
+    """
+    a = np.asarray(a, dtype=float)
+    expected = np.asarray(expected, dtype=float)
+    keep = np.isfinite(a) & np.isfinite(expected) & (expected > 0)
+    n, e = a[keep], expected[keep]
+
+    def unpack(theta):
+        # Optimise unconstrained: exp keeps the four gamma parameters positive
+        # and the logistic keeps the mixing weight inside (0, 1). A bounded
+        # optimiser wandering to a negative alpha yields gammaln of a negative
+        # number and a silent NaN objective.
+        alpha1, beta1, alpha2, beta2 = np.exp(theta[:4])
+        pi = 1.0 / (1.0 + np.exp(-theta[4]))
+        return alpha1, beta1, alpha2, beta2, pi
+
+    def neg_ll(theta):
+        alpha1, beta1, alpha2, beta2, pi = unpack(theta)
+        l1 = _nb_logpmf(n, alpha1, beta1, e)
+        l2 = _nb_logpmf(n, alpha2, beta2, e)
+        total = np.logaddexp(np.log(pi) + l1, np.log1p(-pi) + l2)
+        if not np.all(np.isfinite(total)):
+            return 1e12
+        return -float(np.sum(total))
+
+    start = np.array([np.log(seed[0]), np.log(seed[1]),
+                      np.log(seed[2]), np.log(seed[3]),
+                      np.log(seed[4] / (1 - seed[4]))])
+    result = minimize(neg_ll, start, method="Nelder-Mead",
+                      options={"maxiter": 4000, "xatol": 1e-6, "fatol": 1e-6})
+    return unpack(result.x)
+
+
+def mgps(a, b, c, d, params=None):
+    """
+    MGPS: EBGM with its 5th and 95th percentile credible bounds.
+
+    Returns (ebgm, eb05, eb95, expected).
+
+    EBGM is the posterior geometric mean of the relative reporting ratio, and
+    **EB05 is the number the FDA screens on**, conventionally at a threshold of
+    2. It is the third measure here and it answers a different question from
+    the other two: ROR compares odds, BCPNN's IC025 is a log2 bound under a
+    fixed prior, and EB05 is a bound under a prior estimated from this very
+    table. Where they disagree, the disagreement is the finding.
+
+    `expected` is the count under independence, (a+b)(a+c)/N -- the same
+    denominator as the relative reporting ratio.
+    """
+    a = np.asarray(a, dtype=float)
+    b = np.asarray(b, dtype=float)
+    c = np.asarray(c, dtype=float)
+    d = np.asarray(d, dtype=float)
+
+    n_total = a + b + c + d
+    expected = (a + b) * (a + c) / n_total
+
+    if params is None:
+        params = fit_mgps(a, expected)
+    alpha1, beta1, alpha2, beta2, pi = params
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        l1 = _nb_logpmf(a, alpha1, beta1, expected)
+        l2 = _nb_logpmf(a, alpha2, beta2, expected)
+        log_num = np.log(pi) + l1
+        log_den = np.logaddexp(log_num, np.log1p(-pi) + l2)
+        q = np.exp(log_num - log_den)          # posterior weight on component 1
+
+        # The posterior for lambda is itself a two-gamma mixture, with the
+        # observed count added to each shape and the expected count to each
+        # rate. Both moments below follow from that.
+        shape1, rate1 = alpha1 + a, beta1 + expected
+        shape2, rate2 = alpha2 + a, beta2 + expected
+
+        mean_log = (q * (digamma(shape1) - np.log(rate1))
+                    + (1 - q) * (digamma(shape2) - np.log(rate2)))
+        ebgm = np.exp(mean_log)
+
+    def quantile(p):
+        """The mixture quantile, by bisection in log space.
+
+        There is no closed form for a quantile of a gamma mixture, and the
+        components' scales differ by orders of magnitude across the table, so
+        the search runs on log(lambda) to stay conditioned. 60 iterations puts
+        the bracket well below display precision.
+        """
+        lo = np.full(ebgm.shape, -20.0)
+        hi = np.full(ebgm.shape, 20.0)
+        for _ in range(60):
+            mid = 0.5 * (lo + hi)
+            x = np.exp(mid)
+            cdf = (q * gamma_dist.cdf(x, shape1, scale=1.0 / rate1)
+                   + (1 - q) * gamma_dist.cdf(x, shape2, scale=1.0 / rate2))
+            too_high = cdf > p
+            hi = np.where(too_high, mid, hi)
+            lo = np.where(too_high, lo, mid)
+        return np.exp(0.5 * (lo + hi))
+
+    with np.errstate(divide="ignore", invalid="ignore"):
+        eb05 = quantile(0.05)
+        eb95 = quantile(0.95)
+
+    empty = (a <= 0) | ~np.isfinite(expected) | (expected <= 0)
+    ebgm = np.where(empty, np.nan, ebgm)
+    eb05 = np.where(empty, np.nan, eb05)
+    eb95 = np.where(empty, np.nan, eb95)
+
+    if np.ndim(ebgm) == 0:
+        return float(ebgm), float(eb05), float(eb95), float(expected)
+    return ebgm, eb05, eb95, expected
+
+
 # ---------------------------------------------------------------------------
 # Main scoring function
 # ---------------------------------------------------------------------------
@@ -379,13 +516,36 @@ def dme_counts(drug_search: str, terms: list[str], chunk: int = 12) -> dict[str,
     that would otherwise require one call per term. Chunking keeps the matched
     set narrow enough that no target term is pushed past the 100-bucket cap by
     unrelated co-reported reactions.
+
+    **A bucket is only accepted from the chunk that contains its term.** This
+    matters and getting it wrong was defect D-09.
+
+    The response for a chunk buckets *every* reaction appearing in the matched
+    reports, not only the twelve searched for. So a DME term routinely appears
+    in the results of chunks it does not belong to -- as a reaction that
+    co-occurs with those chunks' terms. In that position its count is
+    reports(drug AND that chunk's terms AND the term), a strict subset of the
+    true reports(drug AND the term). The earlier version tested membership
+    against the whole DME list and assigned with `=`, so whichever chunk came
+    last silently won.
+
+    Measured on acetaminophen x CARDIAC ARREST: chunk 1 owns the term and
+    returns the correct 7,383; chunk 2 reports 1,011 and chunk 4 reports 3,259
+    as co-occurrences. 3,259 was the value stored in the scored table. The
+    error is always an undercount, and it propagates into b, d, ROR, PRR, chi2
+    and IC -- so it understated cell `a` on the most serious events in the
+    catalogue, which is the worst possible place for it.
+
+    Restricting to the owning chunk is exactly right rather than merely safer:
+    for a term inside the searched group, the group restriction cannot exclude
+    any report containing that term.
     """
     from src.client import call, q_reaction, F_REACTION
 
     found: dict[str, int] = {}
-    wanted = {t.upper() for t in terms}
     for i in range(0, len(terms), chunk):
         group = terms[i:i + chunk]
+        owned = {t.upper() for t in group}
         clause = "(" + " OR ".join(q_reaction(t) for t in group) + ")"
         try:
             data = call({"search": f"{drug_search} AND {clause}",
@@ -394,7 +554,7 @@ def dme_counts(drug_search: str, terms: list[str], chunk: int = 12) -> dict[str,
             continue
         for bucket in data.get("results", []) or []:
             term = str(bucket.get("term", "")).upper()
-            if term in wanted:
+            if term in owned:
                 found[term] = int(bucket.get("count", 0))
     return found
 

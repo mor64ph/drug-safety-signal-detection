@@ -127,6 +127,11 @@
                   title="{{ column_help.ror }}">ROR [95% CI]{{ sortcue() }}</th>
               <th class="th-sort num" onclick="sortTable(3)"
                   title="{{ column_help.ic025 }}">IC025{{ sortcue() }}</th>
+              {# Column index 4. The existing handlers are 0-3 so they are
+                 unaffected; everything after this shifts right by one, and
+                 nothing after this is sortable. #}
+              <th class="th-sort num d-none d-lg-table-cell" onclick="sortTable(4)"
+                  title="{{ column_help.eb05 }}">EB05{{ sortcue() }}</th>
               <th class="text-center" title="{{ column_help.strength }}">Strength</th>
               <th class="d-none d-md-table-cell" title="{{ column_help.trend }}">Trend</th>
               <th class="d-none d-lg-table-cell"
@@ -157,6 +162,7 @@
               <td class="num">{{ "{:,}".format(pair.a) }}</td>
               <td class="num d-none d-md-table-cell">{{ pair.ROR_ci }}</td>
               <td class="num fw-semibold">{{ pair.IC025 }}</td>
+              <td class="num d-none d-lg-table-cell">{{ pair.EB05 }}</td>
               <td class="text-center text-nowrap">
                 {% if pair.tier != 'none' %}
                   <span class="badge tier-{{ pair.tier }}">{{ pair.tier }}</span>

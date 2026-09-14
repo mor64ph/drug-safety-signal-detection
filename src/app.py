@@ -446,6 +446,14 @@ COLUMN_HELP = {
         "A conservative version of the same idea that deliberately penalises "
         "small counts. The list is ranked by it."
     ),
+    "eb05": (
+        "The FDA's own screening measure, from MGPS. Like IC025 it is a "
+        "cautious lower bound, but its prior is estimated from this whole "
+        "table rather than fixed in advance, and it is on a plain ratio scale "
+        "rather than a log one. The conventional bar is 2. Where it and IC025 "
+        "disagree, neither is wrong — they are answering slightly "
+        "different questions, and the disagreement is worth noticing."
+    ),
     "strength": (
         "A band on IC025 — above 2 strong, above 1 moderate, above 0 weak. It "
         "grades how disproportionate the reporting is. It is not a judgement "
@@ -803,6 +811,9 @@ def _format_pairs(df: pd.DataFrame) -> list[dict]:
         # The credible interval, so a reader can see how precisely a figure is
         # estimated. Median width is 0.10 at a>=1000 and 2.22 at a<10, and the
         # point estimate alone hides that difference completely.
+        eb05 = num(row.get("EB05"))
+        eb05_str = f"{eb05:.2f}" if eb05 is not None else "—"
+
         ic975 = num(row.get("IC975"))
         ic_interval = (f"{ic025:.2f}–{ic975:.2f}"
                        if ic025 is not None and ic975 is not None else None)
@@ -866,6 +877,8 @@ def _format_pairs(df: pd.DataFrame) -> list[dict]:
                 "IC025": ic025_str,
                 "IC025_raw": ic025,
                 "ic_interval": ic_interval,
+                "EB05": eb05_str,
+                "EB05_raw": eb05,
                 "outcomes": outcomes,
                 "tier": str(row.get("tier") or "none"),
                 "diagnosed": bool(row.get("diagnosed", False)),

@@ -144,7 +144,9 @@ Each: **steps → expected**. `[A]` = covered by an automated check.
 | S-01 `[A]` | `run.py --validate` | 22/22 |
 | S-02 `[A]` | Anchor | statin × rhabdo ROR 12.96 ± 0.01 |
 | S-03 | 2×2 sums | For each row, `a+b+c+d == N` exactly |
-| S-04 | `a` vs severity | `deaths ≤ a` etc. on every row where `severity_base_ok` is true (32,975). **877 rows (2.6%) fail and have their share suppressed — see D-09.** No displayed share may exceed 100% |
+| S-04 | `a` vs severity | `deaths ≤ a` etc. **11 rows still fail**, all with `reaction_pt = DEATH` and all off by exactly one — extract drift between the scoring sweep and the severity sweep, not a defect. Their share is suppressed. No displayed share may exceed 100% |
+| S-13 | MGPS bounds | `EB05 ≤ EBGM ≤ EB95` on every row; no NaN where `a > 0` |
+| S-14 | MGPS vs BCPNN | They are expected to **disagree** on cerivastatin: IC025 ranks RHABDOMYOLYSIS first, EB05 ranks ALS first. A change in that pattern means one of them moved |
 | S-05 | IC025 ≤ IC ≤ IC975 | On every row |
 | S-06 | Tier consistency | tier follows IC025 bands; `a<3` ⇒ tier `none` |
 | S-07 | BCPNN prior behaviour | Interval width falls monotonically with `a` (median 2.22 at a<10, 0.10 at a≥1000) |
@@ -326,7 +328,7 @@ Carry these into UAT knowingly, or fix first. IDs referenced above.
 | D-06 | Weekly digest cron never scheduled — notifications do not fire | **High** (feature is inert) | Open |
 | D-07 | No login-specific rate limit | Medium | Open |
 | D-08 | Rate-limit table grows unbounded | Low | Open |
-| D-09 | 877 pairs have a serious-outcome count above their own `a`, concentrated in CARDIAC ARREST, SEPSIS, ACUTE KIDNEY INJURY, PANCYTOPENIA, SEIZURE. Severity counts reconcile against the API exactly; the stored `a` does not (acetaminophen × CARDIAC ARREST: stored 3,259, measured 7,383). A 10-row random sample matched `a` exactly, so this is term-specific, not systemic. **Root cause unresolved** — share is suppressed on those rows rather than clamped | **High** (affects ROR on those rows) | Open |
+| D-09 | `dme_counts()` accepted a term's bucket from any chunk, so a DME term appearing as a *co-occurrence* in another chunk's restricted set overwrote its own correct count — last chunk won, always an undercount. Reproduced exactly: acetaminophen × CARDIAC ARREST returned 7,383 from its owning chunk, 1,011 from chunk 2 and 3,259 from chunk 4, and 3,259 was the stored value. **3,678 of 14,736 DME pairs were wrong**, corrections up to 119× (corticosteroid × PANCYTOPENIA 492 → 11,600). Affected `a`, and therefore ROR, PRR, chi², IC and tier, on the most serious events in the catalogue | **High** | **Fixed** — `src/score.py` now accepts a bucket only from the chunk that owns the term, plus a direct `total()` fallback for the 45 pairs the sweep does not return. Repaired by `scripts/repair_dme_counts.py`. Severity violations 877 → 11, all residual ones off-by-one drift. 22/22 controls pass |
 | — | Mobile ≤414 px never measured on a real layout viewport | Unknown | Open |
 | — | No automated browser or auth tests | Process gap | Open |
 
@@ -340,7 +342,8 @@ Carry these into UAT knowingly, or fix first. IDs referenced above.
 2. X-01 and X-02 (regex DoS) verified fast **on the live URL**.
 3. Section 10 signed off by a clinical reviewer, in writing. No open fail.
 4. D-01 and D-06 fixed — one leaks who has an account, the other means the
-   feature people sign up for does nothing.
+   feature people sign up for does nothing. (D-09 is fixed; verify S-04 still
+   reports 11 and not 877.)
 5. T-05 verified: worksheet prints legibly from dark mode.
 6. Z-01 verified on the live instance with two real accounts.
 7. E-01 verified end to end on the live instance, landing in an inbox.
