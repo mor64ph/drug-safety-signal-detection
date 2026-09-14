@@ -42,6 +42,12 @@ app = Flask(
 app.config["JSON_SORT_KEYS"] = False
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
 
+# Forwarded headers are handled by the server, not here. Waitress is told which
+# proxy to trust in serve.py and rewrites wsgi.url_scheme and REMOTE_ADDR
+# itself, so a ProxyFix wrapper would process the same headers a second time
+# and could take the wrong hop when counting X-Forwarded-For.
+
+
 def _setting(name: str, default: str = "") -> str:
     """
     Read configuration from the environment, falling back to .env.

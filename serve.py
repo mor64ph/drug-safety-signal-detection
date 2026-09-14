@@ -89,8 +89,24 @@ def main() -> int:
 
     from src.app import app
     log.info("listening on 0.0.0.0:%d", port)
+
+    # Waitress discards X-Forwarded-* unless a trusted proxy is declared, which
+    # is the right default -- otherwise any client could claim any address or
+    # announce that its plaintext request arrived over TLS. The consequence of
+    # leaving it unset behind a TLS-terminating host is quiet: request.is_secure
+    # is False on every request, so the HSTS header is never sent and cookies
+    # go out without the Secure flag on a site that is HTTPS-only.
+    #
+    # '*' trusts the immediate peer, which on a managed host is that host's own
+    # proxy. It is only correct because nothing else can reach this port; if
+    # this were ever exposed directly, it would have to name the proxy address.
+    trusted = _setting("RXSIGNAL_TRUSTED_PROXY", "*")
     serve(app, host="0.0.0.0", port=port, threads=8,
-          ident="reportscope", max_request_body_size=16 * 1024)
+          ident="reportscope", max_request_body_size=16 * 1024,
+          trusted_proxy=trusted or None,
+          trusted_proxy_headers={"x-forwarded-for", "x-forwarded-proto",
+                                 "x-forwarded-host"},
+          clear_untrusted_proxy_headers=True)
     return 0
 
 
