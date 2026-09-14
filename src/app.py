@@ -861,12 +861,15 @@ def _vintage_ceiling() -> int:
 
 _TREND_CEILING = _vintage_ceiling()
 
-_SPARK_STROKE = "#7f868d"
-_SPARK_FILL = "#eceef0"
-# The --tier-strong brown from style.css. Muted on purpose: a spike is a reason
-# to read the number carefully, not a warning about the drug.
-_SPARK_SPIKE_STROKE = "#7d4216"
-_SPARK_SPIKE_FILL = "#efe1d4"
+# The sparkline carries no colour of its own. It used to write four hex values
+# straight into the SVG as presentation attributes, which meant the stylesheet
+# could not theme it: on a dark page the charts stayed light-mode grey with a
+# near-white fill. The generated element carries class="spark" (plus
+# "spark-spike"), and style.css maps those to --spark-* tokens per theme.
+#
+# A spike is still styled in the muted --tier-strong earth rather than a
+# warning colour: it is a reason to read the number carefully, not a claim
+# about the drug.
 
 SPIKE_THRESHOLD = 0.25
 
@@ -958,9 +961,6 @@ def sparkline_svg(points: list[dict] | None, burstiness: float | None = None) ->
     counts = [c for _, c in series]
     peak = max(counts) or 1
 
-    stroke = _SPARK_SPIKE_STROKE if spike else _SPARK_STROKE
-    fill = _SPARK_SPIKE_FILL if spike else _SPARK_FILL
-
     label = (lambda i: str(i // 12)) if unit == "yearly" else _month_label
     title = (
         f"{label(series[0][0])} to {label(series[-1][0])}, "
@@ -977,7 +977,7 @@ def sparkline_svg(points: list[dict] | None, burstiness: float | None = None) ->
     if len(series) == 1:
         body = (
             f'<rect x="{_SPARK_W / 2 - 1:.1f}" y="{_SPARK_PAD}" width="2" '
-            f'height="{inner_h}" fill="{stroke}"/>'
+            f'height="{inner_h}"/>'
         )
     else:
         step = inner_w / (len(counts) - 1)
@@ -988,12 +988,12 @@ def sparkline_svg(points: list[dict] | None, burstiness: float | None = None) ->
         line = "L".join(f"{x:.1f} {y:.1f}" for x, y in coords)
         body = (
             f'<path d="M{_SPARK_PAD} {baseline}L{line}'
-            f'L{_SPARK_W - _SPARK_PAD} {baseline}Z" fill="{fill}" '
-            f'stroke="{stroke}" stroke-width="1" stroke-linejoin="round"/>'
+            f'L{_SPARK_W - _SPARK_PAD} {baseline}Z" '
+            f'stroke-width="1" stroke-linejoin="round"/>'
         )
         if spike:
             px, py = coords[counts.index(peak)]
-            body += f'<circle cx="{px:.1f}" cy="{py:.1f}" r="1.8" fill="{stroke}"/>'
+            body += f'<circle cx="{px:.1f}" cy="{py:.1f}" r="1.8"/>'
 
     safe_title = escape(title)
     return Markup(

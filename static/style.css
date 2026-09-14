@@ -14,6 +14,12 @@
    no gradients, no drop shadows, no pill badges, no icon set, no colour that
    makes a claim the statistics cannot support.
 
+   Two themes, both token-driven. Nothing below sets a colour literally except
+   the print block; the light values live in :root and the dark ones in
+   section 2b, which redeclares only what has to change. Every foreground and
+   background pair in both themes is checked by scripts/check_contrast.py,
+   which parses this file rather than holding its own copy of the palette.
+
    Type is Inter, self-hosted. The earlier note here said the OS stack was
    preferred because a webfont would mean widening the CSP -- that was wrong on
    the facts: the policy is default-src 'self' with no font-src directive, so a
@@ -57,12 +63,21 @@
   --font-ui: "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
              "Helvetica Neue", Arial, sans-serif;
 
+  /* Tells the browser which way the form controls, scrollbars and the canvas
+     behind the page should be drawn. Overridden in the dark block. */
+  color-scheme: light;
+
   /* Ink. Never pure black: #000 on white is harsher than any printed page and
      reads as a default rather than a decision. */
   --ink:        #1a1d21;
   --ink-soft:   #3c444c;
   --ink-muted:  #5a636b;
-  --ink-faint:  #7b838b;
+  /* Was #7b838b, which measured 3.85:1 on a panel and 3.50:1 on the page. This
+     token carries every small-caps label in the interface -- 19 selectors,
+     all between 11px and 13px, so every one of them needs 4.5:1 and none of
+     them had it. Solved for the lightest value that clears the bar rather
+     than picked, because this is meant to be the quietest ink in the set. */
+  --ink-faint:  #697179;
 
   /* Surfaces. A warm neutral page so white panels read as paper on a desk
      rather than as windows on a screen. */
@@ -107,6 +122,28 @@
   /* Muted brick, used once: the irreversible account deletion. */
   --danger:      #96341f;
   --danger-edge: #dbb5ac;
+
+  /* Text sitting on a filled accent or tier block. Tokens, not literals,
+     because the accent inverts between themes: white on the deep teal, and
+     near-black on the light teal that replaces it in the dark. */
+  --on-accent: #ffffff;
+  --on-tier:   #ffffff;
+
+  /* Interactive borders only -- fields, selects, the secondary and disclosure
+     buttons. Kept apart from --rule-firm because WCAG 1.4.11 asks 3:1 of a
+     control boundary, and --rule-firm reaches 1.49:1; raising --rule-firm
+     itself would have darkened every table rule and panel edge with it,
+     against the intent that rules stay lighter than the numbers. */
+  --control-border: #868e96;
+
+  /* Sparklines. src/app.py used to bake these into the generated SVG as
+     literal hex, which no stylesheet could then theme. */
+  --spark-stroke:       #7f868d;
+  --spark-fill:         #eceef0;
+  --spark-spike-stroke: #7d4216;
+  --spark-spike-fill:   #efe1d4;
+
+  --danger-wash: #fbf3f1;
 
   --focus: 0 0 0 3px rgba(28, 84, 104, 0.20);
 }
@@ -154,6 +191,89 @@
   --bs-code-color: var(--accent-deep);
   --bs-danger: #96341f;
   --bs-danger-rgb: 150, 52, 31;
+}
+
+/* --------------------------------------------------------------------------
+   2b. Dark theme
+
+   Set on <html> as data-bs-theme="dark", which is Bootstrap 5.3's own hook, so
+   its components follow without being restyled one by one.
+
+   [data-bs-theme="dark"] and :root have equal specificity and both match the
+   same element, so this block has to come after the light one. Source order is
+   what decides it.
+
+   Only the tokens that need to change are redeclared; anything absent keeps
+   its :root value. **The strength ramp is deliberately absent.** White already
+   clears 4.5:1 on all three bands, and their luminances -- 0.083, 0.148, 0.181
+   -- still sit well above a near-black page, so carrying them over unchanged
+   preserves both the contrast and the monotonic ordering that lets the ramp
+   survive greyscale. Re-tuning them would have put both properties at risk to
+   no benefit. Every pair in both themes was measured, not eyeballed.
+   -------------------------------------------------------------------------- */
+
+[data-bs-theme="dark"] {
+  color-scheme: dark;
+
+  --ink:        #e7eaed;
+  --ink-soft:   #c3cad1;
+  --ink-muted:  #9ba4ad;
+  --ink-faint:  #8b949d;
+
+  /* Not pure black, for the same reason the light page is not pure white: a
+     near-black carrying a slight blue keeps panels readable as panels. */
+  --page:       #15181b;
+  --surface:    #1c2025;
+  --surface-2:  #22272c;
+  --surface-3:  #2a3036;
+
+  --rule:       #2f353b;
+  --rule-firm:  #3e464e;
+  --rule-ink:   #525c65;
+  --control-border: #636b73;
+
+  /* The accent inverts: the deep teal is unreadable as a link on a dark page,
+     so it becomes the light teal and the button label goes dark with it. */
+  --accent:      #74bcd6;
+  --accent-deep: #9bd6ec;
+  --accent-wash: #16313b;
+  --accent-edge: #31606f;
+  --on-accent:   #0d1f27;
+
+  /* Washes and edges do need dark counterparts -- a pale tint over a dark
+     panel reads as a hole in the page.
+
+     The row tint is derived from the light one rather than chosen: #fcf7f2 on
+     #ffffff is a shift of -3/-8/-13, so the dark tint applies the same
+     magnitude to --surface. The first value tried here was #241b12, a fully
+     saturated brown, and it turned the block of STRONG rows into something
+     that read as a warning -- which is the one thing the ramp is not allowed
+     to do. */
+  --tier-wash:    #221e18;
+  --tier-edge:    #5a422c;
+  --caution-wash: #241d12;
+  --caution-edge: #5c4a2c;
+
+  --danger:      #e0866f;
+  --danger-edge: #6b3a2c;
+  --danger-wash: #2a1a15;
+
+  --spark-stroke:       #8c949c;
+  --spark-fill:         #282d33;
+  --spark-spike-stroke: #c8803a;
+  --spark-spike-fill:   #33251a;
+
+  --focus: 0 0 0 3px rgba(116, 188, 214, 0.28);
+
+  --bs-body-color-rgb: 231, 234, 237;
+  --bs-body-bg-rgb: 21, 24, 27;
+  --bs-primary: #74bcd6;
+  --bs-primary-rgb: 116, 188, 214;
+  --bs-secondary-rgb: 155, 164, 173;
+  --bs-link-color-rgb: 116, 188, 214;
+  --bs-link-hover-color-rgb: 155, 214, 236;
+  --bs-danger: #e0866f;
+  --bs-danger-rgb: 224, 134, 111;
 }
 
 /* --------------------------------------------------------------------------
@@ -241,7 +361,7 @@ a:hover {
   z-index: 100;
   padding: 0.6rem 1rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -250,7 +370,7 @@ a:hover {
 
 .skip-link:focus {
   left: 0;
-  color: #fff;
+  color: var(--on-accent);
 }
 
 hr {
@@ -386,6 +506,42 @@ hr {
   color: var(--ink-muted);
   text-decoration: none;
 }
+
+/* The account links and the theme toggle travel together at the end of the
+   masthead. */
+.masthead-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.1rem;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+}
+
+.theme-toggle:hover { color: var(--ink); }
+
+.theme-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: none;
+  /* The icon is a half-filled circle, which reads as "appearance" in either
+     theme, so it does not have to be swapped when the theme changes. */
+  transform: translateY(0.5px);
+}
+
+/* Exactly one label is shown, chosen by the attribute the head script set, so
+   the word is correct in the first paint. */
+.theme-label-light { display: none; }
+
+[data-bs-theme="dark"] .theme-label-light { display: inline; }
+[data-bs-theme="dark"] .theme-label-dark { display: none; }
 
 .masthead-nav a:hover,
 .masthead-nav .linklike:hover {
@@ -637,7 +793,7 @@ hr {
   font-size: 0.9375rem;
   color: var(--ink);
   background-color: var(--surface);
-  border: 1px solid var(--rule-firm);
+  border: 1px solid var(--control-border);
   border-radius: 3px;
   padding: 0.45rem 0.7rem;
   box-shadow: none;
@@ -734,7 +890,7 @@ hr {
 
 .btn-outline-secondary {
   --bs-btn-color: var(--ink-soft);
-  --bs-btn-border-color: var(--rule-firm);
+  --bs-btn-border-color: var(--control-border);
   --bs-btn-hover-bg: var(--surface-3);
   --bs-btn-hover-border-color: var(--rule-ink);
   --bs-btn-hover-color: var(--ink);
@@ -756,7 +912,7 @@ hr {
    action with consequences. */
 .btn-disclosure {
   background: var(--surface);
-  border: 1px solid var(--rule-firm);
+  border: 1px solid var(--control-border);
   color: var(--ink-soft);
   font-size: 0.8125rem;
   font-weight: 500;
@@ -966,7 +1122,7 @@ tr.signal-row > * { background-color: var(--tier-wash); }
 .badge.tier-strong,
 .badge.tier-moderate,
 .badge.tier-weak {
-  color: #fff;
+  color: var(--on-tier);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -997,7 +1153,7 @@ tr.signal-row > * { background-color: var(--tier-wash); }
   gap: 0.4rem;
   padding: 0.3rem 0.6rem;
   border-radius: 2px;
-  color: #fff;
+  color: var(--on-tier);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.09em;
@@ -1080,20 +1236,38 @@ tr.signal-row > * { background-color: var(--tier-wash); }
   padding-bottom: 0.3rem;
 }
 
+/* The SVG that src/app.py generates carries no colour of its own any more --
+   it used to write the hex values in as presentation attributes, which meant
+   no stylesheet could theme it and the charts stayed light-mode grey on a dark
+   page. The class comes from Python, the colour comes from here. */
 .spark {
   display: block;
   overflow: visible;
+  color: var(--spark-stroke);
 }
+
+.spark-spike { color: var(--spark-spike-stroke); }
+
+.spark path {
+  fill: var(--spark-fill);
+  stroke: currentColor;
+}
+
+.spark-spike path { fill: var(--spark-spike-fill); }
+
+/* The single-month bar and the peak dot. */
+.spark rect,
+.spark circle { fill: currentColor; }
 
 .spark-key {
   display: inline-block;
   width: 1.4rem;
   height: 0;
   vertical-align: middle;
-  border-top: 2px solid #7f868d;   /* _SPARK_STROKE in src/app.py */
+  border-top: 2px solid var(--spark-stroke);
 }
 
-.spark-key-spike { border-top-color: var(--tier-strong); }
+.spark-key-spike { border-top-color: var(--spark-spike-stroke); }
 
 /* --------------------------------------------------------------------------
    14. Comparison table
@@ -1660,7 +1834,7 @@ tr.signal-row > * { background-color: var(--tier-wash); }
 
 .panel-danger .card-header {
   color: var(--danger);
-  background: #fbf3f1;
+  background: var(--danger-wash);
   border-bottom-color: var(--danger-edge);
 }
 
@@ -1918,8 +2092,74 @@ footer strong { color: var(--ink-muted); font-weight: 600; }
    25. Print — a reviewer will print a results page
    -------------------------------------------------------------------------- */
 
+/* Printing forces the light palette back on.
+ *
+ * This is not a nicety. The print rules below set the page background to white,
+ * and in the dark theme --ink is #e7eaed -- so a reader who printed the
+ * worksheet while in dark mode would have carried a blank sheet of paper into
+ * their appointment. The worksheet exists to be printed, which makes this the
+ * one place a theme must not follow the screen.
+ *
+ * The values are repeated rather than shared because custom properties cannot
+ * be aliased to another block; there is no construct in CSS for "use the light
+ * set here". Equal specificity to the dark block, so it wins on source order,
+ * which is why it lives at the end of the file.
+ */
+@media print {
+  [data-bs-theme="dark"] {
+    color-scheme: light;
+
+    --ink: #1a1d21;
+    --ink-soft: #3c444c;
+    --ink-muted: #5a636b;
+    --ink-faint: #697179;
+
+    --page: #f5f4f1;
+    --surface: #ffffff;
+    --surface-2: #faf9f7;
+    --surface-3: #f0efec;
+
+    --rule: #e3e6e9;
+    --rule-firm: #ced4da;
+    --rule-ink: #b6bdc4;
+    --control-border: #868e96;
+
+    --accent: #1c5468;
+    --accent-deep: #123c4c;
+    --accent-wash: #eef3f5;
+    --accent-edge: #b9ccd4;
+    --on-accent: #ffffff;
+    --on-tier: #ffffff;
+
+    --tier-wash: #fcf7f2;
+    --tier-edge: #d8c3b1;
+    --caution-wash: #fbf6ef;
+    --caution-edge: #e0cdb4;
+
+    --danger: #96341f;
+    --danger-edge: #dbb5ac;
+    --danger-wash: #fbf3f1;
+
+    --spark-stroke: #7f868d;
+    --spark-fill: #eceef0;
+    --spark-spike-stroke: #7d4216;
+    --spark-spike-fill: #efe1d4;
+
+    --bs-body-color-rgb: 26, 29, 33;
+    --bs-body-bg-rgb: 245, 244, 241;
+    --bs-primary: #1c5468;
+    --bs-primary-rgb: 28, 84, 104;
+    --bs-secondary-rgb: 90, 99, 107;
+    --bs-link-color-rgb: 28, 84, 104;
+    --bs-link-hover-color-rgb: 18, 60, 76;
+    --bs-danger: #96341f;
+    --bs-danger-rgb: 150, 52, 31;
+  }
+}
+
 @media print {
   body { background: #fff; }
+  .theme-toggle { display: none !important; }
   .masthead-nav,
   .btn,
   .search-panel,
@@ -1996,3 +2236,47 @@ form[aria-busy="true"] input[type="submit"] {
 }
 
 form[aria-busy="true"] .search-hint { visibility: hidden; }
+
+/* --------------------------------------------------------------------------
+   Worksheet: labelled interactions
+
+   Set as quotations, because that is what they are. The label text is not
+   paraphrased and not scored -- a paraphrase would be this tool asserting
+   something about pharmacology, which is exactly what it is not entitled to
+   do. The only claim being made is "this document says this".
+   -------------------------------------------------------------------------- */
+
+.ws-ix-pair {
+  padding: 0.9rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+.ws-ix-pair:first-of-type { border-top: 0; padding-top: 0; }
+
+.ws-ix-names {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.ws-ix-quote {
+  margin: 0 0 0.9rem;
+  padding: 0.6rem 0 0.6rem 0.85rem;
+  border-left: 2px solid var(--accent-edge);
+  background: var(--surface-2);
+}
+
+.ws-ix-quote p {
+  margin: 0 0 0.35rem;
+  font-size: 0.9063rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.ws-ix-source {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+.ws-ix-source strong { color: var(--ink-muted); font-weight: 600; }

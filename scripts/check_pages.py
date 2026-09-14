@@ -67,6 +67,12 @@ REQUIRED = [
     ("skip-link", "skip link"),
     ("app.js", "site script"),
     ("bootstrap.bundle.min.js", "bootstrap script"),
+    # The theme has to be decided by a synchronous inline script in the head.
+    # If this ever moves to an external or deferred file the page will paint
+    # light and then repaint, which is the flash the arrangement exists to
+    # avoid -- and nothing else would fail.
+    ("reportscope-theme", "inline theme bootstrap"),
+    ('content="light dark"', "color-scheme declaration"),
 ]
 
 fails: list[str] = []

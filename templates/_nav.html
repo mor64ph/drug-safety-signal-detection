@@ -17,20 +17,43 @@
       <a href="{{ url_for('drug_list') }}">Several drugs</a>
       <a href="{{ url_for('worksheet.worksheet') }}">Discussion aid</a>
     </nav>
-    <nav class="masthead-nav" aria-label="Account">
-      {% if nav_user %}
-        <a href="{{ url_for('user_features.dashboard') }}">My drugs</a>
-        <a href="{{ url_for('user_features.notifications') }}">Alerts</a>
-        <a href="{{ url_for('auth.account') }}">Account</a>
-        <form method="post" action="{{ url_for('auth.logout') }}" class="m-0">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <button type="submit" class="linklike">Sign out</button>
-        </form>
-      {% else %}
-        <a href="{{ url_for('auth.login') }}">Sign in</a>
-        <a href="{{ url_for('auth.register') }}">Create account</a>
-      {% endif %}
-    </nav>
+
+    {# Grouped with the account links rather than added as a fourth child of
+       .masthead-inner, which is justify-content: space-between and would have
+       redistributed everything else to make room. The toggle is not
+       navigation, so it stays outside the <nav>. #}
+    <div class="masthead-end">
+      <nav class="masthead-nav" aria-label="Account">
+        {% if nav_user %}
+          <a href="{{ url_for('user_features.dashboard') }}">My drugs</a>
+          <a href="{{ url_for('user_features.notifications') }}">Alerts</a>
+          <a href="{{ url_for('auth.account') }}">Account</a>
+          <form method="post" action="{{ url_for('auth.logout') }}" class="m-0">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="linklike">Sign out</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Sign in</a>
+          <a href="{{ url_for('auth.register') }}">Create account</a>
+        {% endif %}
+      </nav>
+
+      {# Both labels are rendered and CSS shows whichever matches the current
+         theme. Setting the text from JS would flash the wrong word on every
+         load, because the theme is decided in the head before the body
+         exists. aria-pressed is set by app.js once it runs; until then the
+         button is still a button with a readable label. #}
+      <button type="button" class="linklike theme-toggle" data-theme-toggle>
+        <svg class="theme-icon" viewBox="0 0 16 16" aria-hidden="true"
+             focusable="false">
+          <circle cx="8" cy="8" r="6.1" fill="none" stroke="currentColor"
+                  stroke-width="1.5"/>
+          <path d="M8 1.9a6.1 6.1 0 0 0 0 12.2z" fill="currentColor"/>
+        </svg>
+        <span class="theme-label theme-label-dark">Dark</span>
+        <span class="theme-label theme-label-light">Light</span>
+      </button>
+    </div>
   </div>
 </header>
 

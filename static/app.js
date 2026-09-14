@@ -3,13 +3,81 @@
  * Kept in a file rather than inline so that script-src can eventually drop
  * 'unsafe-inline'; the per-page <script> blocks are what still require it.
  *
- * One job: acknowledge a form submission. A drug lookup scans the whole scored
- * table and a sleeping free-tier instance has to wake up first, so there can be
- * several seconds between the click and the next paint. Without feedback the
- * button reads as dead and gets pressed again.
+ * Two jobs:
+ *
+ *  1. Acknowledge a form submission. A drug lookup scans the whole scored
+ *     table and a sleeping free-tier instance has to wake up first, so there
+ *     can be several seconds between the click and the next paint. Without
+ *     feedback the button reads as dead and gets pressed again.
+ *
+ *  2. Run the theme toggle. Note what is *not* here: choosing the theme on
+ *     load. That happens in a synchronous inline script in the page head,
+ *     because by the time this file executes the first paint has already
+ *     happened and switching now would be a visible flash.
  */
 (function () {
   "use strict";
+
+  /* ---------------------------------------------------------------- theme */
+
+  var THEME_KEY = "reportscope-theme";
+
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-bs-theme") === "dark"
+      ? "dark" : "light";
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+    var buttons = document.querySelectorAll("[data-theme-toggle]");
+    for (var i = 0; i < buttons.length; i++) {
+      // The visible label is swapped by CSS off the same attribute. This is
+      // only the accessible name, which CSS cannot set.
+      buttons[i].setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      buttons[i].setAttribute(
+        "aria-label",
+        theme === "dark" ? "Switch to the light theme"
+                         : "Switch to the dark theme");
+    }
+  }
+
+  function initTheme() {
+    applyTheme(currentTheme());
+
+    document.addEventListener("click", function (event) {
+      var button = event.target.closest && event.target.closest("[data-theme-toggle]");
+      if (!button) return;
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      applyTheme(next);
+      try {
+        // An explicit choice outranks the OS preference from here on.
+        localStorage.setItem(THEME_KEY, next);
+      } catch (e) {
+        /* Private mode. The theme still applies for this page. */
+      }
+    });
+
+    // Follow the OS while the reader has not expressed a preference of their
+    // own. Once they have, their choice is stored and this stops applying.
+    var query = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+    if (query && query.addEventListener) {
+      query.addEventListener("change", function (event) {
+        var saved = null;
+        try {
+          saved = localStorage.getItem(THEME_KEY);
+        } catch (e) { /* ignore */ }
+        if (!saved) applyTheme(event.matches ? "dark" : "light");
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTheme);
+  } else {
+    initTheme();
+  }
+
+  /* ------------------------------------------------------- pending state */
 
   var PENDING_LABEL = "Working…";
 

@@ -41,8 +41,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#1c5468">
+
+  {# Inline, synchronous, and above the stylesheet on purpose. The theme has to
+     be on <html> before the first paint; an external or deferred script would
+     paint the light theme and then repaint, which is the white flash every
+     badly-built dark mode has. Small enough to stay inline, and the CSP
+     already allows it. #}
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("reportscope-theme");
+        var dark = saved
+          ? saved === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.setAttribute(
+          "data-bs-theme", dark ? "dark" : "light");
+      } catch (e) {
+        /* Private mode can throw on localStorage. Light is the default. */
+        document.documentElement.setAttribute("data-bs-theme", "light");
+      }
+    })();
+  </script>
 
   <title>{{ _full_title }}</title>
   <meta name="description" content="{{ _desc }}">
