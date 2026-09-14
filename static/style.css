@@ -2280,3 +2280,63 @@ form[aria-busy="true"] .search-hint { visibility: hidden; }
 }
 
 .ws-ix-source strong { color: var(--ink-muted); font-weight: 600; }
+
+/* --------------------------------------------------------------------------
+   Drug facts strip and reported outcomes
+
+   Both are new kinds of statement for this interface: facts about the drug
+   rather than about a drug-reaction pair. Set quietly, because a recall
+   notice styled as an alert would be read as a safety verdict on the
+   molecule, which is exactly what it is not.
+   -------------------------------------------------------------------------- */
+
+.drug-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 2.25rem;
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.drug-facts dt {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.1rem;
+}
+
+.drug-facts dd {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.drug-facts-note {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.drug-facts-caveat { margin: -0.4rem 0 1rem; }
+
+.outcome-cell { min-width: 150px; }
+
+.outcome {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.15rem;
+}
+
+.outcome-share {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--ink-faint);
+}

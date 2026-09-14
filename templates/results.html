@@ -32,6 +32,57 @@
       {% endif %}
     </header>
 
+{# Context about the drug itself rather than about any one reaction, so it
+   belongs above the table. Every line is a fact from a named FDA source, and
+   each is phrased to resist being read as a safety verdict: time on market is
+   reporting context, a recall is about manufactured batches, a shortage is
+   about supply. None of them says anything about whether the drug is safe. #}
+    {% if facts %}
+    <dl class="drug-facts">
+      {% if facts.first_approval %}
+      <div>
+        <dt>On the US market</dt>
+        <dd><span class="num-inline">{{ facts.years_marketed }}</span> years
+          <span class="drug-facts-note">since {{ facts.first_approval[:4] }}</span>
+        </dd>
+      </div>
+      {% endif %}
+      {% if facts.marketed_now is defined and not facts.marketed_now %}
+      <div>
+        <dt>Market status</dt>
+        <dd>No longer listed
+          <span class="drug-facts-note">figures here are historical</span>
+        </dd>
+      </div>
+      {% endif %}
+      {% if facts.recalls_open %}
+      <div>
+        <dt>Open FDA recalls</dt>
+        <dd><span class="num-inline">{{ facts.recalls_open }}</span>{% if facts.recalls_class_i %}
+          <span class="drug-facts-note">{{ facts.recalls_class_i }} Class I</span>{% endif %}
+        </dd>
+      </div>
+      {% endif %}
+      {% if facts.shortage %}
+      <div>
+        <dt>Supply</dt>
+        <dd>{{ facts.shortage.status }}
+          <span class="drug-facts-note">since {{ facts.shortage.since }}</span>
+        </dd>
+      </div>
+      {% endif %}
+    </dl>
+    {% if facts.recalls_open or facts.shortage %}
+    <p class="form-text drug-facts-caveat">
+      A recall concerns specific manufactured batches and a shortage concerns
+      supply. <strong>Neither is a statement about whether this medicine is safe
+      for you</strong>, and neither is connected to the reporting figures below.
+      {% if facts.recall_latest %}Most recent recall reason:
+      &ldquo;{{ facts.recall_latest.reason }}&rdquo;{% endif %}
+    </p>
+    {% endif %}
+    {% endif %}
+
     <!-- DISCLAIMER — appears BEFORE results table, non-negotiable -->
     <div class="disclaimer">
       <span class="disclaimer-label">Important limitation</span>
@@ -78,6 +129,8 @@
                   title="{{ column_help.ic025 }}">IC025{{ sortcue() }}</th>
               <th class="text-center" title="{{ column_help.strength }}">Strength</th>
               <th class="d-none d-md-table-cell" title="{{ column_help.trend }}">Trend</th>
+              <th class="d-none d-lg-table-cell"
+                  title="How many of this pair's reports recorded a serious outcome. A share of reports, not a risk: the denominator is reports rather than patients, and seriousness is asserted by whoever filed the report.">Reported outcomes</th>
               <th title="{{ column_help.comparator }}">Reasons to doubt it</th>
             </tr>
           </thead>
@@ -112,6 +165,22 @@
                 {% endif %}
               </td>
               <td class="spark-cell d-none d-md-table-cell">{{ spark(pair) }}</td>
+              {# Counts first, share second and in smaller type. A bare
+                 percentage here reads as a probability of harm; it is the
+                 share of this pair's reports that recorded the outcome. #}
+              <td class="d-none d-lg-table-cell outcome-cell">
+                {% if pair.outcomes %}
+                  {% for o in pair.outcomes %}
+                  <span class="outcome">
+                    <span class="num-inline">{{ "{:,}".format(o.n) }}</span>
+                    {{ o.label }}{% if o.share is not none %}
+                    <span class="outcome-share">{{ "{:.0%}".format(o.share) }} of reports</span>{% endif %}
+                  </span>
+                  {% endfor %}
+                {% else %}
+                  <span class="cell-none">none recorded</span>
+                {% endif %}
+              </td>
               <td>
                 {% if not pair.diagnosed %}
                   <span class="cell-unassessed">not assessed</span>

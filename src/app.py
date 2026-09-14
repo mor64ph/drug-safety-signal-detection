@@ -507,6 +507,37 @@ def _inject_canonical():
             "indexable": _indexable(request.path)}
 
 
+_DRUG_FACTS = (Path(__file__).resolve().parent.parent
+               / "data" / "results" / "drug_facts.json")
+_facts_cache: dict | None = None
+
+
+def _drug_facts(name: str | None = None):
+    """Approval date, market status, open recalls and shortages per drug.
+
+    Built offline by scripts/build_drug_facts.py from the Drugs@FDA, NDC,
+    enforcement and shortage bulk files. Loaded once and held, like the scored
+    table -- nothing on the request path calls an API.
+
+    A missing file is survivable: the extra lines simply do not render. Logged
+    once, because "no open recall" and "the index was never built" look
+    identical on the page and only one of them is a fact about the drug.
+    """
+    global _facts_cache
+    if _facts_cache is None:
+        try:
+            _facts_cache = json.loads(_DRUG_FACTS.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            _facts_cache = {}
+            app.logger.warning(
+                "no drug facts index (%s): approval dates, recalls and "
+                "shortages will not appear. Run scripts/build_drug_facts.py.",
+                exc)
+    if name is None:
+        return _facts_cache
+    return _facts_cache.get(name) or {}
+
+
 _scale_cache: dict[str, str] | None = None
 
 
@@ -662,6 +693,7 @@ def search():
             matched_name=matched_name or drug_query,
             total_reports=0,
             pairs=[],
+            facts={},
             disclaimer=DISCLAIMER,
             error=f"No results found for '{drug_query}'. "
                   "Try a generic name (e.g. semaglutide, atorvastatin) or drug class.",
@@ -684,6 +716,7 @@ def search():
         total_reports=total_reports,
         pairs=checked,
         unchecked=unchecked,
+        facts=_drug_facts(matched_name),
         disclaimer=DISCLAIMER,
         error=None,
     )
@@ -767,6 +800,33 @@ def _format_pairs(df: pd.DataFrame) -> list[dict]:
         ic025 = num(row.get("IC025"))
         ic025_str = f"{ic025:.2f}" if ic025 is not None else "—"
 
+        # The credible interval, so a reader can see how precisely a figure is
+        # estimated. Median width is 0.10 at a>=1000 and 2.22 at a<10, and the
+        # point estimate alone hides that difference completely.
+        ic975 = num(row.get("IC975"))
+        ic_interval = (f"{ic025:.2f}–{ic975:.2f}"
+                       if ic025 is not None and ic975 is not None else None)
+
+        # Reported outcomes. Counts lead and the share follows, because a bare
+        # percentage reads as a probability of harm and this is the share of
+        # *reports* that recorded the outcome. The denominator is reports, not
+        # patients, and seriousness is asserted by whoever filed the report.
+        a_count = int(row.get("a", 0) or 0)
+        outcomes = []
+        for col, label in (("deaths", "death"),
+                           ("hospitalisations", "hospitalisation"),
+                           ("life_threatening", "life-threatening"),
+                           ("disabling", "disability")):
+            n = row.get(col)
+            if n is None or pd.isna(n) or int(n) <= 0:
+                continue
+            n = int(n)
+            # No share where the count exceeds the pair's own report total:
+            # that ratio would exceed 100% and read as a rate. The count is
+            # still shown, because the count is what was measured.
+            share = (n / a_count) if a_count and n <= a_count else None
+            outcomes.append({"label": label, "n": n, "share": share})
+
         bias_flags = [
             label for col, label in bias_cols.items()
             if col in row and row[col] is not None and not pd.isna(row[col]) and row[col]
@@ -805,6 +865,8 @@ def _format_pairs(df: pd.DataFrame) -> list[dict]:
                 "ROR_ci": ror_ci,
                 "IC025": ic025_str,
                 "IC025_raw": ic025,
+                "ic_interval": ic_interval,
+                "outcomes": outcomes,
                 "tier": str(row.get("tier") or "none"),
                 "diagnosed": bool(row.get("diagnosed", False)),
                 "dme": bool(row.get("dme", False)),
