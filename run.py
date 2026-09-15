@@ -6,7 +6,6 @@ Usage:
   python run.py --rescore   # As above, rebuilding every drug from scratch
   python run.py --validate  # Run the known-answer control harness
   python run.py --serve     # Start the Flask app
-  python run.py --fetch     # Download a record-level corpus (only M8 needs this)
 
 --score resumes: drugs already present in data/results/ are skipped, so an
 interrupted run loses nothing and can simply be re-run.
@@ -38,7 +37,6 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 _RESULTS_DIR = _PROJECT_ROOT / "data" / "results"
-_FLAT_DIR = _PROJECT_ROOT / "data" / "flat"
 
 # Reactions per drug given bias diagnostics. 120 exceeds the largest per-drug
 # table (106), so every row is covered. Roughly 34,000 requests, which needs an
@@ -48,40 +46,6 @@ BIAS_TOP_N = 120
 # ---------------------------------------------------------------------------
 # Pipeline steps
 # ---------------------------------------------------------------------------
-
-def step_fetch() -> None:
-    """M2: Fetch and cache raw FAERS data for GLP-1 and statin classes."""
-    from src.fetch import fetch_class
-    from src.flatten import flatten
-    import pandas as pd
-    import json
-
-    print("=" * 60)
-    print("STEP 1: Fetching GLP-1 reports")
-    print("=" * 60)
-    glp1_search = 'patient.drug.openfda.pharm_class_epc:"GLP-1 Receptor Agonist [EPC]"'
-    glp1_records = list(fetch_class(glp1_search))
-
-    print("\n" + "=" * 60)
-    print("STEP 2: Fetching statin reports")
-    print("=" * 60)
-    statin_search = 'patient.drug.openfda.pharm_class_epc:"HMG-CoA Reductase Inhibitor [EPC]"'
-    statin_records = list(fetch_class(statin_search))
-
-    all_records = glp1_records + statin_records
-    print(f"\n[run] Total records fetched: {len(all_records):,}")
-    print(f"  GLP-1: {len(glp1_records):,}")
-    print(f"  Statin: {len(statin_records):,}")
-
-    # Flatten immediately and save raw parquet for subsequent steps
-    print("\n[run] Flattening records...")
-    df = flatten(iter(all_records))
-
-    _FLAT_DIR.mkdir(parents=True, exist_ok=True)
-    flat_path = _FLAT_DIR / "flat_raw.parquet"
-    df.to_parquet(flat_path, index=False)
-    print(f"[run] Flat data saved to {flat_path} ({len(df):,} rows)")
-
 
 def step_score() -> None:
     """M5: Build the exact population-level scored table via the count endpoint."""
@@ -203,62 +167,6 @@ def step_score() -> None:
     print(f"[run] Signal pairs: {int(out['signal'].sum()):,}")
 
 
-def step_interactions() -> None:
-    """M8: score curated drug pairs against an independence baseline."""
-    import json
-    import pandas as pd
-    from src.client import q_class, q_molecule
-    from src.normalise import _load_targets
-    from src.score import _load_bg_cache
-    from src.interactions import score_pair, summarise
-
-    scored_path = _RESULTS_DIR / "scored_pairs.parquet"
-    if not scored_path.exists():
-        print("[run] No scored table. Run --score first.")
-        sys.exit(1)
-    scored = pd.read_parquet(scored_path)
-    bg = _load_bg_cache()
-
-    searches: dict[str, str] = {}
-    for class_key, spec in _load_targets().items():
-        epc = spec.get("pharm_class_epc")
-        if epc:
-            searches[class_key] = q_class(epc)
-        for molecule, variants in (spec.get("molecules") or {}).items():
-            searches[molecule] = q_molecule(variants or [molecule])
-
-    cfg = json.loads(
-        (_PROJECT_ROOT / "config" / "interaction_pairs.json").read_text(encoding="utf-8")
-    )
-    frames = []
-    for spec in cfg["pairs"]:
-        a, b, expect = spec["a"], spec["b"], spec["expect"]
-        if a not in searches or b not in searches:
-            print(f"  {a} + {b}: not in the drug list, skipped")
-            continue
-        df = score_pair(a, searches[a], b, searches[b], scored, bg, top_n=20)
-        hit = df[df["reaction_pt"] == expect] if not df.empty else pd.DataFrame()
-        note = ""
-        if not hit.empty:
-            r = hit.iloc[0]
-            note = (f"  <- {expect}: n={r.n_triple:,} omega025={r.omega025:+.2f}"
-                    f" {'SIGNAL' if r.interaction else 'below threshold'}")
-        elif not df.empty:
-            note = f"  <- {expect} not among the top triples"
-        print(f"  {a} + {b}: {len(df)} triple(s){note}")
-        if not df.empty:
-            frames.append(df)
-
-    if not frames:
-        print("\n[run] " + summarise(pd.DataFrame()))
-        return
-    out = pd.concat(frames, ignore_index=True)
-    out_path = _RESULTS_DIR / "interactions.parquet"
-    out.to_parquet(out_path, index=False)
-    print(f"\n[run] {len(out):,} triples -> {out_path}")
-    print("[run] " + summarise(out))
-
-
 def step_validate() -> None:
     """M6: Run positive/negative control validation harness."""
     import pandas as pd
@@ -298,14 +206,9 @@ def main() -> None:
         description="reportscope -- FAERS adverse event signal detection pipeline"
     )
     parser.add_argument(
-        "--fetch",
-        action="store_true",
-        help="Fetch and cache raw FAERS data (M2)",
-    )
-    parser.add_argument(
         "--score",
         action="store_true",
-        help="Flatten, normalise, and score pairs (M3+M4+M5)",
+        help="Score every drug-reaction pair from the count endpoint",
     )
     parser.add_argument(
         "--validate",
@@ -322,21 +225,9 @@ def main() -> None:
         action="store_true",
         help="Rebuild every drug instead of resuming from the saved table",
     )
-    parser.add_argument(
-        "--interactions",
-        action="store_true",
-        help="Score curated drug pairs for interaction signals (M8)",
-    )
     args = parser.parse_args()
 
-    run_all = not (args.fetch or args.score or args.validate
-                   or args.serve or args.interactions)
-
-    if args.interactions:
-        step_interactions()
-
-    if args.fetch or run_all:
-        step_fetch()
+    run_all = not (args.score or args.validate or args.serve)
 
     if args.score or run_all:
         step_score()

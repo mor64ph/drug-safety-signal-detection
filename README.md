@@ -21,7 +21,6 @@ pip install -r requirements.txt
 cp .env.example .env        # then paste an openFDA API key into it
 python run.py --score       # score drugs, check labels, attach bias flags
 python run.py --validate    # check against 13 known answers
-python run.py --interactions# score curated drug pairs (M8)
 python run.py --serve       # http://127.0.0.1:5000
 ```
 
@@ -316,19 +315,21 @@ them changes what the tool reports, so the reasoning is written down.
 | | Module | Purpose |
 |---|---|---|
 | M1 | `src/client.py` | TLS-safe API client, centralised query construction |
-| M2 | `src/fetch.py` | Date-partitioned paginator around the hard 25,000 skip cap |
-| M3 | `src/flatten.py` | Nested JSON to one row per report × drug × reaction |
-| M4 | `src/normalise.py` | Stoplist, groupings, molecule resolution |
-| M5 | `src/score.py` | ROR, PRR, chi², IC, IC025 |
+| M4 | `src/normalise.py` | Stoplist and target config for the scoring pass |
+| M5 | `src/score.py` | ROR, PRR, chi², BCPNN (IC025/IC975), MGPS (EB05) |
 | M6 | `src/validate.py` | Positive and negative controls |
 | M7 | `src/bias.py` | Comparator, indication, notoriety diagnostics |
-| M8 | `src/interactions.py` | Drug-pair signals beyond independence |
 | M9 | `src/app.py` | Flask lookup tool |
 | M10 | this file | What the numbers do not mean |
 
-`M2`/`M3` build a local record-level corpus for work needing individual reports.
-The scored table served by the app is built from population-level API counts and
-does not require it.
+**M2, M3 and M8 are gone.** They built a local record-level corpus and scored
+drug-pair interactions from it. M5 replaced the first two by asking the count
+endpoint for population-level totals directly, which made the corpus
+unnecessary; M8 failed all twelve of its known-answer controls and was withheld
+rather than shipped. All three sat in the tree with no caller and no reader for
+their output, so they were removed rather than left to look load-bearing. The
+worksheet answers the interaction question by quoting label text instead — a
+claim a document makes, not one this tool makes.
 
 ---
 

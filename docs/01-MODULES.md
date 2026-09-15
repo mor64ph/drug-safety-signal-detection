@@ -15,14 +15,20 @@ diagnosis, risk, or advice.
 ```
 M0 Primer ✅
    |
-M1 Recon ──> M2 Fetch ──> M3 Flatten ──> M4 Normalise ──> M5 Score
-                                                            |
-                          ┌─────────────────────────────────┤
-                          v                 v               v
-                     M6 Validate      M7 Bias        M8 Interactions
-                          └─────────────────┬───────────────┘
-                                            v
-                                       M9 Tool ──> M10 Honesty layer
+M1 Recon ──> M4 Config ──> M5 Score
+                             |
+           ┌─────────────────┤
+           v                 v
+      M6 Validate      M7 Bias
+           └─────────────────┤
+                             v
+                        M9 Tool ──> M10 Honesty layer
+
+retired:  M2 Fetch   M3 Flatten   M8 Interactions
+          the record-level corpus and the pair scoring built on it.
+          M5 reaches the same figures through the count endpoint, and
+          M8 failed its controls. Sections kept below for the reasoning;
+          the code is gone.
 ```
 
 M5 is the earliest point where you have "results." **M6 is the earliest point where you
@@ -58,8 +64,9 @@ Most pipeline rewrites come from discovering a hard limit late.
 
 ---
 
-## M2 — The fetcher
-**Deliverable:** `src/fetch.py`
+## M2 — The fetcher *(retired)*
+**Deliverable:** `src/fetch.py` — **removed.** Its output, a local
+record-level corpus, was never read by anything once M5 landed.
 
 A paginated, cached, resumable, polite client.
 
@@ -95,8 +102,9 @@ getting rate-limited; kill it mid-run and confirm it resumes.
 
 ---
 
-## M3 — The flattener
-**Deliverable:** `src/flatten.py`
+## M3 — The flattener *(retired)*
+**Deliverable:** `src/flatten.py` — **removed** with M2, for the same
+reason: nothing consumed the flattened table.
 
 Nested JSON -> one row per (report, drug, reaction). **This is most of the work and it
 is the part that is actually the job.**
@@ -124,8 +132,10 @@ report of null rates per field.
 
 ---
 
-## M4 — Normalisation & entity resolution
-**Deliverable:** `src/normalise.py`
+## M4 — Normalisation & entity resolution *(reduced to config loading)*
+**Deliverable:** `src/normalise.py` — the entity-resolution half went with
+M3, since it operated on the flattened records. What survives is the stoplist
+and target loaders `--score` reads.
 
 Make "the same thing" actually equal.
 
@@ -228,8 +238,11 @@ measurement.
 
 ---
 
-## M8 — Interaction signals
-**Deliverable:** `src/interactions.py`
+## M8 — Interaction signals *(retired, per its own exit criteria)*
+**Deliverable:** `src/interactions.py` — **removed.** It failed all twelve
+known-answer controls and was withheld, which the exit criteria below name as a
+legitimate outcome. The worksheet answers the polypharmacy question by quoting
+label text instead.
 
 The genuinely novel piece: reactions reported for a drug **pair** beyond what either
 drug alone predicts. Directly serves polypharmacy, which is where real harm clusters.
