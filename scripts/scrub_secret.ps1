@@ -1,6 +1,6 @@
 # Redact a leaked secret from local logs and transcripts.
 #
-#   powershell -File scripts\scrub_secret.ps1 -SecretFile "$env:TEMPeportscope-scrub-list.txt"
+#   powershell -File scripts\scrub_secret.ps1 -SecretFile "$env:TEMP\reportscope-scrub-list.txt"
 #   powershell -File scripts\scrub_secret.ps1 -SecretFile "..." -Apply
 #   powershell -File scripts\scrub_secret.ps1 -Secret "one-value" -Apply
 #
@@ -10,6 +10,11 @@
 # trying to clean. Delete the file afterwards.
 #
 # Without -Apply it only reports what it would change.
+#
+# Expect it to take several minutes and look hung. It reads every file under
+# the repo, TEMP and ~/.claude -- around 26,000 of them, one of which is a
+# 38 MB transcript. That is the point: a secret you did not think to look for
+# is exactly the copy that stays valid.
 #
 # Run this AFTER closing the Claude Code session that produced the transcript.
 # The .jsonl is live session state while a session is open, and rewriting it
