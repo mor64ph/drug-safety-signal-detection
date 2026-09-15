@@ -51,6 +51,14 @@ CHECKS = [
     ("on-tier", "tier-strong", 4.5, "STRONG badge text"),
     ("on-tier", "tier-moderate", 4.5, "MODERATE badge text"),
     ("on-tier", "tier-weak", 4.5, "WEAK badge text"),
+    # A hovered row repaints every cell opaquely, so it is a background in its
+    # own right and all four of these are read against it. The dark theme had
+    # no value at all here -- the token was a literal in the .table rule -- and
+    # a hovered row came out near-white under near-white text.
+    ("ink", "row-hover", 4.5, "figures in a hovered row"),
+    ("ink-muted", "row-hover", 4.5, "a note in a hovered row"),
+    ("ink-faint", "row-hover", 4.5, "a label in a hovered row"),
+    ("accent", "row-hover", 4.5, "a reaction link in a hovered row"),
     ("ink", "tier-wash", 4.5, "text in a tinted strong row"),
     ("ink", "caution-wash", 4.5, "text in the limitation panel"),
     ("ink", "accent-wash", 4.5, "text in an accent panel"),

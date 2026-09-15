@@ -86,6 +86,16 @@
   --surface-2:  #faf9f7;
   --surface-3:  #f0efec;
 
+  /* A hovered table row. Its own token rather than --surface-3 because it is
+     painted as an opaque inset shadow over the cell, so it is the background
+     every figure in the row is read against and has to be measured as one.
+
+     Was #f2f4f6, a cool grey, which put --ink-faint at 4.49:1 -- and that
+     token carries .outcome-share at 11px and .cell-none, both of which sit in
+     table cells. Raised just past the bar, and warm rather than cool, which
+     also stops the one hovered row reading colder than the page around it. */
+  --row-hover:  #f5f5f3;
+
   /* Rules. Light enough that the eye follows the numbers, not the grid. */
   --rule:       #e3e6e9;
   --rule-firm:  #ced4da;
@@ -226,6 +236,13 @@
   --surface:    #1c2025;
   --surface-2:  #22272c;
   --surface-3:  #2a3036;
+
+  /* A lift, not a drop, so hover still reads as "this row is live". Solved for
+     rather than picked: --surface-3 was the obvious choice and it puts
+     --ink-faint at 4.33:1, under the bar, because that token is already the
+     quietest ink that clears 4.5:1 on a panel. This is the lightest value that
+     keeps all four of them passing. */
+  --row-hover:  #262c31;
 
   --rule:       #2f353b;
   --rule-firm:  #3e464e;
@@ -949,7 +966,10 @@ hr {
   --bs-table-bg: transparent;
   --bs-table-color: var(--ink);
   --bs-table-border-color: var(--rule);
-  --bs-table-hover-bg: #f2f4f6;
+  /* Themed, and it has to be. This was a literal #f2f4f6, declared here on
+     .table -- so the dark block on <html> could never reach it and a hovered
+     row painted near-white behind near-white text. */
+  --bs-table-hover-bg: var(--row-hover);
   --bs-table-hover-color: var(--ink);
   --bs-table-striped-bg: transparent;
   font-size: 0.875rem;
@@ -2118,6 +2138,7 @@ footer strong { color: var(--ink-muted); font-weight: 600; }
     --surface: #ffffff;
     --surface-2: #faf9f7;
     --surface-3: #f0efec;
+    --row-hover: #f5f5f3;
 
     --rule: #e3e6e9;
     --rule-firm: #ced4da;
