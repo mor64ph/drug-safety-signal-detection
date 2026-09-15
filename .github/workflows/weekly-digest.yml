@@ -58,10 +58,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `cache: pip` here. Pairing it with --no-cache-dir below is a
+      # contradiction that fails the job: pip never populates ~/.cache/pip, and
+      # setup-python's post-run save step then errors on a directory that does
+      # not exist ("Cache folder path is retrieved for pip but doesn't exist on
+      # disk"). Caching six wheels for a weekly job saves seconds; it is not
+      # worth a second failure mode.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
 
       - name: Install dependencies
         run: pip install --no-cache-dir -r requirements.txt
@@ -69,14 +74,48 @@ jobs:
       - name: Check the mail configuration is actually present
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           if [ -z "$SMTP_HOST" ]; then
             echo "SMTP_HOST is not set. The mailer would write files to disk on"
             echo "a throwaway runner and every digest would be silently lost."
             exit 1
           fi
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL is not set, so there is no account data to read."
+            exit 1
+          fi
 
+      # Reaching Neon from a GitHub runner is a different network path from
+      # reaching it from Render, and a failure here is otherwise indistinguish-
+      # able from "no digests to send". Prints the host only, never credentials.
+      - name: Check the database is reachable
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, ".")
+          from urllib.parse import urlsplit
+          from sqlalchemy import text
+          from src.models import database_url, get_engine
+
+          url = database_url()
+          host = urlsplit(url).hostname or "?"
+          print(f"connecting to host {host}")
+          with get_engine().connect() as conn:
+              users = conn.execute(text("SELECT count(*) FROM users")).scalar()
+              pending = conn.execute(text(
+                  "SELECT count(*) FROM notifications "
+                  "WHERE read_at IS NULL AND emailed_at IS NULL")).scalar()
+          print(f"connected: {users} accounts, {pending} notifications pending")
+          PY
+
+      # Skipped on a dry run. snapshots writes notification rows, so running it
+      # during a test would mutate production data -- the opposite of what
+      # "report what would be sent, send nothing" implies.
       - name: Compare the newest scored table against the last snapshot
+        if: inputs.dry_run != true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python -m src.snapshots
