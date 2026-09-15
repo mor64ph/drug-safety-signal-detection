@@ -64,10 +64,19 @@ $roots = @(
 # generated files are skipped rather than rewritten.
 $skipExt = @('.parquet', '.pyc', '.pem', '.zip', '.png', '.pdf', '.jpg', '.db')
 
+# The value file must not be scrubbed. It is the one place the values are
+# legitimately written down, and rewriting it mid-run would leave the
+# transcript partly cleaned with nothing left to resume from.
+$secretFileFull = ''
+if ($SecretFile -and (Test-Path $SecretFile)) {
+    $secretFileFull = (Resolve-Path $SecretFile).Path
+}
+
 $found = @()
 foreach ($root in $roots) {
     Get-ChildItem $root -Recurse -File -ErrorAction SilentlyContinue |
-        Where-Object { $_.Length -lt 200MB -and $_.Extension -notin $skipExt -and $_.Name -ne '.env' } |
+        Where-Object { $_.Length -lt 200MB -and $_.Extension -notin $skipExt -and
+                      $_.Name -ne '.env' -and $_.FullName -ne $secretFileFull } |
         ForEach-Object {
             $text = Get-Content $_.FullName -Raw -ErrorAction SilentlyContinue
             if ($text) {
