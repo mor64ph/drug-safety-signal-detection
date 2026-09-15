@@ -10,6 +10,18 @@
       <h1>Sign in</h1>
     </header>
 
+{# Shown after a confirmation link is opened. Following a link out of an inbox
+   confirms the address; it is not authentication, so it does not sign anyone
+   in (D-04). #}
+    {% if verified %}
+    <div class="notice mb-3">
+      <p class="mb-0">
+        <strong>Address confirmed.</strong> Sign in below and your alerts are
+        active.
+      </p>
+    </div>
+    {% endif %}
+
     {% if errors %}
     <div class="alert alert-warning mb-3">
       <ul>

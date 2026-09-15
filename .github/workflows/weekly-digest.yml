@@ -1,0 +1,99 @@
+# Weekly change digest — defect D-06.
+#
+# The notification feature is the reason somebody creates an account here, and
+# until this existed nothing ever ran it: snapshots were never compared and no
+# digest was ever sent. The feature was inert.
+#
+# Why GitHub Actions and not a Render cron job. Render's cron services are not
+# available on the free plan, and this project is deliberately running at zero
+# cost. Actions gives 2,000 minutes a month on a private repository and this
+# job takes about a minute a week.
+#
+# Why not a trigger endpoint on the app instead. That would mean a public URL
+# that sends email to every subscriber when called, protected only by a token
+# in a query string or header. Running the job on a runner keeps that surface
+# off the web service entirely; the price is that the database credentials live
+# in GitHub secrets, which are encrypted and scoped to this repository.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions):
+#   DATABASE_URL   the same Neon connection string the web service uses
+#   SMTP_HOST      smtp.gmail.com
+#   SMTP_PORT      587
+#   SMTP_USER      the sending account
+#   SMTP_PASSWORD  the Gmail app password, not the account password
+#   SMTP_FROM      the From address
+#   APP_BASE_URL   https://reportscope.onrender.com
+#
+# With SMTP_HOST unset the mailer writes .eml files instead of sending, so a
+# missing secret degrades to "nothing was delivered" rather than an error. The
+# verification step below fails the run in that case, so it cannot pass
+# silently while sending nothing.
+
+name: weekly digest
+
+on:
+  schedule:
+    # 09:00 UTC on Mondays. Cron here is always UTC.
+    - cron: "0 9 * * 1"
+  # So it can be tested without waiting for Monday, and re-run after a failure.
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would be sent, send nothing"
+        type: boolean
+        default: true
+
+concurrency:
+  # Two overlapping runs could double-send: emailed_at is stamped after a
+  # successful delivery, so a second run starting mid-flight would see the row
+  # as still unsent.
+  group: weekly-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r requirements.txt
+
+      - name: Check the mail configuration is actually present
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+        run: |
+          if [ -z "$SMTP_HOST" ]; then
+            echo "SMTP_HOST is not set. The mailer would write files to disk on"
+            echo "a throwaway runner and every digest would be silently lost."
+            exit 1
+          fi
+
+      - name: Compare the newest scored table against the last snapshot
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m src.snapshots
+
+      - name: Send digests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_USE_TLS: "true"
+          APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python scripts/send_digests.py --dry-run
+          else
+            python scripts/send_digests.py
+          fi

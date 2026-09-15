@@ -162,6 +162,16 @@ class User(Base):
 
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=utcnow)
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    # Bumped whenever every existing session for this account must stop working
+    # (D-05). Sessions here are stateless signed cookies, so there is no server
+    # -side record to delete: a cookie issued before a password reset stayed
+    # valid for its full 30 days, which means the one action a person takes
+    # *because* they think someone else is in their account did not evict them.
+    # The value is copied into the session at sign-in and compared on every
+    # request; a mismatch is treated as signed out.
+    session_epoch: Mapped[int] = mapped_column(Integer, nullable=False, default=0,
+                                               server_default="0")
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     # Recorded at signup because it cannot be reconstructed later. A consent

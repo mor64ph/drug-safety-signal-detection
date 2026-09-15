@@ -34,6 +34,28 @@
     </div>
     {% endif %}
 
+{# The one outcome of a submitted form, whether the address was new or already
+   had an account. The wording has to be true of both cases and give nothing
+   away: it says what will arrive, not what was found. Only the real owner of
+   an existing address learns anything, and they learn it by email (D-01). #}
+    {% if check_email %}
+    <div class="notice mb-3">
+      <p>
+        <strong>Check your email.</strong> If that address can have an account
+        here, a message is on its way to it. Open the link inside to confirm
+        the address, then sign in.
+      </p>
+      <p class="mb-0">
+        Nothing arrives if the address was mistyped. Nothing is created until
+        the link is opened, and we will not email that address again unless you
+        ask.
+      </p>
+    </div>
+    <p class="form-text">
+      Already confirmed? <a href="{{ url_for('auth.login') }}">Sign in</a>.
+    </p>
+    {% else %}
+
     <div class="card">
       <div class="card-body">
         <form method="post" action="{{ url_for('auth.register') }}" novalidate>
@@ -90,4 +112,6 @@
     <p class="form-text mt-3">
       Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>.
     </p>
+
+    {% endif %}
 {% endblock %}

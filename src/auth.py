@@ -40,6 +40,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from src import analytics, mailer
+from src.security import constant_time_equal
 from src.models import (
     Notification,
     User,
@@ -61,6 +62,9 @@ bp = Blueprint("auth", __name__)
 # The wording shown beside the consent checkbox. Bump it when that wording
 # changes; existing rows keep the version their user actually agreed to.
 CONSENT_VERSION = "2026-09-14"
+
+# D-04: a confirmation link is not a standing credential.
+VERIFY_TTL_HOURS = 72
 
 MIN_PASSWORD = 10
 MAX_PASSWORD = 256
@@ -97,7 +101,7 @@ def csrf_protect():
         return None
     supplied = request.form.get("csrf_token", "") or request.headers.get("X-CSRF-Token", "")
     expected = session.get("_csrf", "")
-    if not expected or not supplied or not hmac.compare_digest(supplied, expected):
+    if not constant_time_equal(supplied, expected):
         log.warning("CSRF check failed for %s", request.path)
         return render_template(
             "error.html",
@@ -126,6 +130,12 @@ def current_user() -> User | None:
             user = None
         if user is None or not user.is_active:
             session.pop("user_id", None)
+        elif session.get("epoch") != (user.session_epoch or 0):
+            # Issued before a password reset. Stateless cookies cannot be
+            # revoked, so the epoch is what revokes them (D-05). Sessions
+            # predating the column have no "epoch" key and are signed out
+            # once, deliberately.
+            session.clear()
         else:
             g.user = user
     return g.user
@@ -141,6 +151,7 @@ def _start_session(user: User) -> None:
     """
     session.clear()
     session["user_id"] = user.id
+    session["epoch"] = user.session_epoch or 0
     session["_csrf"] = secrets.token_urlsafe(32)
     session.permanent = True
 
@@ -254,17 +265,27 @@ def register():
     if not consent:
         errors.append("You have to agree to the terms to create an account.")
 
-    db = get_session()
-    if not errors:
-        existing = db.scalar(select(User).where(User.email == email))
-        if existing is not None:
-            errors.append(
-                "That address already has an account. Sign in, or use the "
-                "forgotten-password link if you cannot get in."
-            )
-
     if errors:
         return render_template("register.html", errors=errors, email=email), 400
+
+    db = get_session()
+
+    # D-01. An existing address used to be told so, which let anyone with a
+    # list of addresses test who has an account -- health-adjacent information
+    # on a site like this. Both branches now end on the same page with the same
+    # status, and the real owner is notified by email instead.
+    #
+    # Note what this forces: registration can no longer sign the new account
+    # in. A session cookie on one branch and not the other is visible in the
+    # response headers, so auto-login would leak exactly what the wording
+    # stopped leaking. Confirming the address is now a step, not a formality.
+    existing = db.scalar(select(User).where(User.email == email))
+    if existing is not None:
+        if existing.is_active:
+            mailer.send_async(mailer.send_registration_attempt, existing)
+        log.info("registration attempted for an existing address")
+        return render_template("register.html", check_email=True, errors=[],
+                               email="")
 
     now = utcnow()
     user = User(
@@ -287,11 +308,10 @@ def register():
         # Two submissions of the same form, or two people racing the same
         # address. The unique index is the arbiter; the loser is told the truth.
         db.rollback()
-        return render_template(
-            "register.html",
-            errors=["That address already has an account."],
-            email=email,
-        ), 400
+        # Same response as the existing-address branch above, for the same
+        # reason: this path is reachable by submitting the form twice.
+        return render_template("register.html", check_email=True, errors=[],
+                               email="")
     except SQLAlchemyError:
         db.rollback()
         log.exception("registration failed to commit")
@@ -302,10 +322,9 @@ def register():
         ), 500
 
     analytics.bump("registrations")
-    mailer.send_verification(user, user.verify_token)
-    _start_session(user)
+    mailer.send_async(mailer.send_verification, user, user.verify_token)
     log.info("registered user_id=%s", user.id)
-    return redirect(url_for("user_features.dashboard"))
+    return render_template("register.html", check_email=True, errors=[], email="")
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -373,6 +392,22 @@ def verify(token: str):
                     "need to confirm your address.",
         ), 404
 
+    # D-04. The link used to work forever. A verification mail sits in an
+    # inbox indefinitely -- an abandoned address, a shared family account, a
+    # mail archive, a corporate link-scanner -- and following it also signed
+    # the visitor in, so an old message was a standing credential. It now
+    # expires, and it confirms the address without granting a session.
+    age = None
+    if user.verify_sent_at is not None:
+        age = (utcnow() - user.verify_sent_at).total_seconds()
+    if age is None or age > VERIFY_TTL_HOURS * 3600:
+        return render_template(
+            "error.html",
+            code=410,
+            message="That confirmation link has expired. Sign in and use the "
+                    "resend button to get a fresh one.",
+        ), 410
+
     user.email_verified = True
     user.verify_token = None
     try:
@@ -386,9 +421,13 @@ def verify(token: str):
         ), 500
 
     log.info("email verified user_id=%s", user.id)
-    if session.get("user_id") != user.id:
-        _start_session(user)
-    return redirect(url_for("user_features.dashboard"))
+    if session.get("user_id") == user.id:
+        # Already signed in in this browser; there is nothing to grant.
+        return redirect(url_for("user_features.dashboard"))
+    # Deliberately does not start a session: opening a link out of an inbox is
+    # not authentication (D-04).
+    return render_template("login.html", errors=[], email=user.email,
+                           next_url="", verified=True)
 
 
 @bp.route("/resend-verification", methods=["POST"])
@@ -457,10 +496,12 @@ def forgot():
                 db.rollback()
                 log.exception("could not issue reset token")
             else:
-                mailer.send_password_reset(user, user.reset_token)
+                mailer.send_async(mailer.send_password_reset, user,
+                                  user.reset_token)
 
-    # Same page, same status, same timing regardless. The response cannot be
-    # used to test whether an address is registered.
+    # Same page, same status, and now genuinely the same timing: the send runs
+    # off-thread, so the registered branch no longer pays for an SMTP round
+    # trip that the unregistered branch skips (D-02).
     return render_template("forgot.html", sent=True, errors=[], email="")
 
 
@@ -497,6 +538,9 @@ def reset(token: str):
     user.password_hash = hash_password(password)
     user.reset_token = None
     user.reset_token_expires = None
+    # Evict every session issued before this moment. Someone resetting because
+    # they suspect an intruder expects exactly that (D-05).
+    user.session_epoch = (user.session_epoch or 0) + 1
     # Opening a link that only arrives by email proves the address works, which
     # is the same thing the verification email establishes.
     user.email_verified = True

@@ -29,6 +29,7 @@ import pandas as pd
 from flask import Flask, g, jsonify, render_template, request
 from markupsafe import Markup, escape
 
+from src.security import constant_time_equal
 from src.models import _setting as _read_setting
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -84,8 +85,8 @@ def _code_ok(supplied: str) -> bool:
         return False
     if ACCESS_HASH:
         digest = hashlib.sha256(supplied.encode("utf-8")).hexdigest()
-        return hmac.compare_digest(digest, ACCESS_HASH)
-    return hmac.compare_digest(supplied, ACCESS_CODE)
+        return constant_time_equal(digest, ACCESS_HASH)
+    return constant_time_equal(supplied, ACCESS_CODE)
 
 
 # Signed-session key. The random fallback keeps a fresh checkout working, at the
@@ -124,6 +125,36 @@ INDEXING_ALLOWED = _setting("RXSIGNAL_ALLOW_INDEXING", "1").lower() not in (
 )
 _hits: dict[str, deque] = defaultdict(deque)
 
+# A second, much tighter bucket for the endpoints that cost something to get
+# wrong (D-07). The global 60/min allowed 60 password guesses a minute per
+# address, and each one runs argon2id at 64 MiB: eight concurrent attempts
+# reserve 512 MiB, which is the whole free-tier allowance. The limit is checked
+# in before_request, so it rejects before any hashing happens.
+#
+# POST only. A reader reloading the sign-in page must not be throttled; a
+# reader submitting it five times in a minute is not a reader.
+_AUTH_PATHS = ("/login", "/register", "/forgot", "/reset", "/resend-verification")
+_AUTH_RATE_LIMIT = int(_setting("RXSIGNAL_AUTH_RATE_LIMIT", "5"))
+_auth_hits: dict[str, deque] = defaultdict(deque)
+
+# Both dictionaries keep one entry per distinct client address for the life of
+# the process (D-08). Stale timestamps were pruned but the keys never were, so
+# the maps grew without bound on a 512 MiB box. Swept on a timer rather than
+# per request: the sweep is O(addresses seen) and does not belong on the path
+# of every page view.
+_SWEEP_EVERY = 300.0
+_last_sweep = 0.0
+
+
+def _sweep_rate_limits(now: float) -> None:
+    global _last_sweep
+    if now - _last_sweep < _SWEEP_EVERY:
+        return
+    _last_sweep = now
+    for store in (_hits, _auth_hits):
+        for ip in [k for k, q in store.items() if not q or now - q[-1] > 60.0]:
+            del store[ip]
+
 
 def _client_ip() -> str:
     fwd = request.headers.get("X-Forwarded-For", "")
@@ -137,12 +168,29 @@ def _guard():
         return None
 
     now = time.time()
-    q = _hits[_client_ip()]
+    _sweep_rate_limits(now)
+    ip = _client_ip()
+
+    q = _hits[ip]
     while q and now - q[0] > 60:
         q.popleft()
     if len(q) >= _RATE_LIMIT:
         return jsonify({"error": "rate limit exceeded, try again shortly"}), 429
     q.append(now)
+
+    # Checked after the global limit and before anything expensive.
+    if request.method == "POST" and request.path.startswith(_AUTH_PATHS):
+        aq = _auth_hits[ip]
+        while aq and now - aq[0] > 60:
+            aq.popleft()
+        if len(aq) >= _AUTH_RATE_LIMIT:
+            app.logger.warning("auth rate limit hit for %s", request.path)
+            return render_template(
+                "error.html", code=429,
+                message="Too many attempts from this address. Wait a minute "
+                        "and try again.",
+            ), 429
+        aq.append(now)
 
     if GATE_ENABLED:
         from_query = (request.args.get("code") or "").strip()

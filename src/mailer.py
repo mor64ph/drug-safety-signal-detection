@@ -25,6 +25,8 @@ never sent.
 
 from __future__ import annotations
 
+import threading
+
 import logging
 import smtplib
 import ssl
@@ -149,6 +151,61 @@ _FOOTER = (
     "is not medical advice. Do not change how you take a medicine because of "
     "anything in this message; speak to your prescriber.\n"
 )
+
+
+def send_async(fn, *args, **kwargs) -> None:
+    """Run a send off the request thread, and never raise into the caller.
+
+    Defect D-02. /forgot returned the same page and status whether or not the
+    address was registered, and a comment said the timing matched too. It did
+    not: the registered branch wrote to the database and then ran a full SMTP
+    connect, STARTTLS, login and send -- twenty-second timeout -- inside the
+    request, while the unregistered branch skipped the whole block and
+    returned immediately. Hundreds of milliseconds against a few is a reliable
+    oracle for whether an address has an account.
+
+    Dispatching off-thread makes both branches return at the same speed, and
+    also stops a slow mail server from holding a Waitress thread. A daemon
+    thread is the right weight here: there is no queue to lose, and if the
+    process is exiting an unsent verification mail is not worth delaying it.
+    """
+    def run():
+        try:
+            fn(*args, **kwargs)
+        except Exception:
+            log.exception("background send failed")
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def send_registration_attempt(user) -> bool:
+    """Tell an existing account that someone tried to register its address.
+
+    Defect D-01. Registration used to answer "that address already has an
+    account", which is a membership oracle for anyone with a list of email
+    addresses -- and on a pharmacovigilance site, knowing a person has an
+    account is health-adjacent. The route now responds identically either way,
+    which leaves the real owner as the only person who should learn anything,
+    and this is how they learn it.
+    """
+    body = "\n".join([
+        "Someone entered this email address on the reportscope sign-up form.",
+        "",
+        "You already have an account, so nothing was created and nothing has",
+        "changed. If it was you, sign in as usual, or use the forgotten-",
+        "password link if you cannot get in:",
+        "",
+        f"  {base_url()}/forgot",
+        "",
+        "If it was not you, you can ignore this. Your password still works",
+        "and no one has gained access to your account.",
+        "",
+    ])
+    return send(
+        user.email,
+        "Someone tried to create a reportscope account with your address",
+        body,
+    )
 
 
 def send_verification(user, token: str) -> bool:

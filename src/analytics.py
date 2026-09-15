@@ -21,6 +21,7 @@ from flask import Blueprint, render_template, request, session
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
+from src.security import constant_time_equal
 from src.models import (
     DailyStat,
     Notification,
@@ -204,7 +205,10 @@ def _admin_ok() -> bool:
     if session.get("admin_ok") is True:
         return True
     supplied = (request.args.get("admin_code") or request.form.get("admin_code") or "").strip()
-    if supplied and hmac.compare_digest(supplied, expected):
+    # constant_time_equal rather than hmac.compare_digest: the latter raises
+    # TypeError on a non-ASCII str, which turned ?admin_code=wrOEng into a 500
+    # and so advertised that a code was configured. See D-03.
+    if constant_time_equal(supplied, expected):
         session["admin_ok"] = True
         return True
     return False

@@ -40,6 +40,7 @@ this document assumes they are green.
 python scripts/preflight.py          # deployability, secrets, packaging
 python scripts/check_pages.py        # every template renders, head is intact
 python scripts/check_contrast.py     # WCAG AA in both themes
+python scripts/check_defects.py      # behavioural regression on D-01..D-08
 python run.py --validate             # 22 known-answer statistical controls
 ```
 
@@ -51,9 +52,10 @@ python scripts/build_drug_facts.py                        # 12/12 approval contr
 python scripts/rescore_bayesian.py                        # tier movement report
 ```
 
-**Gap to close:** there is no automated browser test and no automated auth test.
-Sections 6, 7, 11 and 12 are entirely manual today. That is the single biggest
-weakness in this plan.
+**Gap to close:** there is no automated browser test. Sections 7, 11 and 12 are
+manual, and so is the non-security half of section 6. `check_defects.py` now
+covers the security-relevant auth behaviour and the assertable abuse cases, so
+the remaining weakness is that nothing drives a real browser.
 
 ---
 
@@ -320,14 +322,14 @@ Carry these into UAT knowingly, or fix first. IDs referenced above.
 
 | ID | Defect | Severity | Status |
 |---|---|---|---|
-| D-01 | `/register` discloses whether an address has an account | **High** | Open |
-| D-02 | `/forgot` distinguishable by response timing | Medium | Open |
-| D-03 | `compare_digest` raises on non-ASCII → 500 reveals admin code is configured | Medium | Open |
-| D-04 | Verification tokens never expire **and** following one signs you in | Medium | Open |
-| D-05 | Password reset does not invalidate existing sessions | Medium | Open |
-| D-06 | Weekly digest cron never scheduled — notifications do not fire | **High** (feature is inert) | Open |
-| D-07 | No login-specific rate limit | Medium | Open |
-| D-08 | Rate-limit table grows unbounded | Low | Open |
+| D-01 | `/register` disclosed whether an address has an account | **High** | **Fixed** — both branches return the same neutral "check your email" page, byte-identical (6,471 = 6,471), and the real owner is notified by email. Forced dropping auto-login on registration: a session cookie on one branch only would leak the same fact from the headers |
+| D-02 | `/forgot` distinguishable by response timing | Medium | **Fixed** — the send is dispatched off-thread, so the registered branch no longer pays for an SMTP round trip. Measured 2.26× not orders of magnitude |
+| D-03 | `hmac.compare_digest` raises on non-ASCII → 500 revealed the admin code was configured | Medium | **Fixed** — `src/security.py:constant_time_equal` encodes to bytes first. Four call sites, including the CSRF check, which had the same flaw and returned 500 instead of 400 on a garbled token |
+| D-04 | Verification tokens never expired **and** following one signed you in | Medium | **Fixed** — 72-hour TTL, and confirming an address no longer grants a session. Opening a link out of an inbox is not authentication |
+| D-05 | Password reset did not invalidate existing sessions | Medium | **Fixed** — `users.session_epoch` (migration 0002), copied into the session at sign-in, compared per request, bumped on reset |
+| D-06 | Weekly digest never scheduled — notifications did not fire | **High** (feature was inert) | **Fixed in code** — `.github/workflows/weekly-digest.yml`, Mondays 09:00 UTC. Render cron is not on the free plan, so the schedule lives in Actions; the Render block is in `render.yaml` commented out. **Needs seven repository secrets set before it runs** |
+| D-07 | No login-specific rate limit | Medium | **Fixed** — a second 5/min bucket on `/login`, `/register`, `/forgot`, `/reset`, `/resend-verification`, POST only, checked in `before_request` so it rejects before argon2 runs |
+| D-08 | Rate-limit table grew unbounded | Low | **Fixed** — both maps swept on a 300s timer, dropping addresses idle beyond the window |
 | D-09 | `dme_counts()` accepted a term's bucket from any chunk, so a DME term appearing as a *co-occurrence* in another chunk's restricted set overwrote its own correct count — last chunk won, always an undercount. Reproduced exactly: acetaminophen × CARDIAC ARREST returned 7,383 from its owning chunk, 1,011 from chunk 2 and 3,259 from chunk 4, and 3,259 was the stored value. **3,678 of 14,736 DME pairs were wrong**, corrections up to 119× (corticosteroid × PANCYTOPENIA 492 → 11,600). Affected `a`, and therefore ROR, PRR, chi², IC and tier, on the most serious events in the catalogue | **High** | **Fixed** — `src/score.py` now accepts a bucket only from the chunk that owns the term, plus a direct `total()` fallback for the 45 pairs the sweep does not return. Repaired by `scripts/repair_dme_counts.py`. Severity violations 877 → 11, all residual ones off-by-one drift. 22/22 controls pass |
 | — | Mobile ≤414 px never measured on a real layout viewport | Unknown | Open |
 | — | No automated browser or auth tests | Process gap | Open |
@@ -341,9 +343,10 @@ Carry these into UAT knowingly, or fix first. IDs referenced above.
 1. All four automated suites green, on the deployed commit.
 2. X-01 and X-02 (regex DoS) verified fast **on the live URL**.
 3. Section 10 signed off by a clinical reviewer, in writing. No open fail.
-4. D-01 and D-06 fixed — one leaks who has an account, the other means the
-   feature people sign up for does nothing. (D-09 is fixed; verify S-04 still
-   reports 11 and not 877.)
+4. All of D-01..D-09 fixed. D-01..D-08 are asserted by
+   `scripts/check_defects.py`; for D-06 confirm the seven Actions secrets are
+   set and trigger the workflow manually once with dry-run on. For D-09 verify
+   S-04 reports 11 and not 877.
 5. T-05 verified: worksheet prints legibly from dark mode.
 6. Z-01 verified on the live instance with two real accounts.
 7. E-01 verified end to end on the live instance, landing in an inbox.

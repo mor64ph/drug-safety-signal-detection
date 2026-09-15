@@ -12,6 +12,25 @@
 # Supabase) instead. To move onto Render's own Postgres later, add a
 # `databases:` block and swap DATABASE_URL to `fromDatabase`.
 
+# The weekly change digest is NOT here, and that is deliberate (defect D-06).
+# Render's cron services are not offered on the free plan, and this project runs
+# at zero cost, so the schedule lives in .github/workflows/weekly-digest.yml
+# instead. If this ever moves to a paid plan, the block below replaces it and
+# the workflow should be deleted in the same commit -- two schedulers running
+# the same job would double-send, because emailed_at is stamped only after a
+# delivery succeeds.
+#
+#   - type: cron
+#     name: reportscope-digests
+#     runtime: docker
+#     dockerfilePath: ./Dockerfile
+#     schedule: "0 9 * * 1"
+#     dockerCommand: sh -c "python -m src.snapshots && python scripts/send_digests.py"
+#     region: singapore
+#     plan: starter
+#     envVars:
+#       - fromGroup: reportscope-mail
+
 services:
   - type: web
     name: reportscope
