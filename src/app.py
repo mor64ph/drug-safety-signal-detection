@@ -23,6 +23,7 @@ import time
 import urllib.parse
 from collections import defaultdict, deque
 from datetime import timedelta
+from functools import cache
 from pathlib import Path
 
 import pandas as pd
@@ -344,36 +345,24 @@ def healthz():
 # Data loading (lazy, cached at module level after first load)
 # ---------------------------------------------------------------------------
 
-_results_cache: pd.DataFrame | None = None
-
-
+@cache
 def _load_results() -> pd.DataFrame:
     """Load the precomputed scored results parquet, or empty DataFrame."""
-    global _results_cache
-    if _results_cache is not None:
-        return _results_cache
-
     parquet_path = _RESULTS_DIR / "scored_pairs.parquet"
-    if parquet_path.exists():
-        try:
-            _results_cache = pd.read_parquet(parquet_path)
-            # Ensure reaction_pt is uppercase for consistent matching
-            if "reaction_pt" in _results_cache.columns:
-                _results_cache["reaction_pt"] = (
-                    _results_cache["reaction_pt"].fillna("").str.upper()
-                )
-        except Exception as exc:
-            print(f"[app] WARNING: Could not load {parquet_path}: {exc}")
-            _results_cache = pd.DataFrame()
-    else:
-        _results_cache = pd.DataFrame()
-
-    return _results_cache
+    if not parquet_path.exists():
+        return pd.DataFrame()
+    try:
+        df = pd.read_parquet(parquet_path)
+    except Exception as exc:
+        print(f"[app] WARNING: Could not load {parquet_path}: {exc}")
+        return pd.DataFrame()
+    # Ensure reaction_pt is uppercase for consistent matching
+    if "reaction_pt" in df.columns:
+        df["reaction_pt"] = df["reaction_pt"].fillna("").str.upper()
+    return df
 
 
-_alias_cache: dict[str, str] | None = None
-
-
+@cache
 def _aliases() -> dict[str, str]:
     """
     Map every brand and spelling variant to the label used in the results table.
@@ -382,11 +371,7 @@ def _aliases() -> dict[str, str]:
     semaglutide; Lipitor is atorvastatin. Without this the tool answers "no
     results" for the terms most users will actually type.
     """
-    global _alias_cache
-    if _alias_cache is not None:
-        return _alias_cache
-
-    _alias_cache = {}
+    out: dict[str, str] = {}
     path = _PROJECT_ROOT / "config" / "targets.json"
     if path.exists():
         try:
@@ -394,12 +379,12 @@ def _aliases() -> dict[str, str]:
         except (json.JSONDecodeError, OSError):
             targets = {}
         for class_key, spec in (targets.get("classes") or {}).items():
-            _alias_cache[class_key.lower()] = class_key
+            out[class_key.lower()] = class_key
             for molecule, variants in (spec.get("molecules") or {}).items():
-                _alias_cache[molecule.lower()] = molecule
+                out[molecule.lower()] = molecule
                 for v in variants or []:
-                    _alias_cache[v.strip().lower()] = molecule
-    return _alias_cache
+                    out[v.strip().lower()] = molecule
+    return out
 
 
 def _search_results(drug_query: str) -> tuple[pd.DataFrame, str, int]:
@@ -565,7 +550,22 @@ def _inject_canonical():
 
 _DRUG_FACTS = (Path(__file__).resolve().parent.parent
                / "data" / "results" / "drug_facts.json")
-_facts_cache: dict | None = None
+@cache
+def _drug_facts_index() -> dict:
+    """The whole facts file, read once.
+
+    Cached separately from the per-drug lookup below so the warning is logged
+    once rather than per drug, which was the point of the sentinel this
+    replaces.
+    """
+    try:
+        return json.loads(_DRUG_FACTS.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        app.logger.warning(
+            "no drug facts index (%s): approval dates, recalls and "
+            "shortages will not appear. Run scripts/build_drug_facts.py.",
+            exc)
+        return {}
 
 
 def _drug_facts(name: str | None = None):
@@ -575,29 +575,18 @@ def _drug_facts(name: str | None = None):
     enforcement and shortage bulk files. Loaded once and held, like the scored
     table -- nothing on the request path calls an API.
 
-    A missing file is survivable: the extra lines simply do not render. Logged
-    once, because "no open recall" and "the index was never built" look
-    identical on the page and only one of them is a fact about the drug.
+    A missing file is survivable: the extra lines simply do not render, because
+    "no open recall" and "the index was never built" look identical on the page
+    and only one of them is a fact about the drug.
     """
-    global _facts_cache
-    if _facts_cache is None:
-        try:
-            _facts_cache = json.loads(_DRUG_FACTS.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            _facts_cache = {}
-            app.logger.warning(
-                "no drug facts index (%s): approval dates, recalls and "
-                "shortages will not appear. Run scripts/build_drug_facts.py.",
-                exc)
+    facts = _drug_facts_index()
     if name is None:
-        return _facts_cache
-    return _facts_cache.get(name) or {}
-
-
-_scale_cache: dict[str, str] | None = None
+        return facts
+    return facts.get(name) or {}
 
 
 @app.context_processor
+@cache
 def _inject_corpus_scale():
     """Pre-formatted corpus size, for the page furniture.
 
@@ -605,14 +594,11 @@ def _inject_corpus_scale():
     every page view is pure waste, and the number cannot change without a
     restart because the table is loaded once at module level.
     """
-    global _scale_cache
-    if _scale_cache is None:
-        df = _load_results()
-        _scale_cache = {
-            "drugs_total": f"{df['drug'].nunique():,}" if not df.empty else "0",
-            "pairs_total": f"{len(df):,}",
-        }
-    return _scale_cache
+    df = _load_results()
+    return {
+        "drugs_total": f"{df['drug'].nunique():,}" if not df.empty else "0",
+        "pairs_total": f"{len(df):,}",
+    }
 
 
 DISCLAIMER = (
@@ -665,12 +651,6 @@ def index():
         catalogue=_catalogue(),
         reaction_options=_reaction_options(),
     )
-
-
-@app.route("/api/drugs")
-def api_drugs():
-    """List every drug available in the precomputed table."""
-    return jsonify({"count": len(_catalogue()), "drugs": _catalogue()})
 
 
 def _display_pt(pt: str) -> str:
@@ -775,55 +755,6 @@ def search():
         facts=_drug_facts(matched_name),
         disclaimer=DISCLAIMER,
         error=None,
-    )
-
-
-def _slim(pairs: list[dict], keep_trend: bool) -> list[dict]:
-    """
-    Drop the monthly series from JSON responses unless it was asked for.
-
-    Each row carries up to 88 months, which the HTML never needs because the
-    sparkline is drawn server-side. Left in, one query for a common reaction
-    returns megabytes, and at 60 requests a minute per address that is a
-    bandwidth bill and a cheap way to exhaust the host. Callers who genuinely
-    want the series can pass trend=1.
-    """
-    if keep_trend:
-        return pairs
-    return [{k: v for k, v in p.items() if k != "sparkline"} for p in pairs]
-
-
-@app.route("/api/search")
-def api_search():
-    """JSON API endpoint for drug search."""
-    drug_query = _clean_query(request.args.get("drug", ""))
-
-    if not drug_query:
-        return jsonify({"error": "drug parameter required", "results": []}), 400
-
-    filtered, matched_name, total_reports = _search_results(drug_query)
-
-    if filtered.empty:
-        return jsonify(
-            {
-                "drug_query": drug_query,
-                "matched_name": matched_name,
-                "total_reports": 0,
-                "results": [],
-                "disclaimer": DISCLAIMER,
-            }
-        )
-
-    pairs = _slim(_format_pairs(filtered), request.args.get("trend") == "1")
-
-    return jsonify(
-        {
-            "drug_query": drug_query,
-            "matched_name": matched_name,
-            "total_reports": total_reports,
-            "results": pairs,
-            "disclaimer": DISCLAIMER,
-        }
     )
 
 
@@ -1151,9 +1082,7 @@ def _reaction_key(raw: str) -> str:
     return (raw or "").strip().upper().replace("^", "").replace("'", "")
 
 
-_reaction_cache: list[dict] | None = None
-
-
+@cache
 def _reaction_index() -> list[dict]:
     """
     Every reaction term in the results table, commonest first.
@@ -1162,14 +1091,9 @@ def _reaction_index() -> list[dict]:
     row for that term, so it is read once rather than summed -- adding column a
     across drugs would count a report once per drug it names.
     """
-    global _reaction_cache
-    if _reaction_cache is not None:
-        return _reaction_cache
-
     df = _load_results()
     if df.empty or "reaction_pt" not in df.columns:
-        _reaction_cache = []
-        return _reaction_cache
+        return []
 
     out = []
     for term, grp in df.groupby("reaction_pt"):
@@ -1188,8 +1112,7 @@ def _reaction_index() -> list[dict]:
                 "strong": int((grp["tier"] == "strong").sum()) if "tier" in grp else 0,
             }
         )
-    _reaction_cache = sorted(out, key=lambda r: (-r["reports"], r["term"]))
-    return _reaction_cache
+    return sorted(out, key=lambda r: (-r["reports"], r["term"]))
 
 
 def _reaction_options(limit: int = 300) -> list[dict]:
@@ -1295,48 +1218,16 @@ def reaction():
     )
 
 
-@app.route("/api/reaction")
-def api_reaction():
-    """JSON API for the reaction-first lookup."""
-    query = _clean_query(request.args.get("q", ""))
-    if not query:
-        return jsonify({"error": "q parameter required", "results": []}), 400
-
-    matches = _match_reactions(query)
-    if not matches:
-        return jsonify({"query": query, "matched_term": None, "results": [],
-                        "disclaimer": DISCLAIMER}), 404
-    if len(matches) > 1:
-        return jsonify({
-            "query": query,
-            "matched_term": None,
-            "candidates": [{"term": m["term"], "drugs": m["drugs"],
-                            "reports": m["reports"]} for m in matches[:60]],
-            "results": [],
-            "disclaimer": DISCLAIMER,
-        })
-
-    match = matches[0]
-    pairs = _slim(_format_pairs(_reaction_results(match["stored"])),
-                  request.args.get("trend") == "1")
-    return jsonify({
-        "query": query,
-        "matched_term": match["term"],
-        "reaction_reports": match["reports"],
-        "drugs": len(pairs),
-        "results": pairs,
-        "disclaimer": DISCLAIMER,
-    })
-
-
 # ---------------------------------------------------------------------------
 # Two-drug comparison
 # ---------------------------------------------------------------------------
 #
 # Every drug here is scored against the whole database independently. Putting
 # two of them in adjacent columns invites exactly one wrong reading -- that the
-# page says something about taking both -- and src/interactions.py exists
-# because that was attempted, failed its known-answer controls and was withheld.
+# page says something about taking both. A real interaction pass was written
+# against an independence baseline, failed its known-answer controls and was
+# withheld rather than shipped; the worksheet quotes label text instead, which
+# is a claim a document makes rather than one this tool makes.
 # The framing on compare.html is load-bearing, not decoration.
 
 COMPARE_NOT_INTERACTION = (
@@ -1451,8 +1342,8 @@ def compare():
 # taking both; ten columns of figures about ten drugs somebody actually takes
 # together invite it far harder, and a reaction that shows up under several of
 # them looks like the tool has found the combination. It has not, and it cannot:
-# src/interactions.py was built to answer that question, failed all twelve of
-# its known-answer controls and was withheld.
+# an interaction pass was built to answer that question, failed all twelve of
+# its known-answer controls and was withheld rather than shipped.
 
 MAX_LIST_DRUGS = 10
 # Eight is roughly what a reader will actually compare across ten panels before

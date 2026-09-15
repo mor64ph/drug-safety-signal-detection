@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import re
+from functools import cache
 from pathlib import Path
 
 from src.client import _get_session, API_KEY
@@ -175,19 +176,13 @@ _INTERACTION_SECTIONS = (
 # How labels actually name a class, keyed by the formal EPC string.
 _SYNONYMS_FILE = (Path(__file__).resolve().parent.parent
                   / "config" / "class_synonyms.json")
-_synonyms_cache: dict[str, list[str]] | None = None
-
-
+@cache
 def _class_synonyms() -> dict[str, list[str]]:
-    global _synonyms_cache
-    if _synonyms_cache is None:
-        try:
-            raw = json.loads(_SYNONYMS_FILE.read_text(encoding="utf-8"))
-            _synonyms_cache = {k: v for k, v in raw.items()
-                               if not k.startswith("_")}
-        except (OSError, json.JSONDecodeError):
-            _synonyms_cache = {}
-    return _synonyms_cache
+    try:
+        raw = json.loads(_SYNONYMS_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return {k: v for k, v in raw.items() if not k.startswith("_")}
 
 _TAGS = re.compile(r"<[^>]+>")
 _WS = re.compile(r"\s+")

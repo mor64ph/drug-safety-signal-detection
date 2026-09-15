@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import json
 import logging
+from functools import cache
 from pathlib import Path
 
 import pandas as pd
@@ -84,9 +85,7 @@ def _app():
     return app_module
 
 
-_interaction_cache: dict | None = None
-
-
+@cache
 def _interaction_index() -> dict:
     """Precomputed label interactions: {drug: {other drug: {term, quote}}}.
 
@@ -98,20 +97,17 @@ def _interaction_index() -> dict:
     "the index never got built" look identical on the page and only one of
     them is a fact about the medicines.
     """
-    global _interaction_cache
-    if _interaction_cache is None:
-        try:
-            _interaction_cache = json.loads(
-                _INTERACTION_PAIRS.read_text(encoding="utf-8"))
-            log.info("label interactions: %s drugs name at least one other",
-                     f"{len(_interaction_cache):,}")
-        except (OSError, json.JSONDecodeError) as exc:
-            _interaction_cache = {}
-            log.warning(
-                "no label interaction index (%s): the worksheet will show no "
-                "interaction section at all. Run "
-                "scripts/fetch_label_interactions.py.", exc)
-    return _interaction_cache
+    try:
+        index = json.loads(_INTERACTION_PAIRS.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        log.warning(
+            "no label interaction index (%s): the worksheet will show no "
+            "interaction section at all. Run "
+            "scripts/fetch_label_interactions.py.", exc)
+        return {}
+    log.info("label interactions: %s drugs name at least one other",
+             f"{len(index):,}")
+    return index
 
 
 def _interactions(names: list[str]) -> list[dict]:
