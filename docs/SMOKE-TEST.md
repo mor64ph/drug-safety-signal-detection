@@ -158,14 +158,48 @@ demotes it on the statistics alone.
 
 ---
 
-## STEP 7 — Reported outcomes column
+## STEP 7 — Reported outcomes column *(new)*
 
-> **SKIP FOR NOW.** This column is being rebuilt. The first version read counts
-> from a response capped at 1,000 reaction buckets, so any reaction below the
-> cut-off was stored as zero — indistinguishable from "none reported".
-> Measured: atorvastatin × TYPE 2 DIABETES MELLITUS stored 0 hospitalisations
-> against a true **792**. Do not test this column until the rebuild is
-> confirmed; exact expected values will be added here then.
+Needs a window ≥1000px, same as EB05.
+
+On the **atorvastatin** page, the **Reported outcomes** column should read, for
+the top three rows:
+
+| Reaction | a | Expected outcomes |
+|---|---|---|
+| TYPE 2 DIABETES MELLITUS | 12,041 | `792 hospitalisation` (7% of reports), `219 death` |
+| RHABDOMYOLYSIS | 6,123 | `4,152 hospitalisation` (68%), `660 death` (11%), `1,043 life-threatening` |
+| FOURNIER'S GANGRENE | 314 | `255 hospitalisation` (81%), `15 death` |
+
+- [ ] Counts appear **first and larger**; the share is smaller beneath and
+      reads **"of reports"** — never as a bare percentage
+- [ ] Hover the column header. The tooltip says it is a share of *reports*,
+      not a risk, and that seriousness is asserted by whoever filed the report
+
+### 7b. A row that should be blank, and correctly so
+
+```
+https://reportscope.onrender.com/search?drug=tamoxifen
+```
+
+- [ ] Find **PSYCHOLOGICAL TRAUMA** (407 reports) → **"none recorded"**
+
+That is right, not missing. Non-serious reactions genuinely carry no
+hospitalisation or death flags, and 61 of 33,852 pairs are legitimately blank.
+
+### 7c. Why this column took three attempts
+
+Worth knowing, because it is the failure mode to watch for anywhere else:
+
+| Attempt | Coverage | What was wrong |
+|---|---|---|
+| 1st, per drug | 66% | The response caps at 1,000 reaction buckets; anything below the cut was stored as 0 |
+| 2nd, chunked | 80% | `src.client.counts` clamped the request to 100 regardless of the key |
+| **3rd** | **99.8%** | Clamp removed, plus a direct lookup for every term a truncated response left ambiguous — **4,138 of them** |
+
+A zero meaning "not in the response" is indistinguishable from one meaning
+"never reported". If any figure on this site is ever suspiciously round or
+suspiciously absent, that is the first thing to suspect.
 
 ---
 
