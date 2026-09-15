@@ -31,7 +31,6 @@ __pycache__/
 *.pyc
 .git/
 .pytest_cache/
-databricks/
 docs/
 *.md
 !README.md

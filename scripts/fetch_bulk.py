@@ -15,7 +15,8 @@ today -- so a hardcoded URL is a time bomb that fails as a 404 months later.
 
 Deliberately limited to the datasets that arrive as a single file. drug/event
 is 114 GB across 1,767 partitions and drug/label is 1.8 GB; neither belongs on
-a laptop, and FAERS at record level is the Databricks pipeline's job.
+a laptop, and nothing here needs FAERS at record level -- every figure the app
+shows is built from the count endpoint by `run.py --score`.
 """
 from __future__ import annotations
 
