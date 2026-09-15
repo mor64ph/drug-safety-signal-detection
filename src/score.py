@@ -548,8 +548,12 @@ def dme_counts(drug_search: str, terms: list[str], chunk: int = 12) -> dict[str,
         owned = {t.upper() for t in group}
         clause = "(" + " OR ".join(q_reaction(t) for t in group) + ")"
         try:
+            # Explicit limit: without one the endpoint returns its default
+            # 100 buckets, and a chunk's co-occurring reactions can push a
+            # searched term past that. 1,000 is the ceiling with a key.
             data = call({"search": f"{drug_search} AND {clause}",
-                         "count": f"{F_REACTION}.exact"})
+                         "count": f"{F_REACTION}.exact",
+                         "limit": 1000})
         except Exception:
             continue
         for bucket in data.get("results", []) or []:

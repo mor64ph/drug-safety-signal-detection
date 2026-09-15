@@ -362,13 +362,28 @@ def total(search: str) -> int:
         return 0
 
 
+# The count endpoint returns 100 buckets without a key and 1,000 with one.
+_COUNT_MAX = 1000 if API_KEY else 100
+
+
 def counts(search: str, field: str, limit: int = 100) -> list[dict[str, Any]]:
     """
     Return count buckets for a field (count endpoint).
 
-    Max 100 buckets without API key.
+    The ceiling is 100 buckets anonymously and 1,000 with a key. This used to
+    clamp to 100 unconditionally, with a docstring correctly stating the limit
+    applied "without API key" -- so once a key was configured, every caller
+    asking for more was silently truncated and had no way to tell.
+
+    That cost a 75-minute rebuild. The severity fetch asked for 1,000 buckets
+    per chunk, got 100, and stored 0 for every term below the cut-off: five of
+    twelve terms in one measured chunk, including FOURNIER^S GANGRENE, which
+    returns 255 at limit=1000 and nothing at limit=100. A zero that means "not
+    in the response" is indistinguishable from a zero that means "never
+    reported", which is the worst possible failure for a severity figure.
     """
-    params = {"search": search, "count": field, "limit": min(limit, 100)}
+    params = {"search": search, "count": field,
+              "limit": min(limit, _COUNT_MAX)}
     data = call(params)
     return data.get("results", [])
 

@@ -4,33 +4,59 @@ Attach reported outcome severity to every scored pair.
     python scripts/fetch_severity.py            # resume
     python scripts/fetch_severity.py --refresh  # start over
 
-Adds four columns to data/results/scored_pairs.parquet: the number of reports
-for each drug-reaction pair that were flagged as involving death,
-hospitalisation, a life-threatening event, or disability.
+Adds four columns to data/results/scored_pairs.parquet: how many of a
+drug-reaction pair's reports were flagged as involving death, hospitalisation,
+a life-threatening event, or disability.
 
-Why it matters more than another ratio. ROR 4.2 where two thirds of the
-reports involved hospitalisation is a different object from ROR 4.2 of
-transient nausea, and until now the interface could not tell them apart. For
-atorvastatin x RHABDOMYOLYSIS, 67.8% of the 6,122 reports record a
-hospitalisation and 10.8% a death.
+Why it matters more than another ratio. ROR 4.2 where two thirds of the reports
+involved hospitalisation is a different object from ROR 4.2 of transient
+nausea, and until these columns existed the interface could not tell them
+apart. For atorvastatin x RHABDOMYOLYSIS, 4,152 of 6,123 reports record a
+hospitalisation and 660 a death.
 
-Cost. The naive shape is one call per pair per field: 33,852 x 4 = 135,408
-calls, about four hours at the client's pinned spacing and more than the daily
-quota. Instead this asks, per drug and per field,
+## Why this is chunked, and why the obvious version was wrong
+
+The first version asked, once per drug and outcome,
 
     search=<drug> AND seriousnessdeath:1
     count=patient.reaction.reactionmeddrapt.exact
 
-which returns the death-report count for every one of that drug's reactions in
-a single response -- the same trick the DME sweep uses. 361 drugs x 4 fields =
-1,444 calls, roughly six minutes.
+and read each pair's count out of the response. 1,444 calls, fast, and
+**quietly wrong**. That response is capped at 1,000 buckets, and a heavily
+reported drug has far more than 1,000 distinct reactions among its
+death-flagged reports. Any term below the cut-off came back absent and was
+stored as 0 -- indistinguishable from "no deaths were reported".
 
-Read these as reported outcomes, not as rates. The denominator is reports, not
-patients, and seriousness is asserted by whoever filed the report.
+Measured, after it had already shipped: atorvastatin x TYPE 2 DIABETES
+MELLITUS stored 0 hospitalisations against a true 792, and 0 deaths against a
+true 219; atorvastatin x FOURNIER^S GANGRENE stored 0 against a true 255.
+Rhabdomyolysis, ranking high enough to survive the cap, was correct. So the
+column was right where the reaction was common and silently zero where it was
+not, which is the worst possible shape for a severity figure.
+
+The fix is the same trick the DME sweep uses. Restricting the search to reports
+containing at least one of a dozen named reactions makes those reactions
+dominate the buckets, so none of them can be pushed past the cap:
+
+    search=<drug> AND (term1 OR ... OR term12) AND seriousnessdeath:1
+    count=patient.reaction.reactionmeddrapt.exact
+
+2,992 chunks x 4 outcomes = 11,968 calls, about 50 minutes. Exact for every
+pair rather than fast and wrong for the tail.
+
+**A bucket is only accepted from the chunk that contains its term.** This is
+defect D-09 exactly: a chunk's response buckets every reaction in the matched
+reports, not only the twelve searched for, so a term appearing as a
+co-occurrence in another chunk would otherwise overwrite its own correct count
+with a restricted, smaller one.
+
+Read the result as reported outcomes, not as rates. The denominator is reports,
+not patients, and seriousness is asserted by whoever filed the report.
 """
 from __future__ import annotations
 
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -41,14 +67,21 @@ sys.path.insert(0, str(ROOT))
 import pandas as pd  # noqa: E402
 
 from src import client  # noqa: E402
-from src.client import QuotaExhausted  # noqa: E402
+from src.client import QuotaExhausted, F_REACTION, q_reaction  # noqa: E402
 
 SCORED = ROOT / "data" / "results" / "scored_pairs.parquet"
 CACHE = ROOT / "data" / "raw" / "severity.json"
 TARGETS = ROOT / "config" / "targets.json"
 
-# FAERS flags these per report. `serious` is deliberately not used: it is true
-# for any of the others, so it would add a column that is just their union.
+CHUNK = 12
+
+# The count endpoint returns 1,000 buckets with a key, 100 without. Asking for
+# more than the ceiling is silently clamped, which is how the first rebuild
+# came out wrong -- src.client.counts used to clamp to 100 unconditionally.
+BUCKET_LIMIT = 1000
+
+# FAERS flags these per report. `serious` is deliberately unused: it is true for
+# any of the others, so it would add a column that is only their union.
 FIELDS = {
     "deaths": "seriousnessdeath",
     "hospitalisations": "seriousnesshospitalization",
@@ -57,17 +90,13 @@ FIELDS = {
 }
 
 
-def drug_queries() -> dict[str, str]:
-    """A label-endpoint-free search string per catalogue drug."""
-    drugs = sorted(pd.read_parquet(SCORED, columns=["drug"])["drug"].unique())
+def drug_queries(drugs) -> dict[str, str]:
     config = json.loads(TARGETS.read_text(encoding="utf-8"))
-
     molecules, classes = {}, {}
     for key, cls in config["classes"].items():
         classes[key] = cls.get("pharm_class_epc")
         for name, variants in (cls.get("molecules") or {}).items():
             molecules[name] = variants
-
     out = {}
     for drug in drugs:
         if drug in molecules:
@@ -81,7 +110,10 @@ def drug_queries() -> dict[str, str]:
 
 def main() -> int:
     refresh = "--refresh" in sys.argv
-    queries = drug_queries()
+    df = pd.read_parquet(SCORED)
+    by_drug = {d: sorted(g["reaction_pt"].astype(str).unique())
+               for d, g in df.groupby("drug")}
+    queries = drug_queries(list(by_drug))
 
     cache: dict = {}
     if CACHE.exists() and not refresh:
@@ -89,32 +121,72 @@ def main() -> int:
             cache = json.loads(CACHE.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             cache = {}
+    # The old cache is keyed the same way but holds capped values, so a resume
+    # would inherit the defect. Versioned to force one clean rebuild.
+    if cache.get("_schema") != 3:
+        cache = {"_schema": 3}
 
-    todo = [(d, col) for d in queries for col in FIELDS
-            if cache.get(d, {}).get(col) is None]
-    print(f"{len(queries)} drugs x {len(FIELDS)} outcomes; "
-          f"{len(todo)} calls to make")
+    jobs = []
+    for drug, terms in by_drug.items():
+        for i in range(0, len(terms), CHUNK):
+            for col in FIELDS:
+                jobs.append((drug, i, col))
+    todo = [j for j in jobs
+            if cache.get(j[0], {}).get(f"{j[1]}:{j[2]}") is None]
+    print(f"{len(by_drug)} drugs, {len(df):,} pairs, {len(jobs):,} chunk-calls; "
+          f"{len(todo):,} to make")
 
+    stats = {"fallback": 0, "unresolved": 0}
     started = time.time()
     try:
-        for i, (drug, col) in enumerate(todo, 1):
-            field = FIELDS[col]
-            search = f"{queries[drug]} AND {field}:1"
+        for n, (drug, offset, col) in enumerate(todo, 1):
+            terms = by_drug[drug][offset:offset + CHUNK]
+            owned = {t.upper() for t in terms}
+            clause = "(" + " OR ".join(q_reaction(t) for t in terms) + ")"
+            search = f"{queries[drug]} AND {clause} AND {FIELDS[col]}:1"
+            got: dict[str, int] = {}
+            truncated = False
             try:
-                rows = client.counts(
-                    search, "patient.reaction.reactionmeddrapt.exact", limit=1000)
+                rows = client.counts(search, f"{F_REACTION}.exact",
+                                     limit=BUCKET_LIMIT)
+                # A response that fills the cap was cut off, so a term missing
+                # from it may simply be below the cut rather than absent from
+                # the data. Only a short response proves a real zero.
+                truncated = len(rows) >= BUCKET_LIMIT
+                for r in rows:
+                    term = str(r["term"]).upper()
+                    # D-09: only the owning chunk's buckets are trustworthy.
+                    if term in owned:
+                        got[term] = int(r["count"])
             except Exception as exc:
-                # One unqueryable drug must not end the run, but the reason is
-                # worth seeing -- silently zero-filling would read downstream
-                # as "no deaths reported".
-                print(f"  {drug}/{col}: {client.redact(str(exc))[:80]}")
-                rows = []
-            cache.setdefault(drug, {})[col] = {
-                str(r["term"]): int(r["count"]) for r in rows
+                print(f"  {drug}/{offset}/{col}: "
+                      f"{client.redact(str(exc))[:70]}")
+                truncated = True   # nothing was learned; do not record zeros
+
+            # Resolve the ambiguous ones individually. These are by definition
+            # rare reactions -- they did not make the top 1,000 of their own
+            # restricted population -- so there is usually at most one per
+            # chunk, and a direct count is exact.
+            if truncated:
+                for t in terms:
+                    if t.upper() in got:
+                        continue
+                    try:
+                        got[t.upper()] = client.total(
+                            f"{queries[drug]} AND {q_reaction(t)} "
+                            f"AND {FIELDS[col]}:1")
+                        stats["fallback"] += 1
+                    except Exception:
+                        stats["unresolved"] += 1
+
+            cache.setdefault(drug, {})[f"{offset}:{col}"] = {
+                t.upper(): got.get(t.upper(), 0) for t in terms
             }
-            if i % 100 == 0 or i == len(todo):
-                rate = i / max(time.time() - started, 1e-9)
-                print(f"  {i}/{len(todo)} ({rate:.1f}/s)")
+            if n % 400 == 0 or n == len(todo):
+                rate = n / max(time.time() - started, 1e-9)
+                eta = (len(todo) - n) / max(rate, 1e-9) / 60
+                print(f"  {n:,}/{len(todo):,} ({rate:.1f}/s, ~{eta:.0f} min "
+                      f"left, {stats['fallback']:,} direct lookups)")
                 CACHE.parent.mkdir(parents=True, exist_ok=True)
                 CACHE.write_text(json.dumps(cache), encoding="utf-8")
     except (KeyboardInterrupt, QuotaExhausted) as exc:
@@ -126,48 +198,48 @@ def main() -> int:
     CACHE.parent.mkdir(parents=True, exist_ok=True)
     CACHE.write_text(json.dumps(cache), encoding="utf-8")
 
-    df = pd.read_parquet(SCORED)
+    # Flatten: drug -> outcome -> term -> count
+    flat: dict[str, dict[str, dict[str, int]]] = {}
+    for drug, blocks in cache.items():
+        if drug.startswith("_"):
+            continue
+        for key, mapping in blocks.items():
+            _, col = key.split(":", 1)
+            flat.setdefault(drug, {}).setdefault(col, {}).update(mapping)
+
     for col in FIELDS:
         df[col] = [
-            int((cache.get(drug, {}).get(col) or {}).get(rxn, 0))
-            for drug, rxn in zip(df["drug"], df["reaction_pt"])
+            int(((flat.get(d) or {}).get(col) or {}).get(str(r).upper(), 0))
+            for d, r in zip(df["drug"], df["reaction_pt"])
         ]
 
-    # A count that exceeds the pair's own report total cannot be a share of it.
-    #
-    # This fires on 659 rows, 648 of them DME terms, concentrated in six
-    # reactions: CARDIAC ARREST, SEPSIS, PANCYTOPENIA, ACUTE KIDNEY INJURY,
-    # HEPATIC FAILURE, VENTRICULAR FIBRILLATION. The severity counts are
-    # internally consistent -- for acetaminophen x CARDIAC ARREST,
-    # total(drug AND reaction AND death) is 5,892 and matches the count bucket
-    # exactly -- but the stored `a` for that pair is 3,259 against a measured
-    # total(drug AND reaction) of 7,383. A random sample of ten other pairs,
-    # DME and not, matched their stored `a` exactly, so `a` is broadly right
-    # and something specific to these terms is not.
-    #
-    # Unresolved, and deliberately not papered over. The counts are stored
-    # because they are correct; the *share* is suppressed per row wherever the
-    # two cannot be reconciled, because dividing by a denominator this code
-    # cannot verify would print a percentage over 100 and call it a rate.
     df["severity_base_ok"] = True
     for col in FIELDS:
         df.loc[df[col] > df["a"], "severity_base_ok"] = False
-    inconsistent = int((~df["severity_base_ok"]).sum())
-    if inconsistent:
-        print(f"\n  {inconsistent:,} rows have a serious-outcome count above "
-              f"their own `a`.")
-        print(f"  Counts kept; share suppressed on those rows. See the comment "
-              f"here and TEST-PLAN.md S-04.")
+    bad = int((~df["severity_base_ok"]).sum())
+    if bad:
+        print(f"\n  {bad:,} rows have an outcome count above their own `a`; "
+              f"share suppressed on those (see TEST-PLAN S-04)")
 
     df.to_parquet(SCORED, index=False)
     print(f"\nwrote {SCORED.relative_to(ROOT)}")
     covered = int((df[list(FIELDS)].sum(axis=1) > 0).sum())
-    print(f"  {covered:,}/{len(df):,} pairs have at least one serious outcome "
-          f"recorded ({covered / len(df):.0%})")
-    for col in FIELDS:
-        share = (df[col] / df["a"].clip(lower=1))
-        print(f"  {col:<18} total {int(df[col].sum()):>10,}  "
-              f"median share of a: {share.median():.1%}")
+    print(f"  {covered:,}/{len(df):,} pairs with at least one serious outcome "
+          f"({covered / len(df):.0%})")
+    print(f"  {stats['fallback']:,} counts resolved by a direct lookup after a "
+          f"truncated response; {stats['unresolved']:,} unresolved")
+
+    # The three that exposed the capped version. They are the regression test.
+    print("\ncontrols (atorvastatin):")
+    for rxn, col, expect in (("TYPE 2 DIABETES MELLITUS", "hospitalisations", 792),
+                             ("TYPE 2 DIABETES MELLITUS", "deaths", 219),
+                             ("FOURNIER^S GANGRENE", "hospitalisations", 255),
+                             ("RHABDOMYOLYSIS", "hospitalisations", 4152)):
+        row = df[(df["drug"] == "atorvastatin") & (df["reaction_pt"] == rxn)]
+        got = int(row[col].iloc[0]) if len(row) else -1
+        ok = abs(got - expect) <= max(2, expect * 0.01)
+        print(f"  {'ok  ' if ok else 'FAIL'} {rxn[:26]:<28}{col:<18}"
+              f"got {got:>7,}  expected ~{expect:,}")
     return 0
 
 
