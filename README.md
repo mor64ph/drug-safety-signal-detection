@@ -14,6 +14,20 @@ exenatide, tirzepatide, lixisenatide).
 
 ---
 
+## Live
+
+**<https://reportscope.onrender.com>**
+
+**The first request takes about 45 seconds.** It runs on a free plan that sleeps
+after fifteen minutes idle, so a cold start looks like a broken site and is not
+one. Everything after that is served from a precomputed table and is fast.
+
+Nothing on the request path calls an API. 361 drugs and 33,852 drug-reaction
+pairs are scored offline against all 20,692,690 reports, and the app reads the
+result.
+
+---
+
 ## Quickstart
 
 ```bash
