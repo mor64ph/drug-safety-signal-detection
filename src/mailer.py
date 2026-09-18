@@ -105,6 +105,17 @@ def send(to: str, subject: str, body_text: str, body_html: str | None = None) ->
 
     msg = _build(to, subject, body_text, body_html)
 
+    # An explicit off switch, because unsetting SMTP_HOST is not one. _setting
+    # falls back to reading .env from disk, so a test harness that clears the
+    # variable from os.environ has it read straight back out of the file --
+    # which is how scripts/check_defects.py sent three real messages per run to
+    # a reserved example.com address, and why the bounces looked like live
+    # signups. A separate variable rather than a change to _setting's
+    # semantics: this one is simply unset in production, so it cannot alter how
+    # any existing setting resolves there.
+    if _setting("RXSIGNAL_MAIL_OUTBOX").lower() in ("1", "true", "yes", "on"):
+        return _write_outbox(msg)
+
     host = _setting("SMTP_HOST")
     if not host:
         return _write_outbox(msg)

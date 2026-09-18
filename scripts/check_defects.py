@@ -36,7 +36,7 @@ if DB.exists():
     DB.unlink()
 os.environ["DATABASE_URL"] = f"sqlite:///{DB.as_posix()}"
 os.environ["RXSIGNAL_SECRET_KEY"] = "test-key-not-a-secret"
-os.environ.pop("SMTP_HOST", None)          # mail goes to data/outbox/
+os.environ["RXSIGNAL_MAIL_OUTBOX"] = "1"   # mail -> data/outbox/, never sent
 os.environ["RXSIGNAL_ADMIN_CODE"] = "adminsecret"
 os.environ["RXSIGNAL_AUTH_RATE_LIMIT"] = "5"
 

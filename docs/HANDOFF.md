@@ -14,8 +14,9 @@ A pharmacovigilance signal-detection tool over FDA FAERS (the Adverse Event
 Reporting System) — 20,692,690 reports, extract of **30 July 2026**.
 
 Live: `https://reportscope.onrender.com`
-Repo: `github.com/mor64ph/ReportScope` (private), local at
-`C:\Users\hrisit.biswas\personal projects\rxsignal`
+Repos: `github.com/mor64ph/ReportScope` (private, wired to the live site) and
+`github.com/mor64ph/drug-safety-signal-detection` (public, portfolio — history
+rewritten, so **never** add its remote to the private working copy).
 
 Stack: Flask + Waitress in Docker on Render (free plan, ~45s cold start),
 Neon Postgres for accounts, Alembic migrations, Gmail SMTP, GitHub Actions for
@@ -234,12 +235,27 @@ label sections `pharmacogenomics`, `inactive_ingredient` (allergens),
 `information_for_patients` (plain-language text); then MOA-based comparator
 groups (only EPC is used today, `pharm_class_moa` is already in the pulls).
 
-**Deferred by decision:** public snapshot repos (clone, don't copy — `.env` and
-`data/rxsignal.db` sit untracked in the working directory); the Databricks
-medallion pipeline (written, tested, never run — the only route to
-record-level `drugcharacterization`, because the API matches at report level:
-"ibuprofen AND NAUSEA" returns 19,517 reports and adding
-`drugcharacterization:1` keeps 19,487 of them).
+**Both of these are now resolved, and neither the way it was planned.**
+
+*Public snapshot repo* — done, as
+`github.com/mor64ph/drug-safety-signal-detection`, built by cloning this
+working copy into `../reportscope-public` and rewriting history there. The clone
+advice held: `.env` was never tracked, and a scan of all 243 blobs across every
+commit found no secret value. What it did find was a work email address — on two
+commits as the author, including the initial one, and *again* inside
+`databricks/jobs/rxsignal_quarterly_job.json` as an `on_failure` recipient.
+**Checking commit metadata alone reports clean**, because the second copy sat in
+a file body; only a content grep over every blob found it. **Never add the public
+remote to this repo:** its history still carries that address on those two
+commits, and only the rewritten clone is safe to publish.
+
+*Databricks medallion pipeline* — deleted, not run. It had drifted to
+`ic025 = ic - 1.96*sqrt(var_ic)`, the frequentist bound `src/score.py` documents
+as a defect and replaced with a Bate/Norén posterior. A second implementation of
+the central statistic, unused and by then wrong, was the argument against
+keeping it. The record-level `drugcharacterization` gap it was meant to close is
+still open: the API matches at report level, so "ibuprofen AND NAUSEA" returns
+19,517 reports and adding `drugcharacterization:1` keeps 19,487 of them.
 
 **FAERS already has geography.** `occurcountry` is coded on 79.5% of reports
 and **4,637,562 are non-US** — Europe 13.94%, Asia 5.42%, Oceania 0.82%,
